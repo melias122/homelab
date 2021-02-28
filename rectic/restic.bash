@@ -20,16 +20,6 @@ B2_RESTIC_REPOSITORY=""
 
 REST_RESTIC_REPOSITORY="rest:http://restic.homelab.sk:8000"
 
-# snapshot prefix and timestamp
-snapID="backup-$(date +"%Y%m%d-%H%M%S")"
-
-# mount point prefix
-# mp="/mnt/${snapID}"
-mp="/mnt/backup"
-
-# pools to backup e.g. "pool0 pool1"
-pools="pool"
-
 excludes=(
 	".DS_Store"
 	".recycle"
@@ -92,60 +82,9 @@ fi
 # build excludes
 excludes="$(echo ${excludes[@]} | xargs printf -- "-e %s ")"
 
-createSnapMount () {
-    for pool in $pools; do
-
-	# create recursive snapshot of dataset
-	zfs snapshot -r "${pool}@${snapID}"
-
-	# mk mount point
-	mkdir -p "${mp}/${pool}"
-
-	# mount datasets under /mnt, e.g. /mnt/dataset0, /mnt/dataset1
-	for dataset in $(zfs list -t filesystem -H -o name -r ${pool}); do
-	    mount -t zfs "${dataset}@${snapID}" "${mp}/${dataset}"
-	done
-
-	# mount zvols under /mnt, e.g. /mnt/volume0, /mnt/volume1
-	# for volume in $(zfs list -t volume -H -o name -r ${pool}); do
-	# zfs clone "${volume}@${snapID}" "${volume}-${snapID}"
-	# mkdir "${mp}/$(basename $volume)"
-	# while [ ! -b "/dev/zvol/${volume}-${snapID}" ]; do sleep 1; done
-	# mount "/dev/zvol/${volume}-${snapID}" "${mp}/$(basename $volume)"
-	# done
-
-    done
-}
-
-removeSnapMount () {
-
-    # umount zvols and destroy clones
-    # for volume in $(zfs list -H -o name -t volume | grep "\-${snapID}"); do
-    # zfs destroy "${volume}-${snapID}"
-    # done
-
-    for pool in $(zfs list -H -o name -t snapshot $pools | grep $snapID | cut -d'@' -f1); do
-	umount -R "${mp}/${pool}"
-
-	# destroy snapshots recursively
-	zfs destroy -r "${pool}@${snapID}"
-    done
-
-    rm -fr "${mp}"
-}
-
 if [ -v args[backup] ]; then
 
-    	# make sure we cleanup snapshots, mount points, and created dirs
-	trap removeSnapMount EXIT
-
-	# create snapshot of $zpools and mount them under $mp
-	createSnapMount
-
 	bash -c "cd $mp && $RESTIC backup . $RESTIC_ARGS -H pve --exclude-caches ${excludes}"
-
-	# cleanup
-	removeSnapMount
 fi
 
 if [ -v args[forget] ]; then
