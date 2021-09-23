@@ -4,13 +4,12 @@
 
 { config, pkgs, ... }:
 
-let
- secrets = import ./secrets.nix;
-
-in {
+{
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+
+      ../roles/common.nix
     ];
 
   # Use the GRUB 2 boot loader.
@@ -28,32 +27,7 @@ in {
 
     # Tune ZFS ARC size
     # kernelParams = ["zfs.zfs_arc_max=12884901888"]; 12GB, currently 8383029248 (8GB), maybe try 16GB (17179860388)
-
-    kernel.sysctl = {
-      "vm.swappiness" = 10;
-    };
   };
-
-  nix = {
-    # Automatic Nix GC.
-    gc = {
-      automatic = true;
-      # dates = "04:00";
-      options = "--delete-older-than 30d";
-    };
-    # extraOptions = ''
-      # min-free = ${toString (500 * 1024 * 1024)}
-    # '';
-
-    # Automatic store optimization.
-    # autoOptimiseStore = true;
-  };
-
-  # Scale down CPU frequency when load is low.
-  powerManagement.cpuFreqGovernor = "ondemand";
-
-  # Set your time zone.
-  time.timeZone = "Europe/Bratislava";
 
   networking = {
     hostName = "server";
@@ -93,114 +67,15 @@ in {
     firewall.enable = false;
   };
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-  };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users = {
-    # Force declarative user configuration.
-    # mutableUsers = false;
-
-    users.root = {
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4E9fCQDVnvqYRINH0XcCZbH/VS65RfAQfOA+eDYlHJ"
-      ];
-    };
-
-    # Set melias122's account sudo, SSH login.
-    users.melias122 = {
-      isNormalUser = true;
-      uid = 1000;
-      extraGroups = [ "wheel" "networkmanager" ];
-
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4E9fCQDVnvqYRINH0XcCZbH/VS65RfAQfOA+eDYlHJ"
-      ];
-
-      hashedPassword = secrets.users.melias122.passwordHash;
-    };
-  };
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    bash
-    emacs-nox
-    git
-    htop
-    iperf3
-    ipmitool
-    lm_sensors
-    lshw
-    nmap
-    nmon
-    pciutils
     restic
-    smartmontools
-    tailscale
-    tcpdump
-    unzip
-    usbutils
-    vim
-    wget
     zfs
   ];
 
   # List services that you want to enable:
   services = {
-    # Enable the OpenSSH daemon.
-    openssh = {
-      enable = true;
-      passwordAuthentication = false;
-    };
-
-    tailscale = {
-      enable = true;
-    };
-
-    coredns = {
-    enable = true;
-    config = ''
-      (defaults) {
-        # whoami
-        log
-        errors
-        cache 3600 {
-          success 8192
-          denial 4096
-        }
-        # prometheus :9153
-        # dnssec
-        # loadbalance
-      }
-
-      (cloudflare) {
-        forward . tls://1.1.1.1 tls://1.0.0.1 {
-          tls_servername cloudflare-dns.com
-          health_check 30s
-        }
-      }
-
-      (blocklist) {
-        hosts /etc/hosts.blocklist {
-          reload 3600s
-          no_reverse
-          fallthrough
-        }
-      }
-
-      .:53 {
-        import defaults
-        # import blocklist
-        import cloudflare
-    }
-		'';
-    };
-
     avahi = {
       enable = true;
       nssmdns = true;
@@ -315,10 +190,6 @@ in {
         };
       };
     };
-    # samba-wsdd = {
-      # enable = true;
-      # discovery = true;
-    # };
 
     restic.backups = {
       local = {
@@ -329,8 +200,8 @@ in {
         ];
       };
       # remote = {
-        # repository = "b2:restic-homelab-backup:/pve-homelab-backup";
-        # passwordFile = "/etc/nixos/secrets/restic-password";
+      # repository = "b2:restic-homelab-backup:/pve-homelab-backup";
+      # passwordFile = "/etc/nixos/secrets/restic-password";
       # };
     };
 
@@ -340,7 +211,6 @@ in {
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
-
       oscam = {
         image = "ghcr.io/linuxserver/oscam";
         environment = {
@@ -380,16 +250,12 @@ in {
     };
   };
 
-  system = {
-    # Automatic upgrades.
-    autoUpgrade.enable = true;
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "21.05"; # Did you read the comment?
 
-    # This value determines the NixOS release from which the default
-    # settings for stateful data, like file locations and database versions
-    # on your system were taken. It‘s perfectly fine and recommended to leave
-    # this value at the release version of the first install of this system.
-    # Before changing this value read the documentation for this option
-    # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    stateVersion = "21.05"; # Did you read the comment?
-  };
 }
