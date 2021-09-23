@@ -1,1 +1,0 @@
-machines/server/configuration.nix
