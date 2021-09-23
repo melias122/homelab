@@ -90,4 +90,9 @@ in {
 
   # Automatic upgrades.
   system.autoUpgrade.enable = true;
+
+  # Don’t shutdown when power button is short-pressed
+  services.logind.extraConfig = ''
+    HandlePowerKey=ignore
+  '';
 }

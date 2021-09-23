@@ -49,12 +49,14 @@
   };
 
   networking = {
-    useDHCP = false;
-
     hostName = "router";
 
     # use CoreDNS
     nameservers = [ "127.0.0.1" ];
+
+    useDHCP = false;
+    nat.enable = false;
+    firewall.enable = false;
 
     interfaces = {
       # 1GbE unused

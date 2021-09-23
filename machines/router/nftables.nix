@@ -5,19 +5,15 @@
     nftables
   ];
 
-  # Disable NAT and firewall
-  networking.nat.enable = false;
-  networking.firewall.enable = false;
-
   networking.nftables = {
     enable = true;
     ruleset = ''
       table inet filter {
         # Enable flow offloading for better throughput
-        flowtable f {
-          hook ingress priority filter;
-          devices = { ppp0, eno1 };
-        }
+        # flowtable f {
+        #  hook ingress priority filter;
+        #  devices = { ppp0, eno1 };
+        # }
 
         chain output {
           type filter hook output priority filter
@@ -60,7 +56,7 @@
           policy drop
 
           # Enable flow offloading for better throughput
-          ip protocol { tcp, udp } flow offload @f
+          # ip protocol { tcp, udp } flow offload @f
 
           # Because of PPPoE
           tcp flags syn tcp option maxseg size set rt mtu
