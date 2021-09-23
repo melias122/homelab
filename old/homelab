@@ -1,0 +1,49 @@
+* Home Network (172.16.0.0/16)
+** Network
+
+ | /18                 | /19                           |
+ |---------------------+-------------------------------|
+ | Core  - 172.xxx.0.0 | Infrastructure  - 172.xxx.0.0 |
+ |                     | Management Apps - 172.xx.32.0 |
+ | Apps  - 172.xx.64.0 | Local Apps      - 172.xx.64.0 |
+ |                     | Public Apps     - 172.xx.96.0 |
+ | Other - 172.x.128.0 | Unrouted        - 172.x.128.0 |
+ |                     | Unique          - 172.x.160.0 |
+ | Edge  - 172.x.192.0 | DMZ             - 172.x.192.0 |
+ |                     | Userland        - 172.x.224.0 |
+
+** 172.16.2.0/24 Infrastructure Management
+** 172.16.2.1 egde.
+** 172.16.16.0/24
+   - IMPI .10, pve. IPMI
+   - pve. .100, proxmox
+   -
+** 172.16.80.0/24 LAN Apps
+   -  .10: minisatip.
+   - .100: tvh0. prizemie
+   - .101: tvh1. poschodie
+** 172.16.228.0/24 LAN
+   - tv0, prizemie
+   - tv1, poschodie
+     eth: cc:98:8b:9f:33:7b
+	 wlan:
+
+* switch
+  -  9: wifi poschodie
+  - 11: tv poschodie
+  - 17: switch pracovna
+  - 22: pve trunk
+  - 20: minisatip vlan80
+
+* MAC's
+  - MacBook Pro
+	00:e0:4c:68:09:b9
+  - Proxmox (pve)
+	- eth1: 0c:c4:7a:44:53:15
+	- eth0: 0c:c4:7a:44:53:14
+
+  - Minisatip
+	- eth0: 00:24:A6:00:31:82
+	  -
+* VyOS config
+set interfaces ethernet eth0 address dhcp
