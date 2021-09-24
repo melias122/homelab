@@ -10,6 +10,11 @@
       { ethernetAddress = "80:2a:a8:80:0d:fb"; ipAddress = "192.168.1.11"; hostName = "UnifiAP-prizemie"; }
       { ethernetAddress = "e0:63:da:21:09:46"; ipAddress = "192.168.1.12"; hostName = "UnifiAP-poschodie"; }
       { ethernetAddress = "00:24:a6:00:31:82"; ipAddress = "192.168.1.20"; hostName = "Digibit-R1"; }
+
+      { ethernetAddress = "0c:c4:7a:44:52:ea"; ipAddress = "192.168.1.35"; hostName = "Server-IPMI"; }
+      # { ethernetAddress = "0c:c4:7a:44:53:14"; ipAddress = "192.168.1.45"; hostName = "Server-1GbE-LAN1"; }
+      # { ethernetAddress = "0c:c4:7a:44:53:15"; ipAddress = "192.168.1.45"; hostName = "Server-1GbE-LAN2"; }
+      { ethernetAddress = "00:1b:21:bc:15:67"; ipAddress = "192.168.1.45"; hostName = "Server-10GbE"; }
     ];
     extraConfig = ''
       default-lease-time 86400;
