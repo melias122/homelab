@@ -26,7 +26,7 @@
     supportedFilesystems = [ "zfs" ];
 
     # Tune ZFS ARC size
-    # kernelParams = ["zfs.zfs_arc_max=12884901888"]; 12GB, currently 8383029248 (8GB), maybe try 16GB (17179860388)
+    kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16GB, was 8383029248 (8GB)
   };
 
   networking = {
