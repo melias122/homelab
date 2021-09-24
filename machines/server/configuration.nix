@@ -48,11 +48,7 @@
 
     interfaces = {
       # upper 1GbE (management)
-      enp0s25.useDHCP = false;
-      enp0s25.ipv4.addresses = [ {
-        address = "192.168.1.45";
-        prefixLength = 24;
-      } ];
+      enp0s25.useDHCP = true;
 
       # lower 1GbE
       eno1.useDHCP = true;
@@ -60,9 +56,6 @@
       # 10GbE
       enp2s0.useDHCP = true;
     };
-
-    defaultGateway = "192.168.1.1";
-    nameservers = [ "192.168.1.1" ];
 
     # Open ports in the firewall.
     # firewall.allowedTCPPorts = [ ... ];
