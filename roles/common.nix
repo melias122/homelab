@@ -88,6 +88,9 @@ in {
     '';
   };
 
+  # Enable unfree packages
+  nixpkgs.config.allowUnfree = true;
+
   # Automatic upgrades.
   system.autoUpgrade.enable = true;
 
