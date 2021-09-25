@@ -5,7 +5,8 @@
     backend = "podman";
     containers = {
       oscam = {
-        image = "ghcr.io/linuxserver/oscam";
+        # https://hub.docker.com/r/linuxserver/oscam/tags
+        image = "ghcr.io/linuxserver/oscam:version-11693";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -19,7 +20,8 @@
       };
 
       tvheadend = {
-        image = "ghcr.io/linuxserver/tvheadend";
+        # https://hub.docker.com/r/linuxserver/tvheadend/tags
+        image = "ghcr.io/linuxserver/tvheadend:version-8fc2dfa7";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -31,7 +33,8 @@
       };
 
       unifi = {
-        image = "ghcr.io/linuxserver/unifi-controller";
+        # https://hub.docker.com/r/linuxserver/unifi-controller/tags
+        image = "ghcr.io/linuxserver/unifi-controller:version-6.4.54";
         environment = {
           PUID = "1000";
           PGID = "100";
