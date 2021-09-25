@@ -12,9 +12,9 @@
       ../../roles/common.nix
 
       ./avahi.nix
-      ./samba.nix
+      ./containers.nix
       ./restic.nix
-      ./unifi.nix
+      ./samba.nix
     ];
 
   # Use the GRUB 2 boot loader.
@@ -74,37 +74,6 @@
 
   # ZFS auto scrub
   services.zfs.autoScrub.enable = true;
-
-  virtualisation.oci-containers = {
-    backend = "podman";
-    containers = {
-      oscam = {
-        image = "ghcr.io/linuxserver/oscam";
-        environment = {
-          PUID = "1000";
-          PGID = "100";
-          TZ = "Europe/Bratislava";
-        };
-        volumes = [ "/pool/containers:/config" ];
-        ports = [
-          "8888:8888"
-          "127.0.0.1:9000:9000"
-        ];
-      };
-
-      tvheadend = {
-        image = "ghcr.io/linuxserver/tvheadend";
-        environment = {
-          PUID = "1000";
-          PGID = "100";
-          TZ = "Europe/Bratislava";
-          # RUN_OPTS = "--http_port 9981 --htsp_port 9982";
-        };
-        volumes = [ "/pool/containers/tvheadend:/config" ];
-        extraOptions = [ "--network=host" ];
-      };
-    };
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
