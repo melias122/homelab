@@ -11,6 +11,7 @@
 
       ../../roles/common.nix
 
+      ./apcupsd.nix
       ./avahi.nix
       ./containers.nix
       ./restic.nix
