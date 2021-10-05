@@ -34,6 +34,7 @@ in {
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bash
+    ethtool
     git
     htop
     iperf3
