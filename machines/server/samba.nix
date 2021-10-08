@@ -85,7 +85,7 @@
         # This is public, everybody can access.
         "guest ok" = "yes";
         "force user" = "nobody";
-        "force group" = "nogroup";
+        "force group" = "users";
 
         "veto files" = "/.apdisk/.DS_Store/.TemporaryItems/.Trashes/desktop.ini/ehthumbs.db/Network Trash Folder/Temporary Items/Thumbs.db/";
         "delete veto files" = "yes";
