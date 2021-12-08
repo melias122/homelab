@@ -47,8 +47,9 @@
           # Allow trusted networks to access the router
           iifname {
             "lo",
+            "tailscale0",
             "eno1",
-          } counter accept comment "Allow localhost and trusted LANs to router"
+          } counter accept comment "Allow trusted interfaces to router"
         }
 
         chain forward {
