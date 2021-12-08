@@ -34,11 +34,13 @@ in {
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bash
+    curl
     ethtool
     git
     htop
     iperf3
     ipmitool
+    jq
     lm_sensors
     lshw
     nmap

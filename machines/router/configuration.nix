@@ -14,6 +14,7 @@
 
       # services
       ../../services/coredns.nix
+      ./cron.nix
       ./dhcpd4.nix
       ./nftables.nix
       ./pppd.nix
@@ -81,6 +82,7 @@
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
+    vultr-cli
   ];
 
   # This value determines the NixOS release from which the default
