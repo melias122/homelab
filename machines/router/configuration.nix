@@ -80,7 +80,6 @@
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
-    ethtool
   ];
 
   # This value determines the NixOS release from which the default
