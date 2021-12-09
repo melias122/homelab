@@ -30,11 +30,11 @@
           iifname "ppp0" ct state invalid counter drop
 
           # Drop malicious subnets
-          # ip saddr {
-          #  49.64.0.0/11,
-          #  218.92.0.0/16,
-          #  222.184.0.0/13,
-          # } counter drop comment "Drop malicious subnets"
+          ip saddr {
+            49.64.0.0/11,
+            218.92.0.0/16,
+            222.184.0.0/13,
+          } counter drop comment "Drop malicious subnets"
 
           # ICMPv4 filtering
           ip protocol icmp icmp type {
