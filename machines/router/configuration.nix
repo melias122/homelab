@@ -15,8 +15,9 @@
       # services
       ../../services/coredns.nix
       ./dhcpd4.nix
-      ./pppd.nix
       ./nftables.nix
+      ./pppd.nix
+      ./traefik.nix
     ];
 
   # Use the GRUB 2 boot loader.
