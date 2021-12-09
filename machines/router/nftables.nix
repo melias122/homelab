@@ -25,9 +25,9 @@
           type filter hook input priority filter
           policy drop
 
-          # Allow returning traffic from ppp0 and drop everthing else
-          iifname "ppp0" ct state { established, related } counter accept
-          iifname "ppp0" ct state invalid counter drop
+          # Allow returning traffic and drop everthing else
+          ct state { established, related } counter accept
+          ct state invalid counter drop
 
           # Drop malicious subnets
           ip saddr {
@@ -42,14 +42,26 @@
             destination-unreachable,
             time-exceeded,
             parameter-problem,
-         } counter accept
+          } counter accept
+
+          iifname {
+            "ppp0",
+          } jump input_wan
 
           # Allow trusted networks to access the router
           iifname {
             "lo",
-            "tailscale0",
             "eno1",
+            "tailscale0",
           } counter accept comment "Allow trusted interfaces to router"
+        }
+
+        chain input_wan {
+          # router TCP
+          tcp dport {
+            80,
+            443,
+          } counter accept comment "router WAN TCP"
         }
 
         chain forward {
