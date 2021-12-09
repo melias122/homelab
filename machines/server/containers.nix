@@ -43,6 +43,11 @@
         volumes = [ "/pool/containers/unifi/config:/config" ];
         extraOptions = [ "--network=host" ];
       };
+
+      domov = {
+        image = "docker.io/melias122/domov:2b42ecc";
+        ports = [ "54380:8080"];
+      };
     };
   };
 }
