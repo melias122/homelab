@@ -9,6 +9,7 @@
       { ethernetAddress = "80:2a:a8:40:3b:1c"; ipAddress = "192.168.1.10"; hostName = "UnifiAP-pivnica"; }
       { ethernetAddress = "80:2a:a8:80:0d:fb"; ipAddress = "192.168.1.11"; hostName = "UnifiAP-prizemie"; }
       { ethernetAddress = "e0:63:da:21:09:46"; ipAddress = "192.168.1.12"; hostName = "UnifiAP-poschodie"; }
+      { ethernetAddress = "68:d7:9a:1c:33:1e"; ipAddress = "192.168.1.13"; hostName = "UnifiAP-pracovna"; }
       { ethernetAddress = "00:24:a6:00:31:82"; ipAddress = "192.168.1.20"; hostName = "Digibit-R1"; }
       { ethernetAddress = "e4:e7:49:a5:1e:86"; ipAddress = "192.168.1.21"; hostName = "Tlaciaren"; }
 
