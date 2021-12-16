@@ -13,6 +13,7 @@
       ../../roles/common.nix
 
       # services
+      ../../services/blocklist/blocklist.nix
       ../../services/coredns.nix
       ./cron.nix
       ./dhcpd4.nix

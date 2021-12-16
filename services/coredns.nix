@@ -37,7 +37,7 @@
 
       .:53 {
         import defaults
-        # import blocklist
+        import blocklist
         import google
       }
     '';
