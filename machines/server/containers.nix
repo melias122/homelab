@@ -34,7 +34,7 @@
 
       unifi = {
         # https://hub.docker.com/r/linuxserver/unifi-controller/tags
-        image = "ghcr.io/linuxserver/unifi-controller:version-6.5.53";
+        image = "ghcr.io/linuxserver/unifi-controller:version-6.5.55";
         environment = {
           PUID = "1000";
           PGID = "100";
