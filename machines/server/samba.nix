@@ -46,7 +46,8 @@
         strict locking = no
         aio read size = 0
         aio write size = 0
-        vfs objects = catia fruit streams_xattr
+        vfs objects = acl_xattr catia fruit streams_xattr
+        inherit permissions = yes
 
         # Security
         client ipc max protocol = SMB3
@@ -61,6 +62,8 @@
         fruit:time machine = yes
         fruit:veto_appledouble = no
         fruit:wipe_intentionally_left_blank_rfork = yes
+        fruit:posix_rename = yes
+        fruit:metadata = stream
       '';
 
     shares = {
@@ -68,6 +71,7 @@
         path = "/pool/samba/timemachine";
         browseable = "no";
         "read only" = "no";
+        "inherit acls" = "yes";
 
         # Authenticate ?
         # "valid users" = "melias122";
