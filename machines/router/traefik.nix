@@ -31,14 +31,23 @@ in {
       http = {
         routers = {
           web = {
-            rule = "Host(`elias.sx`)";
+            rule = "Host(`elias.sx`) || Host(`www.elias.sx`)";
+            middlewares = ["redirect-www"];
             service = "web";
             tls.certResolver = "letsencrypt";
           };
         };
 
+        middlewares = {
+          redirect-www.redirectregex = {
+            permanent = "true";
+            regex="^https?://www.elias.sx";
+            replacement="https://elias.sx";
+          };
+        };
+
         services = {
-          web.loadBalancer.servers = [{ url = "http://server:54380"; }];
+          web.loadBalancer.servers = [{ url = "http://server.elias.sx:54380"; }];
         };
       };
     };
