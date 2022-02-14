@@ -50,6 +50,7 @@ in {
     tcpdump
     unzip
     usbutils
+    zip
     vim
     wget
   ];
