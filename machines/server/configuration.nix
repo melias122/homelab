@@ -15,6 +15,7 @@
       ./apcupsd.nix
       ./avahi.nix
       ./containers.nix
+      ./nextcloud.nix
       ./restic.nix
       ./samba.nix
       ./unifi.nix
