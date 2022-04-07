@@ -15,11 +15,11 @@
       # services
       ../../services/blocklist/blocklist.nix
       ../../services/coredns.nix
+      ./caddy.nix
       ./cron.nix
       ./dhcpd4.nix
       ./nftables.nix
       ./pppd.nix
-      ./traefik.nix
     ];
 
   # Use the GRUB 2 boot loader.
