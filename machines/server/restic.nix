@@ -9,9 +9,22 @@
         "/pool"
       ];
     };
-    # remote = {
-    # repository = "b2:restic-homelab-backup:/pve-homelab-backup";
-    # passwordFile = "/etc/nixos/secrets/restic-password";
-    # };
+    b2 = {
+      repository = "b2:restic-homelab-backup:/pve-homelab-backup";
+      passwordFile = "/etc/nixos/secrets/restic-password";
+      environmentFile = "/etc/nixos/secrets/restic-env";
+      timerConfig = {
+        OnCalendar = "monthly";
+      };
+      paths = [ "/pool" ];
+      extraBackupArgs = [
+        "-e pool/containers"
+        "-e pool/nextcloud"
+
+        "-e public/Movies"
+        "-e public/Downloads"
+        "-e public/timemachine"
+      ];
+    };
   };
 }
