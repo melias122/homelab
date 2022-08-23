@@ -6,7 +6,7 @@
     containers = {
       oscam = {
         # https://hub.docker.com/r/linuxserver/oscam/tags
-        image = "ghcr.io/linuxserver/oscam:version-11704";
+        image = "ghcr.io/linuxserver/oscam:version-11711";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -21,7 +21,7 @@
 
       tvheadend = {
         # https://hub.docker.com/r/linuxserver/tvheadend/tags
-        image = "ghcr.io/linuxserver/tvheadend:version-e2ae8f4e";
+        image = "ghcr.io/linuxserver/tvheadend:version-1c65e8b0";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -34,7 +34,7 @@
 
       unifi = {
         # https://hub.docker.com/r/linuxserver/unifi-controller/tags
-        image = "ghcr.io/linuxserver/unifi-controller:version-7.0.25";
+        image = "ghcr.io/linuxserver/unifi-controller:7.2.92";
         environment = {
           PUID = "1000";
           PGID = "100";
