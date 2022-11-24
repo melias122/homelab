@@ -4,7 +4,7 @@
   services.caddy = {
     enable = true;
     email = "melias122@gmail.com";
-    config = ''
+    extraConfig = ''
       elias.sx  {
         reverse_proxy http://server.elias.sx:54380
       }
