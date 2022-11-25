@@ -8,6 +8,9 @@
   networking.nftables = {
     enable = true;
     ruleset = ''
+      #
+      # inet tables see both IPv4 and IPv6 traffic/packets, simplifying dual stack support
+      #
       table inet filter {
         # Enable flow offloading for better throughput
         # flowtable f {
@@ -15,12 +18,15 @@
         #  devices = { ppp0, eno1 };
         # }
 
+        # output sees packets that originated from processes in the local machine
         chain output {
           type filter hook output priority filter
           policy accept
           counter accept
         }
 
+        # input sees incoming packets that are addressed to
+        # and have now been routed to the local system and processes running there
         chain input {
           type filter hook input priority filter
           policy drop
@@ -64,6 +70,7 @@
           } counter accept comment "router WAN TCP"
         }
 
+        # forward sees incoming packets that are not addressed to the local system
         chain forward {
           type filter hook forward priority filter
           policy drop
@@ -71,7 +78,7 @@
           # Enable flow offloading for better throughput
           # ip protocol { tcp, udp } flow offload @f
 
-          # Because of PPPoE
+          # Mangling TCP options because of PPPoE
           tcp flags syn tcp option maxseg size set rt mtu
 
           # Allow trusted network WAN access
@@ -90,6 +97,7 @@
         }
       }
 
+      # IPv4 NAT
       table ip nat {
         chain prerouting {
           type nat hook prerouting priority dstnat; policy accept;
