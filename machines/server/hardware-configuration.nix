@@ -18,51 +18,6 @@
       fsType = "ext4";
     };
 
-  fileSystems."/backup" =
-    { device = "backup";
-      fsType = "zfs";
-    };
-
-  fileSystems."/backup/restic" =
-    { device = "backup/restic";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool" =
-    { device = "pool";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/restic" =
-    { device = "pool/restic";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/samba" =
-    { device = "pool/samba";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/samba/melias122" =
-    { device = "pool/samba/melias122";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/samba/public" =
-    { device = "pool/samba/public";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/samba/timemachine" =
-    { device = "pool/samba/timemachine";
-      fsType = "zfs";
-    };
-
-  fileSystems."/pool/containers" =
-    { device = "pool/containers";
-      fsType = "zfs";
-    };
-
   swapDevices =
     [ { device = "/dev/disk/by-uuid/89743755-9000-44b6-93b9-1e64e64dd99b"; }
     ];

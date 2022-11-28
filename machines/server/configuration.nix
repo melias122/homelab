@@ -31,6 +31,12 @@
     # Enable ZFS.
     supportedFilesystems = [ "zfs" ];
 
+    zfs.extraPools = [
+      "backup"
+      "pool"
+      "nvme"
+    ];
+
     # Tune ZFS ARC size
     kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16GB, was 8383029248 (8GB)
   };
