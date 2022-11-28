@@ -32,18 +32,6 @@
         extraOptions = [ "--network=host" ];
       };
 
-      unifi = {
-        # https://hub.docker.com/r/linuxserver/unifi-controller/tags
-        image = "ghcr.io/linuxserver/unifi-controller:7.2.92";
-        environment = {
-          PUID = "1000";
-          PGID = "100";
-          TZ = "Europe/Bratislava";
-        };
-        volumes = [ "/pool/containers/unifi/config:/config" ];
-        extraOptions = [ "--network=host" ];
-      };
-
       domov = {
         image = "docker.io/melias122/domov:2b42ecc";
         ports = [ "54380:8080"];

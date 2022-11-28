@@ -7,6 +7,7 @@
       passwordFile = "/etc/nixos/secrets/restic-password";
       paths = [
         "/pool"
+        "/var/lib/unifi/data/backup"
       ];
     };
     b2 = {

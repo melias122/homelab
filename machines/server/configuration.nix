@@ -16,6 +16,7 @@
       ./containers.nix
       ./restic.nix
       ./samba.nix
+      ./unifi.nix
     ];
 
   # Use the GRUB 2 boot loader.
