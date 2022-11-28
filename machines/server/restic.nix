@@ -9,6 +9,11 @@
         "/pool"
         "/var/lib/unifi/data/backup"
       ];
+      extraBackupArgs = [
+        "-e public/Movies"
+        "-e public/Downloads"
+        "-e public/timemachine"
+      ];
     };
     b2 = {
       repository = "b2:restic-homelab-backup:/pve-homelab-backup";
