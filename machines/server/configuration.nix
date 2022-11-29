@@ -19,6 +19,8 @@
       ./unifi.nix
     ];
 
+  hardware.cpu.intel.updateMicrocode = true;
+
   # Use the GRUB 2 boot loader.
   boot = {
     loader.grub = {

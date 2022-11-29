@@ -20,6 +20,9 @@ in {
   # Scale down CPU frequency when load is low.
   powerManagement.cpuFreqGovernor = "ondemand";
 
+  # Enable firmware updates when possible.
+  hardware.enableRedistributableFirmware = true;
+
   # Set your time zone.
   time.timeZone = "Europe/Bratislava";
 
@@ -100,7 +103,12 @@ in {
   system.autoUpgrade.enable = true;
 
   # Don’t shutdown when power button is short-pressed
-  services.logind.extraConfig = ''
-    HandlePowerKey=ignore
-  '';
+  services = {
+    logind.extraConfig = ''
+      HandlePowerKey=ignore
+    '';
+
+    fstrim.enable = true;
+    fwupd.enable = true;
+  };
 }
