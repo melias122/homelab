@@ -82,8 +82,16 @@
     zfs
   ];
 
-  # ZFS auto scrub
-  services.zfs.autoScrub.enable = true;
+  # ZFS
+  services.zfs = {
+    autoScrub.enable = true;
+
+    zed.settings = {
+      ZED_EMAIL_ADDR = [ "root" ];
+      ZED_EMAIL_PROG = "${pkgs.mailutils}/bin/mail";
+      ZED_EMAIL_OPTS = "-s '@SUBJECT@' @ADDRESS@";
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
