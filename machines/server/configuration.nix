@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
 
       ../../roles/common.nix
+      ../../services/postfix.nix
 
       ./apcupsd.nix
       ./avahi.nix

@@ -11,6 +11,7 @@
 
       # roles
       ../../roles/common.nix
+      ../../services/postfix.nix
 
       # services
       ./blocky.nix
