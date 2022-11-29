@@ -43,6 +43,7 @@ in {
     jq
     lm_sensors
     lshw
+    mailutils
     nmap
     nmon
     pciutils
