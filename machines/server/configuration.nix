@@ -87,9 +87,12 @@
     autoScrub.enable = true;
 
     zed.settings = {
-      ZED_EMAIL_ADDR = [ "root" ];
+      ZED_EMAIL_ADDR = [ "martin@elias.sx" ];
       ZED_EMAIL_PROG = "${pkgs.mailutils}/bin/mail";
       ZED_EMAIL_OPTS = "-s '@SUBJECT@' @ADDRESS@";
+
+      ZED_NOTIFY_INTERVAL_SECS = 3600;
+      ZED_NOTIFY_VERBOSE = true;
     };
   };
 
