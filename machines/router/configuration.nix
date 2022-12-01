@@ -22,6 +22,9 @@
       ./pppd.nix
     ];
 
+  # Use stable channel for router.
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-22.11-small";
+
   hardware.cpu.intel.updateMicrocode = true;
 
   # Use the GRUB 2 boot loader.
