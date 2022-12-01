@@ -109,6 +109,5 @@ in {
     '';
 
     fstrim.enable = true;
-    fwupd.enable = true;
   };
 }

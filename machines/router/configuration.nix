@@ -88,7 +88,6 @@
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
-    vultr-cli
   ];
 
   # This value determines the NixOS release from which the default
