@@ -40,6 +40,7 @@ in {
     curl
     ethtool
     git
+    go
     htop
     iperf3
     ipmitool
