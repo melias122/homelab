@@ -13,8 +13,7 @@
       ../../roles/common.nix
 
       # services
-      ../../services/blocklist/blocklist.nix
-      ../../services/coredns.nix
+      ./blocky.nix
       ./caddy.nix
       ./cron.nix
       ./dhcpd4.nix
