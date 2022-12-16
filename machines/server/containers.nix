@@ -6,7 +6,7 @@
     containers = {
       oscam = {
         # https://hub.docker.com/r/linuxserver/oscam/tags
-        image = "ghcr.io/linuxserver/oscam:version-11711";
+        image = "ghcr.io/linuxserver/oscam:version-11716";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -14,14 +14,14 @@
         };
         volumes = [ "/pool/containers:/config" ];
         ports = [
-          "8888:8888"
+          "100.98.141.25:8888:8888"
           "127.0.0.1:9000:9000"
         ];
       };
 
       tvheadend = {
         # https://hub.docker.com/r/linuxserver/tvheadend/tags
-        image = "ghcr.io/linuxserver/tvheadend:version-1c65e8b0";
+        image = "ghcr.io/linuxserver/tvheadend:version-abcb0ea6";
         environment = {
           PUID = "1000";
           PGID = "100";
