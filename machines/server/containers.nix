@@ -34,7 +34,7 @@
 
       domov = {
         image = "docker.io/melias122/domov:2b42ecc";
-        ports = [ "54380:8080"];
+        ports = [ "54380:8080" ];
       };
     };
   };

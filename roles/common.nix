@@ -3,7 +3,7 @@
 { config, pkgs, ... }:
 
 let
-  secrets = import ../secrets.nix;
+  x = import ../x/config.nix;
 in {
   imports =
     [
@@ -81,7 +81,7 @@ in {
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4E9fCQDVnvqYRINH0XcCZbH/VS65RfAQfOA+eDYlHJ"
       ];
 
-      hashedPassword = secrets.users.melias122.passwordHash;
+      hashedPassword = x.users.melias122.passwordHash;
     };
   };
 

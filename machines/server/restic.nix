@@ -4,7 +4,7 @@
   services.restic.backups = {
     local = {
       repository = "/backup/restic";
-      passwordFile = "/etc/nixos/secrets/restic-password";
+      passwordFile = "/etc/nixos/x/restic-password";
       paths = [
         "/pool"
         "/var/lib/unifi/data/backup"
@@ -17,8 +17,8 @@
     };
     b2 = {
       repository = "b2:restic-homelab-backup:/pve-homelab-backup";
-      passwordFile = "/etc/nixos/secrets/restic-password";
-      environmentFile = "/etc/nixos/secrets/restic-env";
+      passwordFile = "/etc/nixos/x/restic-password";
+      environmentFile = "/etc/nixos/x/restic-b2";
       timerConfig = {
         OnCalendar = "monthly";
       };

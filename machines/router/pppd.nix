@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  secrets = import ../../secrets.nix;
+  x = import ../../x/config.nix;
 in {
   environment.systemPackages = with pkgs; [
     ppp
@@ -17,8 +17,8 @@ in {
         config = ''
           plugin rp-pppoe.so eno2
 
-          name ${secrets.tcom.username}
-          password ${secrets.tcom.password}
+          name ${x.tcom.username}
+          password ${x.tcom.password}
 
           persist
           maxfail 0

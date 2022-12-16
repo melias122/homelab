@@ -1,13 +1,13 @@
 { config, pkgs, ... }:
 
 let
-  secrets = import ../../secrets.nix;
+  x = import ../../x/config.nix;
 
 in {
   services.cron = {
     enable = true;
     systemCronJobs = [
-      "*/1 * * * *      root    cd /root/dnsctl && go run main.go -token=${secrets.digitalocean-token} -no6 -hostname=${secrets.domain}"
+      "*/1 * * * *      root    cd /root/dnsctl && go run main.go -token=${x.digitalocean-token} -no6 -hostname=elias.sx"
     ];
   };
 }
