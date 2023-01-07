@@ -6,7 +6,7 @@
     containers = {
       oscam = {
         # https://hub.docker.com/r/linuxserver/oscam/tags
-        image = "ghcr.io/linuxserver/oscam:version-11716";
+        image = "ghcr.io/linuxserver/oscam:version-11718";
         environment = {
           PUID = "1000";
           PGID = "100";
