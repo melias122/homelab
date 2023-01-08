@@ -60,7 +60,14 @@
     hostName = "router";
 
     # use CoreDNS
-    nameservers = [ "127.0.0.1" ];
+    nameservers = [
+      "100.100.100.100"
+      "127.0.0.1"
+    ];
+
+    search = [
+      "robin-shark.ts.net"
+    ];
 
     useDHCP = false;
     nat.enable = false;

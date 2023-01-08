@@ -71,6 +71,15 @@
       enp2s0.useDHCP = true;
     };
 
+    nameservers = [
+      "100.100.100.100"
+      "192.168.1.1"
+    ];
+
+    search = [
+      "robin-shark.ts.net"
+    ];
+
     # Open ports in the firewall.
     # firewall.allowedTCPPorts = [ ... ];
     # firewall.allowedUDPPorts = [ ... ];
