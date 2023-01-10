@@ -20,9 +20,6 @@
       ./unifi.nix
     ];
 
-  # Rolling release NixOS for server.
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable-small";
-
   hardware.cpu.intel.updateMicrocode = true;
 
   # Use the GRUB 2 boot loader.

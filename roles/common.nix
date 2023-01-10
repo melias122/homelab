@@ -105,6 +105,7 @@ in {
 
   # Automatic upgrades.
   system.autoUpgrade.enable = true;
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-22.11-small";
 
   # Don’t shutdown when power button is short-pressed
   services = {
