@@ -94,7 +94,10 @@ in {
 
     extraOptions = ''
       min-free = ${toString (500 * 1024 * 1024)}
+      experimental-features = nix-command flakes
     '';
+
+    package = pkgs.nixFlakes;
   };
 
   # Enable unfree packages
