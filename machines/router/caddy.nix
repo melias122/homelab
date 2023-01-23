@@ -16,7 +16,7 @@
       recepty.elias.sx {
         @private_ranges remote_ip 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8
 
-        route @private_ranges {
+        handle @private_ranges {
           reverse_proxy http://server.elias.sx:54381
         }
         handle {
@@ -31,7 +31,7 @@
       unifi.elias.sx {
         @private_ranges remote_ip 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8
 
-        route @private_ranges {
+        handle @private_ranges {
           reverse_proxy https://server.elias.sx:8443 {
             transport http {
               tls_insecure_skip_verify
