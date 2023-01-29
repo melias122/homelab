@@ -7,7 +7,7 @@ in {
   services.cron = {
     enable = true;
     systemCronJobs = [
-      "*/1 * * * *      root    cd /root/dnsctl && go run main.go -token=${x.digitalocean-token} -no6 -hostname=elias.sx"
+      "*/5 * * * *      root    cd /root/dnsctl && go run main.go -token=${x.digitalocean-token} -no6 -hostname=elias.sx"
     ];
   };
 }
