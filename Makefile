@@ -1,3 +1,9 @@
+flake-switch:
+	sudo nixos-rebuild switch --flake .
+
+flake-boot:
+	sudo nixos-rebuild boot --flake .
+
 deploy-server:
 	rsync -avh --exclude .git . root@server:/etc/nixos --delete
 	ssh root@server -C "ln -s /etc/nixos/machines/server/configuration.nix /etc/nixos && \
