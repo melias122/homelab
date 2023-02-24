@@ -26,6 +26,8 @@
     nodePackages.prettier
     nodePackages.typescript-language-server
 
+    cargo
+    rustc
   ];
 
   home.file = {
