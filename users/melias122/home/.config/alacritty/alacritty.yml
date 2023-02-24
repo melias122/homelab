@@ -1,0 +1,21 @@
+shell:
+  program: tmux
+  args:
+    - new-session
+    - -A
+    - -D
+    - -s
+    - main
+
+font:
+  normal:
+    family: IBM Plex Mono
+    style: Regular
+
+  bold:
+    family: IBM Plex Mono
+    style: Bold
+
+  italic:
+    family: IBM Plex Mono
+    style: Italic

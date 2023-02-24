@@ -25,29 +25,8 @@
     nodePackages.eslint
     nodePackages.prettier
     nodePackages.typescript-language-server
+
   ];
-
-  programs.bash = {
-    enable = true;
-  };
-
-  programs.git = {
-    enable = true;
-    userName  = "Martin Eliáš";
-    userEmail = "martin@elias.sx";
-
-    includes = [
-      {
-        contents = {
-          remote.pushdefault = "origin";
-        };
-      }
-    ];
-  };
-
-  programs.ssh = {
-    enable = true;
-  };
 
   home.file = {
     ".editorconfig".source = ./home/.editorconfig;
@@ -57,6 +36,36 @@
     "." = {
       source = ./home/.config;
       recursive = true;
+    };
+  };
+
+  programs = {
+    # Fast terminal emulator
+    alacritty.enable = true;
+
+    bash.enable = true;
+
+    git = {
+      enable = true;
+      userName  = "Martin Eliáš";
+      userEmail = "martin@elias.sx";
+
+      includes = [
+        {
+          contents = {
+            remote.pushdefault = "origin";
+          };
+        }
+      ];
+    };
+
+    ssh.enable = true;
+
+    # Terminal multiplexer
+    tmux = {
+      enable = true;
+      keyMode = "emacs";
+      mouse = true;
     };
   };
 
