@@ -16,6 +16,4 @@
   home.sessionPath = [
     "$HOME/go/bin"
   ];
-
-  xdg.configFile."go/env".source = ./home/.config/go/env;
 }

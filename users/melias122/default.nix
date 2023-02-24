@@ -53,5 +53,12 @@
     ".editorconfig".source = ./home/.editorconfig;
   };
 
+  xdg.configFile = {
+    "." = {
+      source = ./home/.config;
+      recursive = true;
+    };
+  };
+
   home.stateVersion = "22.11";
 }
