@@ -6,7 +6,7 @@
     email = "melias122@gmail.com";
     extraConfig = ''
       elias.sx {
-          reverse_proxy http://server.elias.sx:54380
+        reverse_proxy http://server.elias.sx:54380
       }
 
       www.elias.sx {
