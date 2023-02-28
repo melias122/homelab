@@ -12,7 +12,7 @@
       extraBackupArgs = [
         "-e public/Movies"
         "-e public/Downloads"
-        "-e public/timemachine"
+        "-e samba/timemachine"
       ];
     };
     b2 = {
@@ -29,7 +29,7 @@
 
         "-e public/Movies"
         "-e public/Downloads"
-        "-e public/timemachine"
+        "-e samba/timemachine"
       ];
     };
   };
