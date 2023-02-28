@@ -67,7 +67,7 @@ in {
 
     users.root = {
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4E9fCQDVnvqYRINH0XcCZbH/VS65RfAQfOA+eDYlHJ"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
       ];
     };
 
@@ -78,7 +78,7 @@ in {
       extraGroups = [ "wheel" "networkmanager" ];
 
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE4E9fCQDVnvqYRINH0XcCZbH/VS65RfAQfOA+eDYlHJ"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
       ];
 
       hashedPassword = x.users.melias122.passwordHash;
