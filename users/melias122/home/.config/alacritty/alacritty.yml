@@ -1,3 +1,26 @@
+window:
+  padding:
+    x: 4
+    y: 4
+
+# Colors (Doom One)
+colors:
+  # Default colors
+  primary:
+    background: '0x282c34'
+    foreground: '0xbbc2cf'
+
+  # Normal colors
+  normal:
+    black:   '0x282c34'
+    red:     '0xff6c6b'
+    green:   '0x98be65'
+    yellow:  '0xecbe7b'
+    blue:    '0x51afef'
+    magenta: '0xc678dd'
+    cyan:    '0x46d9ff'
+    white:   '0xbbc2cf'
+
 shell:
   program: tmux
   args:
@@ -19,3 +42,10 @@ font:
   italic:
     family: IBM Plex Mono
     style: Italic
+
+mouse:
+  hide_when_typing: false
+
+key_bindings:
+  - { key: K,    mods: Alt,    action: ClearLogNotice }
+  - { key: K,    mods: Alt,    chars:  "\x0c"         }
