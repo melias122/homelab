@@ -22,6 +22,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 10;
+  };
+
 
   networking.hostName = "t14";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
