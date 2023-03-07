@@ -19,13 +19,26 @@
     ripgrep
     thunderbird
     vscode
-    zulu # Java
 
+    #
+    # Langs.
+    # Cleanup later if needed move to separate config.
+    #
+
+    # Java :-(
+    zulu
+
+    # Web magic
     nodejs-14_x
     nodePackages.eslint
     nodePackages.prettier
     nodePackages.typescript-language-server
 
+    # Snake
+    python3Minimal
+    python3Packages.python-lsp-server
+
+    # Nextgen C++
     cargo
     rustc
   ];
