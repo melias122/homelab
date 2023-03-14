@@ -118,6 +118,9 @@
   # Or disable the firewall altogether.
   networking.firewall.enable = true;
 
+  # Firmware updater
+  services.fwupd.enable = true;
+
   # Use kanata to remap caps -> ctrl
   services.kanata.enable = true;
   services.kanata.keyboards.t14 = {
