@@ -16,6 +16,7 @@
     google-chrome
     grpcurl
     jq
+    postman
     ripgrep
     thunderbird
     vscode
