@@ -6,6 +6,7 @@
   ];
 
   home.packages = with pkgs; [
+    appimage-run
     awscli
     beekeeper-studio # nice SQL browser
     curl
