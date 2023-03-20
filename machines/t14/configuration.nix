@@ -59,17 +59,51 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
   services.xserver = {
+    enable = true;
+
+    # Configure keymap in X11
     layout = "us";
     xkbVariant = "";
+
+    desktopManager = {
+      xterm.enable = false;
+    };
+    displayManager = {
+      defaultSession = "none+i3";
+      lightdm = {
+        greeters.enso = {
+          enable = true;
+          blur = true;
+        };
+      };
+    };
+    windowManager = {
+      i3 = {
+        enable = true;
+        extraPackages = with pkgs; [
+          arandr
+          brightnessctl
+          dex
+          dmenu    # application launcher most people use
+          i3status # gives you the default i3 status bar
+          i3lock   # default i3 screen locker
+          i3blocks # if you are planning on using i3blocks over i3status
+          networkmanagerapplet
+          pavucontrol # for volume control
+          volumeicon
+          xss-lock
+        ];
+      };
+    };
+
+    # desktopManager.lxqt.enable = true;
   };
+
+  # services.autorandr = {
+  #   enable = true;
+  # };
+  # services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c"'';
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
