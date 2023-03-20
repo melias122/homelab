@@ -11,6 +11,7 @@
 
       ../../services/docker-rootless.nix
       ../../services/tailscale.nix
+      ../../services/touchpad.nix
     ];
 
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
@@ -127,8 +128,6 @@
     pulseaudioFull
   ];
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.melias122 = {
