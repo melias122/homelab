@@ -21,14 +21,17 @@ colors:
     cyan:    '0x46d9ff'
     white:   '0xbbc2cf'
 
-shell:
-  program: tmux
-  args:
-    - new-session
-    - -A
-    - -D
-    - -s
-    - main
+# shell:
+  # program: bash
+# args:
+#   - new-session
+#   - -A
+#   - -D
+#   - -s
+#   - main
+
+# Offer IPC using `alacritty msg` (unix only)
+ipc_socket: true
 
 font:
   normal:
