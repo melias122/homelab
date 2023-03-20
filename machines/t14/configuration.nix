@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
+      ../../services/bluetooth.nix
       ../../services/docker-rootless.nix
       ../../services/tailscale.nix
       ../../services/touchpad.nix
@@ -127,7 +128,6 @@
     # Needed for some applications, e.g. "zoom". Pipewire can also be configured via pulseaudio commands.
     pulseaudioFull
   ];
-
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.melias122 = {
