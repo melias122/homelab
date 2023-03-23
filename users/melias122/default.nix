@@ -71,6 +71,7 @@
         {
           contents = {
             remote.pushdefault = "origin";
+            core.whitespace = "tabsize=4";
           };
         }
       ];
