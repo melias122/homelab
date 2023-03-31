@@ -43,6 +43,7 @@
     # Nextgen C++
     cargo
     rustc
+    rust-analyzer
   ];
 
   home.file = {
