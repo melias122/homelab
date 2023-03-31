@@ -102,11 +102,6 @@
     # desktopManager.lxqt.enable = true;
   };
 
-  # services.autorandr = {
-  #   enable = true;
-  # };
-  # services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c"'';
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
