@@ -61,7 +61,13 @@
     # Fast terminal emulator
     alacritty.enable = true;
 
-    bash.enable = true;
+    bash = {
+      enable = true;
+      historyControl = [
+        "erasedups"
+        "ignoredups"
+      ];
+    };
 
     git = {
       enable = true;
