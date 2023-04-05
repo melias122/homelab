@@ -44,6 +44,10 @@
     cargo
     rustc
     rust-analyzer
+
+    # Nextgen C
+    zig
+    zls
   ];
 
   home.file = {
