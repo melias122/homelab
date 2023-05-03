@@ -11,6 +11,7 @@
 
       ../../services/bluetooth.nix
       ../../services/docker-rootless.nix
+      ../../services/printer.nix
       ../../services/tailscale.nix
       ../../services/touchpad.nix
     ];
@@ -32,9 +33,6 @@
   boot.extraModprobeConfig = ''
     options psmouse synaptics_intertouch=0
   '';
-
-  # Xanmod kernel
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_xanmod;
 
   networking.hostName = "t14";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -101,9 +99,6 @@
 
     # desktopManager.lxqt.enable = true;
   };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = false;

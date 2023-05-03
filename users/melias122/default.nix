@@ -17,10 +17,13 @@
     google-chrome
     grpcurl
     jq
+    pcmanfm
     postman
     ripgrep
     thunderbird
     vscode
+    xarchiver
+    zip unzip
 
     #
     # Langs.
