@@ -12,6 +12,7 @@
       { ethernetAddress = "68:d7:9a:1c:33:1e"; ipAddress = "192.168.1.13"; hostName = "UnifiAP-pracovna"; }
       { ethernetAddress = "00:24:a6:00:31:82"; ipAddress = "192.168.1.20"; hostName = "Digibit-R1"; }
       { ethernetAddress = "e4:e7:49:a5:1e:86"; ipAddress = "192.168.1.21"; hostName = "Tlaciaren"; }
+      { ethernetAddress = "48:5f:99:2c:00:25"; ipAddress = "192.168.1.22"; hostName = "Tlaciaren-wifi"; }
 
       { ethernetAddress = "0c:c4:7a:44:52:ea"; ipAddress = "192.168.1.35"; hostName = "Server-IPMI"; }
       # { ethernetAddress = "0c:c4:7a:44:53:14"; ipAddress = "192.168.1.45"; hostName = "Server-1GbE-LAN1"; }
