@@ -15,7 +15,7 @@ in {
         autostart = true;
         enable = true;
         config = ''
-          plugin rp-pppoe.so eno2
+          plugin pppoe.so eno2
 
           name ${x.tcom.username}
           password ${x.tcom.password}
