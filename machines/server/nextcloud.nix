@@ -3,7 +3,7 @@
 {
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud25;
+    package = pkgs.nextcloud26;
     hostName = "nextcloud.elias.sx";
     home = "/pool/nextcloud";
     https = true;
