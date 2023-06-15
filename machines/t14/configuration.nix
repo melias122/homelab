@@ -67,6 +67,7 @@
     xkbVariant = "";
 
     desktopManager = {
+      gnome.enable = true;
       xterm.enable = false;
     };
     displayManager = {

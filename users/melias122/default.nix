@@ -17,10 +17,11 @@
     google-chrome
     grpcurl
     jq
-    pcmanfm
+    libreoffice
     postman
     ripgrep
     thunderbird
+    vlc
     vscode
     xarchiver
     zip unzip
