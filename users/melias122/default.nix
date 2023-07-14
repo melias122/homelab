@@ -35,9 +35,7 @@
     zulu
 
     # Web magic
-    nodejs-14_x
-    nodePackages.eslint
-    nodePackages.prettier
+    nodejs
     nodePackages.typescript-language-server
 
     # Snake
