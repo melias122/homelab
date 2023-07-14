@@ -11,7 +11,7 @@
     beekeeper-studio # nice SQL browser
     curl
     editorconfig-core-c
-    emacs
+    emacs29
     gcc
     gnumake
     google-chrome
