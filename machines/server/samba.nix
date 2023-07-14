@@ -16,6 +16,10 @@
           <type>_smb._tcp</type>
           <port>445</port>
          </service>
+         <service>
+          <type>_device-info._tcp</type>
+          <txt-record>model=TimeCapsule8,119</txt-record>
+        </service>
         </service-group>
         '';
   };
@@ -69,7 +73,7 @@
     shares = {
       "Time Capsule" = {
         path = "/pool/samba/timemachine";
-        browseable = "no";
+        browseable = "yes";
         "read only" = "no";
         "inherit acls" = "yes";
 
