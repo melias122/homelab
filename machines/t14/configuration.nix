@@ -30,11 +30,6 @@
     "vm.swappiness" = 10;
   };
 
-  # Workaround for touchpad not working sometimes after suspend.
-  boot.extraModprobeConfig = ''
-    options psmouse synaptics_intertouch=0
-  '';
-
   networking.hostName = "t14";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
