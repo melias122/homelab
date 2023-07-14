@@ -17,6 +17,7 @@
     google-chrome
     grpcurl
     jq
+    kodi
     libreoffice
     postman
     ripgrep
