@@ -9,11 +9,9 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
 
-      ../../services/bluetooth.nix
       ../../services/docker-rootless.nix
       ../../services/printer.nix
       ../../services/tailscale.nix
-      ../../services/touchpad.nix
     ];
 
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
@@ -33,7 +31,7 @@
   # Xanmod kernel
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_xanmod;
 
-  networking.hostName = "t14";
+  networking.hostName = "box";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
@@ -69,35 +67,7 @@
       gnome.enable = true;
       xterm.enable = false;
     };
-    displayManager = {
-      defaultSession = "none+i3";
-      lightdm = {
-        greeters.enso = {
-          enable = true;
-          blur = true;
-        };
-      };
-    };
-    windowManager = {
-      i3 = {
-        enable = true;
-        extraPackages = with pkgs; [
-          arandr
-          brightnessctl
-          dex
-          dmenu    # application launcher most people use
-          i3status # gives you the default i3 status bar
-          i3lock   # default i3 screen locker
-          i3blocks # if you are planning on using i3blocks over i3status
-          networkmanagerapplet
-          pavucontrol # for volume control
-          volumeicon
-          xss-lock
-        ];
-      };
-    };
-
-    # desktopManager.lxqt.enable = true;
+    displayManager.gdm.enable = true;
   };
 
   # Enable sound with pipewire.
@@ -146,16 +116,14 @@
 
   # Use kanata to remap caps -> ctrl
   services.kanata.enable = true;
-  services.kanata.keyboards.t14 = {
+  services.kanata.keyboards.box = {
     config = ''
     (defsrc
       caps)
     (deflayer default
       lctl)
     '';
-    devices = [
-      "/dev/input/by-path/platform-i8042-serio-0-event-kbd" # T14 keyboard
-    ];
+    devices = [];
   };
 
   system.stateVersion = "22.11"; # Did you read the comment? YES!

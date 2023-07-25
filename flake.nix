@@ -25,6 +25,18 @@
           }
         ];
       };
+      box = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./machines/box
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.melias122 = import ./users/melias122;
+          }
+        ];
+      };
     };
   };
 }
