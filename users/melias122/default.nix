@@ -100,6 +100,11 @@
     };
   };
 
+  # Should be same as 'export NIXPKGS_ALLOW_UNFREE=1'
+  nixpkgs.config.allowUnfreePredicate = _: true;
 
+  programs.home-manager.enable = true;
+  home.username = "melias122";
+  home.homeDirectory = "/home/melias122";
   home.stateVersion = "22.11";
 }

@@ -10,7 +10,21 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, nixos-hardware, ... }: {
+  outputs = inputs@{ nixpkgs, home-manager, nixos-hardware, ... }: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in {
+    # home-manager only config
+    homeConfigurations = {
+      melias122 = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./users/melias122
+        ];
+      };
+    };
+
+    # pure NixOS config
     nixosConfigurations = {
       t14 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
