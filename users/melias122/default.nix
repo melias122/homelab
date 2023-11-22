@@ -100,33 +100,6 @@
     };
   };
 
-  services.grobi = {
-    enable = true;
-    rules = [
-      {
-        name = "T14";
-        outputs_disconnected = [ "DP-?" ];
-        configure_single = "eDP-1";
-        primary = true;
-        atomic = true;
-        # execute_after = [
-        # "${pkgs.xorg.xrandr}/bin/xrandr --dpi 120"
-        # "${pkgs.xmonad-with-packages}/bin/xmonad --restart";
-        # ];
-      }
-      {
-        name = "Dock";
-        outputs_connected = [ "DP-5" ];
-        configure_row = ["DP-5" "eDP-1"];
-        primary = "DP-5";
-        # atomic = true;
-        # execute_after = [
-        # "${pkgs.xorg.xrandr}/bin/xrandr --dpi 96"
-        # "${pkgs.xmonad-with-packages}/bin/xmonad --restart";
-        # ];
-      }
-    ];
-  };
 
   home.stateVersion = "22.11";
 }
