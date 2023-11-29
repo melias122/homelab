@@ -14,7 +14,7 @@
     containers = {
       oscam = {
         # https://hub.docker.com/r/linuxserver/oscam/tags
-        image = "ghcr.io/linuxserver/oscam:version-11718";
+        image = "ghcr.io/linuxserver/oscam:version-11726";
         environment = {
           PUID = "1000";
           PGID = "100";
@@ -29,7 +29,7 @@
 
       tvheadend = {
         # https://hub.docker.com/r/linuxserver/tvheadend/tags
-        image = "ghcr.io/linuxserver/tvheadend:version-abcb0ea6";
+        image = "ghcr.io/linuxserver/tvheadend:version-bc30a74d";
         environment = {
           PUID = "1000";
           PGID = "100";
