@@ -62,8 +62,8 @@
     enable = true;
 
     # Configure keymap in X11
-    layout = "us";
-    xkbVariant = "";
+    xkb.layout = "us";
+    xkb.variant = "";
 
     desktopManager = {
       gnome.enable = true;
