@@ -9,6 +9,7 @@
     appimage-run
     awscli
     beekeeper-studio # nice SQL browser
+    bruno # postman
     curl
     editorconfig-core-c
     emacs29
@@ -19,7 +20,6 @@
     jq
     kodi
     libreoffice
-    postman
     ripgrep
     thunderbird
     vlc
@@ -37,6 +37,7 @@
 
     # Web magic
     nodejs
+    yarn
     nodePackages.typescript-language-server
 
     # Snake
