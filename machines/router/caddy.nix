@@ -29,7 +29,7 @@
       }
 
       unifi.elias.sx {
-        @private_ranges remote_ip 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8 127.0.0.1/8
+        @private_ranges remote_ip 100.64.0.0/10 192.168.0.0/16
 
         handle @private_ranges {
           reverse_proxy https://server.elias.sx:8443 {

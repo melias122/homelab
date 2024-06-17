@@ -16,10 +16,13 @@
     gcc
     gnumake
     google-chrome
+    graphviz
     grpcurl
     jq
+    multimarkdown
     kodi
     libreoffice
+    redisinsight
     ripgrep
     thunderbird
     vlc
@@ -87,6 +90,11 @@
           contents = {
             remote.pushdefault = "origin";
             core.whitespace = "tabsize=4";
+            url = {
+              "ssh://git@github.com" = {
+                insteadOf = "https://github.com";
+              };
+            };
           };
         }
       ];

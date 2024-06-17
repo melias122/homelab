@@ -1,5 +1,8 @@
-flake-switch:
+flake-switch: flake-update
 	sudo nixos-rebuild switch --flake .
+
+flake-update:
+	nix flake update
 
 flake-boot:
 	sudo nixos-rebuild boot --flake .
