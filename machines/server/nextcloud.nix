@@ -3,14 +3,14 @@
 {
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud26;
+    package = pkgs.nextcloud29;
     hostName = "nextcloud.elias.sx";
     home = "/pool/nextcloud";
     https = true;
     autoUpdateApps.enable = true;
     autoUpdateApps.startAt = "05:00:00";
     maxUploadSize = "16G";
-    enableBrokenCiphersForSSE = false;
+    configureRedis = true;
     config = {
       adminuser = "melias122";
       adminpassFile = "/etc/nixos/x/nextcloud-adminpass";
