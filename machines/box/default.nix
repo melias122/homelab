@@ -28,9 +28,6 @@
     "vm.swappiness" = 10;
   };
 
-  # Xanmod kernel
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_xanmod;
-
   networking.hostName = "box";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
