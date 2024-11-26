@@ -13,7 +13,7 @@
       ../../services/docker-rootless.nix
       ../../services/printer.nix
       ../../services/tailscale.nix
-      ../../services/touchpad.nix
+      # ../../services/touchpad.nix
     ];
 
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
@@ -25,7 +25,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 15;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.kernel.sysctl = {
     "vm.swappiness" = 10;
   };
@@ -66,39 +65,10 @@
       gnome.enable = true;
       xterm.enable = false;
     };
-    displayManager = {
-      defaultSession = "none+i3";
-      lightdm = {
-        greeters.enso = {
-          enable = true;
-          blur = true;
-        };
-      };
-    };
-    windowManager = {
-      i3 = {
-        enable = true;
-        extraPackages = with pkgs; [
-          arandr
-          brightnessctl
-          dex
-          dmenu    # application launcher most people use
-          i3status # gives you the default i3 status bar
-          i3lock   # default i3 screen locker
-          i3blocks # if you are planning on using i3blocks over i3status
-          networkmanagerapplet
-          pavucontrol # for volume control
-          volumeicon
-          xss-lock
-        ];
-      };
-    };
-
-    # desktopManager.lxqt.enable = true;
+    displayManager.gdm.enable = true;
   };
 
   # Enable sound with pipewire.
-  sound.enable = false;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
