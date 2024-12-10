@@ -12,7 +12,7 @@
     bruno # postman
     curl
     editorconfig-core-c
-    emacs29
+    emacs30
     gcc
     gnumake
     google-chrome
