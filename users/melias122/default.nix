@@ -7,7 +7,7 @@
 
   home.packages = with pkgs; [
     appimage-run
-    awscli
+    awscli2
     beekeeper-studio # nice SQL browser
     bruno # postman
     curl
