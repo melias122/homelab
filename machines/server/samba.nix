@@ -29,7 +29,7 @@
   services.samba = {
     enable = true;
     securityType = "user";
-    extraConfig = ''
+    settings = ''
         workgroup = WORKGROUP
         server role = standalone server
         dns proxy = no
