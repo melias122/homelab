@@ -111,6 +111,9 @@
   # Firmware updater
   services.fwupd.enable = true;
 
+  # Fingerprint reader
+  services.fprintd.enable = true;
+
   # Use kanata to remap caps -> ctrl
   services.kanata.enable = true;
   services.kanata.keyboards.t14 = {
