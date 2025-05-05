@@ -20,6 +20,7 @@
     grpcurl
     jq
     multimarkdown
+    natscli
     kodi
     libreoffice
     redisinsight
