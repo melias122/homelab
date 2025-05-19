@@ -11,6 +11,7 @@
 
       ../../services/bluetooth.nix
       ../../services/docker-rootless.nix
+      ../../services/nats.nix
       ../../services/printer.nix
       ../../services/tailscale.nix
       # ../../services/touchpad.nix
