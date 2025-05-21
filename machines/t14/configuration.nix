@@ -129,5 +129,10 @@
     ];
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "beekeeper-studio-5.1.5"
+  ];
+
+
   system.stateVersion = "22.11"; # Did you read the comment? YES!
 }
