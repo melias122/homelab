@@ -27,7 +27,7 @@
   # Most of the Samba configuration is coppied from dperson/samba container.
   # Note: when adding user do not forge to run `smbpasswd -a <USER>`.
   services.samba = {
-    enable = true;
+    enable = false;
     securityType = "user";
     settings = ''
         workgroup = WORKGROUP
