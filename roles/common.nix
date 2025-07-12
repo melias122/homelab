@@ -81,7 +81,7 @@ in {
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
       ];
 
-      hashedPassword = x.users.melias122.passwordHash;
+      hashedPassword = "$6$5OrUriMQbOhi$VpUVX6Fy3wS1adO8TLftjNFTRq9wRA7VQO6rMcm06HcyQlBnQH5pKiIQvpz2CwToVDhUiTwqFF.N888.VdZt31";
     };
   };
 
@@ -105,7 +105,7 @@ in {
 
   # Automatic upgrades.
   system.autoUpgrade.enable = true;
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-22.11-small";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.05-small";
 
   # Don’t shutdown when power button is short-pressed
   services = {
