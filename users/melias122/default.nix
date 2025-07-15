@@ -12,6 +12,7 @@
     beekeeper-studio # nice SQL browser
     bruno # postman
     curl
+    docker-compose
     editorconfig-core-c
     emacs30
     gcc
