@@ -16,3 +16,8 @@ deploy-router:
 	rsync -avh --exclude={'.git','flake*'} . root@router:/etc/nixos --delete
 	ssh root@router -C "ln -s /etc/nixos/machines/router/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
+
+deploy-router-home:
+	rsync -avh --exclude={'.git','flake*'} . root@router-home:/etc/nixos --delete
+	ssh root@router-home -C "ln -s /etc/nixos/machines/router-home/configuration.nix /etc/nixos/ && \
+nixos-rebuild boot"
