@@ -25,7 +25,7 @@
   };
 
   # Most of the Samba configuration is coppied from dperson/samba container.
-  # Note: when adding user do not forge to run `smbpasswd -a <USER>`.
+  # Note: when adding user do not forget to run `smbpasswd -a <USER>`.
   services.samba = {
     enable = false;
     securityType = "user";
