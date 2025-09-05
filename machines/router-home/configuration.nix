@@ -19,7 +19,7 @@
 #      ./cron.nix
       ./dhcpd4.nix
       ./nftables.nix
-     ./pppd.nix
+      ./pppd.nix
     ];
 
   hardware.cpu.intel.updateMicrocode = true;
@@ -55,8 +55,6 @@
     hostName = "router";
     
     useDHCP = false;
-
-    # Disable nat and firewall in favor of nftables
     nat.enable = false;
     firewall.enable = false;
 
@@ -93,7 +91,6 @@
     ];
     wants = [ "network-online.target" ];
   };
-
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
