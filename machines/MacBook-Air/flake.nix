@@ -15,26 +15,20 @@
       url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
   };
 
   # Flake outputs
   outputs =
     { self, ... }@inputs:
     let
-      # The values for `username` and `system` supplied here are used to construct the hostname
-      # for your system, of the form `${username}-${system}`. Set these values to what you'd like
-      # the output of `scutil --get LocalHostName` to be.
-
-      # Your system username
-      username = "just-me-123";
-
-      # Your system type (Apple Silicon here)
-      # Change this to `x86_64-darwin` for Intel macOS
+      username = "m";
       system = "aarch64-darwin";
     in
     {
       # nix-darwin configuration output
-      darwinConfigurations."${username}-${system}" = inputs.nix-darwin.lib.darwinSystem {
+      darwinConfigurations."MacBook-Air" = inputs.nix-darwin.lib.darwinSystem {
         inherit system;
         modules = [
           # Add the determinate nix-darwin module
@@ -43,7 +37,19 @@
           self.darwinModules.base
           self.darwinModules.nixConfig
           # Apply any other imported modules here
+          inputs.nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              # Install Homebrew under the default prefix
+              enable = true;
 
+              # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+              enableRosetta = true;
+
+              # User owning the Homebrew prefix
+              user = username;
+            };
+          }
           # In addition to adding modules in the style above, you can also
           # add modules inline like this. Delete this if unnecessary.
           (
@@ -54,7 +60,51 @@
               ...
             }:
             {
-              # Inline nix-darwin configuration
+              fonts.packages = with pkgs; [
+                fira-code
+                fira-code-symbols
+                ibm-plex
+              ];
+
+              # Needs to be set for nix-homebrew
+              system.primaryUser = username;
+              homebrew = {
+                enable = true;
+                casks = [
+                  "beekeeper-studio"
+                  "emacs-app"
+                  "google-chrome"
+                  "insomnia"
+                  "redis-insight"
+                  "tailscale-app"
+                  "the-unarchiver"
+                  "tunnelblick"
+                  "visual-studio-code"
+                ];
+
+                # Ensures only packages specified in homebrew configurations are installed
+                onActivation.cleanup = "zap";
+                onActivation.autoUpdate = true;
+                onActivation.upgrade = true;
+              };
+
+              environment.systemPackages = with pkgs; [
+                alacritty
+                delta
+                git
+                git-extras
+                gnumake
+                nodejs
+                ripgrep
+                yarn
+              ];
+
+              system.defaults = {
+                dock = {
+                  autohide = true;
+                  orientation = "left";
+                };
+              };
             }
           )
         ];
