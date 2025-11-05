@@ -20,6 +20,7 @@
     google-chrome
     graphviz
     grpcurl
+    hplip # HP printer drivers
     jq
     multimarkdown
     natscli

@@ -1,11 +1,6 @@
-flake-switch: flake-update
-	sudo nixos-rebuild switch --flake .
-
-flake-update:
-	nix flake update
-
-flake-boot:
-	sudo nixos-rebuild boot --flake .
+flake-switch-box:
+	nix flake update --flake ./machines/box
+	sudo nixos-rebuild switch --flake ./machines/box
 
 deploy-server:
 	rsync -avh --exclude={'.git','flake*'} . root@server:/etc/nixos --delete

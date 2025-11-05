@@ -68,19 +68,6 @@
     displayManager.gdm.enable = true;
   };
 
-  # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = false;
-
-    wireplumber.enable = true;
-  };
-
   environment.systemPackages = with pkgs; [
     # Needed for some applications, e.g. "zoom". Pipewire can also be configured via pulseaudio commands.
     pulseaudioFull
