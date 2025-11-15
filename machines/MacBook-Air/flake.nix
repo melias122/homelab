@@ -4,10 +4,10 @@
   # Flake inputs
   inputs = {
     # Stable Nixpkgs (use 0.1 for unstable)
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
     # Stable nix-darwin (use 0.1 for unstable)
     nix-darwin = {
-      url = "https://flakehub.com/f/nix-darwin/nix-darwin/0";
+      url = "https://flakehub.com/f/nix-darwin/nix-darwin/0.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Determinate 3.* module
@@ -60,12 +60,6 @@
               ...
             }:
             {
-              fonts.packages = with pkgs; [
-                fira-code
-                fira-code-symbols
-                ibm-plex
-              ];
-
               # Needs to be set for nix-homebrew
               system.primaryUser = username;
               homebrew = {
@@ -80,6 +74,7 @@
                   "the-unarchiver"
                   "tunnelblick"
                   "visual-studio-code"
+                  "karabiner-elements"
                 ];
 
                 # Ensures only packages specified in homebrew configurations are installed
@@ -87,17 +82,6 @@
                 onActivation.autoUpdate = true;
                 onActivation.upgrade = true;
               };
-
-              environment.systemPackages = with pkgs; [
-                alacritty
-                delta
-                git
-                git-extras
-                gnumake
-                nodejs
-                ripgrep
-                yarn
-              ];
 
               system.defaults = {
                 dock = {
@@ -154,11 +138,33 @@
                 "build-time-fetch-tree" # Enables build-time flake inputs
                 "parallel-eval" # Enables parallel evaluation
               ];
-              # Other settings
             };
-          };
 
-        # Add other module outputs here
+            fonts.packages = with pkgs; [
+              fira-code
+              fira-code-symbols
+              ibm-plex
+            ];
+
+            environment.systemPackages = with pkgs; [
+              alacritty
+              awscli2
+              bruno
+              colima
+              delta
+              docker
+              docker-compose
+              editorconfig-core-c
+              git
+              git-extras
+              go
+              gopls
+              gnumake
+              nodejs
+              ripgrep
+              yarn
+            ];
+          };
       };
 
       # Development environment
@@ -180,7 +186,7 @@
                 echo "> Applying nix-darwin configuration..."
 
                 echo "> Running darwin-rebuild switch as root..."
-                sudo darwin-rebuild switch --flake .
+                sudo darwin-rebuild switch --flake ./machines/MacBook-Air
                 echo "> darwin-rebuild switch was successful ✅"
 
                 echo "> macOS config was successfully applied 🚀"

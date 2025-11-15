@@ -16,3 +16,7 @@ deploy-router-home:
 	rsync -avh --exclude={'.git','flake*'} . root@router-home:/etc/nixos --delete
 	ssh root@router-home -C "ln -s /etc/nixos/machines/router-home/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
+
+flake-switch-MacBook-Air:
+	nix flake update --flake ./machines/MacBook-Air
+	nix develop ./machines/MacBook-Air/flake.nix --command apply-nix-darwin-configuration
