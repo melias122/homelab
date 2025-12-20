@@ -68,6 +68,7 @@ in {
     users.root = {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwuhSIOGM2vy0OFOku+itsEMqDW0a93MQNg4cjGncub"
       ];
     };
 
@@ -79,6 +80,7 @@ in {
 
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwuhSIOGM2vy0OFOku+itsEMqDW0a93MQNg4cjGncub"
       ];
 
       hashedPassword = "$6$5OrUriMQbOhi$VpUVX6Fy3wS1adO8TLftjNFTRq9wRA7VQO6rMcm06HcyQlBnQH5pKiIQvpz2CwToVDhUiTwqFF.N888.VdZt31";
