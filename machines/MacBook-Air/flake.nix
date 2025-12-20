@@ -17,6 +17,7 @@
     };
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    home-manager.url = "https://flakehub.com/f/nix-community/home-manager/0.1";
   };
 
   # Flake outputs
@@ -50,6 +51,14 @@
               user = username;
             };
           }
+
+          inputs.home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            # home-manager.users.m = import ./../../home;
+          }
+
           # In addition to adding modules in the style above, you can also
           # add modules inline like this. Delete this if unnecessary.
           (
@@ -69,6 +78,7 @@
                   "emacs-app"
                   "google-chrome"
                   "insomnia"
+                  "opencode-desktop"
                   "redis-insight"
                   "tailscale-app"
                   "the-unarchiver"
@@ -78,10 +88,27 @@
                   "steam"
                 ];
 
+                brews = [
+                  {
+                    name = "colima";
+                    restart_service = true;
+                  }
+                  "gh"
+                  "go"
+                  "gopls"
+                  "npm"
+                  "opencode"
+                ];
+
                 # Ensures only packages specified in homebrew configurations are installed
                 onActivation.cleanup = "zap";
                 onActivation.autoUpdate = true;
                 onActivation.upgrade = true;
+              };
+
+              environment.variables = {
+                TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock";
+                DOCKER_HOST = "unix://\${HOME}/.colima/docker.sock";
               };
 
               system.defaults = {
@@ -128,11 +155,13 @@
             ...
           }:
           {
+            nixpkgs.config.allowUnfree = true;
+
             # Let Determinate Nix handle your Nix configuration
             nix.enable = false;
 
             # Custom Determinate Nix settings written to /etc/nix/nix.custom.conf
-            determinate-nix.customSettings = {
+            determinateNix.customSettings = {
               # Enables parallel evaluation (remove this setting or set the value to 1 to disable)
               eval-cores = 0;
               extra-experimental-features = [
@@ -158,10 +187,10 @@
               editorconfig-core-c
               git
               git-extras
-              go
-              gopls
               gnumake
               nodejs
+              terraform
+              terraform-ls
               ripgrep
               yarn
             ];
@@ -207,6 +236,6 @@
       # git ls-files -z '*.nix' | xargs -0 -r nix fmt
       # To check formatting:
       # git ls-files -z '*.nix' | xargs -0 -r nix develop --command nixfmt --check
-      formatter.${system} = inputs.nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
+      formatter.${system} = inputs.nixpkgs.legacyPackages.${system}.nixfmt;
     };
 }
