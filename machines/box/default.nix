@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
 
       ../../services/docker-rootless.nix
-#      ../../services/nats.nix
+      ../../services/openssh.nix
       ../../services/printer.nix
       ../../services/tailscale.nix
     ];
