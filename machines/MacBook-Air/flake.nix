@@ -75,6 +75,7 @@
                   "tunnelblick"
                   "visual-studio-code"
                   "karabiner-elements"
+                  "steam"
                 ];
 
                 # Ensures only packages specified in homebrew configurations are installed
