@@ -123,6 +123,12 @@
     # here, NOT in environment.systemPackages
   ];
 
+  # 4K monitor scalling support
+  services.xserver.desktopManager.gnome.extraGSettingsOverrides = ''
+    [org.gnome.mutter]
+    experimental-features=['scale-monitor-framebuffer']
+	'';
+
   nixpkgs.config.permittedInsecurePackages = [
     "beekeeper-studio-5.3.4"
   ];

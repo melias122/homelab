@@ -1,2 +1,0 @@
-CGO_ENABLED=0
-GOFLAGS=-mod=mod

@@ -86,8 +86,10 @@
 
     git = {
       enable = true;
-      userName  = "Martin Eliáš";
-      userEmail = "martin@elias.sx";
+      settings = {
+        user.name  = "Martin Eliáš";
+        user.email = "martin@elias.sx";
+      };
 
       includes = [
         {
