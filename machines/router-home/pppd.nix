@@ -20,6 +20,10 @@ in {
           name ${x.tcom-home.username}
           password ${x.tcom-home.password}
 
+          # PPPoE MTU (1500 - 8 byte PPPoE header)
+          # mtu 1492
+          # mru 1492
+
           persist
           maxfail 0
           holdoff 10
