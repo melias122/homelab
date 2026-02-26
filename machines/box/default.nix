@@ -25,6 +25,7 @@
   boot.loader.systemd-boot.configurationLimit = 15;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   boot.kernel.sysctl = {
     "vm.swappiness" = 10;
   };
@@ -67,10 +68,18 @@
     xkb.variant = "";
 
     desktopManager = {
-      gnome.enable = true;
       xterm.enable = false;
     };
-    displayManager.gdm.enable = true;
+  };
+
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome = {
+    enable = true;
+    # 4K monitor scalling support
+    extraGSettingsOverrides = ''
+      [org.gnome.mutter]
+      experimental-features=['scale-monitor-framebuffer']
+      '';
   };
 
   environment.systemPackages = with pkgs; [
@@ -122,12 +131,6 @@
     # Add any missing dynamic libraries for unpackaged programs
     # here, NOT in environment.systemPackages
   ];
-
-  # 4K monitor scalling support
-  services.xserver.desktopManager.gnome.extraGSettingsOverrides = ''
-    [org.gnome.mutter]
-    experimental-features=['scale-monitor-framebuffer']
-	'';
 
   nixpkgs.config.permittedInsecurePackages = [
     "beekeeper-studio-5.3.4"

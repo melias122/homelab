@@ -1,4 +1,4 @@
-{ config, pkgs, home, ... }:
+{ config, pkgs, unstable, home, ... }:
 
 {
   imports = [
@@ -56,9 +56,15 @@
     rustc
     rust-analyzer
 
+    # terraform
+    terraform
+    terraform-ls
+
     # Nextgen C
     zig
     zls
+
+    unstable.opencode-claude-auth
   ];
 
   home.file = {
@@ -106,7 +112,32 @@
       ];
     };
 
-    ssh.enable = true;
+    opencode = {
+      enable = true;
+      package = unstable.opencode;
+      settings = {
+        plugin = ["opencode-claude-auth"];
+        permission = {
+          external_directory = {
+            "`/tmp/*" = "allow";
+            "~/code/oddin/**" = "allow";
+            "~/code/gadget/**" = "allow";
+            "~/go/**" = "allow";
+          };
+        };
+      };
+    };
+
+    claude-code = {
+      enable = true;
+      package = unstable.claude-code;
+    };
+
+
+    ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+    };
 
     # Terminal multiplexer
     tmux = {
@@ -115,9 +146,6 @@
       mouse = true;
     };
   };
-
-  # Should be same as 'export NIXPKGS_ALLOW_UNFREE=1'
-  nixpkgs.config.allowUnfreePredicate = _: true;
 
   programs.home-manager.enable = true;
   home.username = "melias122";

@@ -9,8 +9,7 @@
     enable = true;
     setSendmail = true;
     networks = [ "127.0.0.0/24" ];
-    relayHost = "smtp.gmail.com";
-    relayPort = 587;
+    settings.main.relayhost = ["smtp.gmail.com:587"];
     rootAlias = "martin@elias.sx";
 
     config = {

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, unstable, ... }:
 
 let
   pprofbench = pkgs.writeScriptBin "pprofbench"
@@ -20,6 +20,7 @@ in {
 
   programs.go = {
     enable = true;
+    package = unstable.go;
   };
 
   home.sessionPath = [
