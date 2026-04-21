@@ -16,6 +16,7 @@
     editorconfig-core-c
     emacs30
     gcc
+    gh # GitHub CLI
     gnumake
     google-chrome
     graphviz
