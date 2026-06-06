@@ -8,11 +8,11 @@
   services.postfix = {
     enable = true;
     setSendmail = true;
-    networks = [ "127.0.0.0/24" ];
-    settings.main.relayhost = ["smtp.gmail.com:587"];
     rootAlias = "martin@elias.sx";
 
-    config = {
+    settings.main = {
+      relayhost = [ "smtp.gmail.com:587" ];
+      mynetworks = [ "127.0.0.0/24" ];
       smtp_use_tls = "yes";
       smtp_sasl_auth_enable = "yes";
       smtp_sasl_security_options = "noanonymous";
