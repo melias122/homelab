@@ -75,10 +75,10 @@
 
   services.resolved = {
     enable = true;
-    extraConfig = ''
-      DNS=::1 127.0.0.1
-      DNSStubListener=no
-    '';
+    settings.Resolve = {
+      DNS = "::1 127.0.0.1";
+      DNSStubListener = "no";
+    };
   };
 
   # Tailscale readiness and DNS tweaks.
