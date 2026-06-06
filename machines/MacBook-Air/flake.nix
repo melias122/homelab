@@ -75,6 +75,7 @@
                 enable = true;
                 casks = [
                   "beekeeper-studio"
+                  "bruno"
                   "emacs-app"
                   "google-chrome"
                   "insomnia"
@@ -96,6 +97,7 @@
                   "gh"
                   "go"
                   "gopls"
+                  "mise"
                   "npm"
                   "opencode"
                 ];
@@ -179,7 +181,6 @@
             environment.systemPackages = with pkgs; [
               alacritty
               awscli2
-              bruno
               colima
               delta
               docker
