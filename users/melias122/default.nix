@@ -46,7 +46,7 @@
     # Web magic
     nodejs
     yarn
-    nodePackages.typescript-language-server
+    typescript-language-server
 
     # Snake
     python3Minimal
@@ -58,14 +58,14 @@
     rust-analyzer
 
     # terraform
+    mise
+    opentofu
     terraform
     terraform-ls
 
     # Nextgen C
     zig
     zls
-
-    unstable.opencode-claude-auth
   ];
 
   home.file = {
@@ -117,7 +117,6 @@
       enable = true;
       package = unstable.opencode;
       settings = {
-        plugin = ["opencode-claude-auth"];
         permission = {
           external_directory = {
             "`/tmp/*" = "allow";

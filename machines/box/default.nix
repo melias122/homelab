@@ -134,6 +134,7 @@
 
   nixpkgs.config.permittedInsecurePackages = [
     "beekeeper-studio-5.3.4"
+    "nodejs-slim-20.20.2" # bundled by redisinsight; EOL but local-only dev GUI
   ];
 
   system.stateVersion = "22.11"; # Did you read the comment? YES!
