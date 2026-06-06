@@ -22,7 +22,7 @@ in {
 
           persist
           maxfail 0
-          holdoff 5
+          holdoff 10
 
           noipdefault
           defaultroute

@@ -34,9 +34,7 @@
       blocking = {
         denylists = {
           default = [
-            "https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts.txt"
-            "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt"
-            "https://hosts.oisd.nl"
+            "https://big.oisd.nl/domainswild"
           ];
         };
         clientGroupsBlock = {

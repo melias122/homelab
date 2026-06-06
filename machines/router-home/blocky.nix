@@ -29,30 +29,17 @@
         prefetching = true;
       };
 
-      # Optional: Configure the web interface
-      # http = {
-      #   enable = true;
-      #   listen = "0.0.0.0:4000"; # Access Blocky dashboard on port 4000
-      #   # username = "admin";
-      #   # password = "yourpassword";
-      # };
-
       # https://v.firebog.net
       # https://oisd.nl
       blocking = {
         denylists = {
           default = [
-            "https://hosts.oisd.nl"
-          ];
-          ads = [
-            "https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt"
-            "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+            "https://big.oisd.nl/domainswild"
           ];
         };
         clientGroupsBlock = {
           default = [
             "default"
-            "ads"
           ];
 
           router = [];
