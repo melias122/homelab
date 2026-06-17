@@ -28,49 +28,49 @@
   # Note: when adding user do not forget to run `smbpasswd -a <USER>`.
   services.samba = {
     enable = false;
-    securityType = "user";
-    settings = ''
-        workgroup = WORKGROUP
-        server role = standalone server
-        dns proxy = no
-        vfs objects = catia fruit streams_xattr
+    settings = {
+      global = {
+        security = "user";
 
-        pam password change = yes
-        map to guest = bad user
-        usershare allow guests = yes
-        create mask = 0664
-        force create mode = 0664
-        directory mask = 0775
-        force directory mode = 0775
-        follow symlinks = yes
-        load printers = no
-        printing = bsd
-        printcap name = /dev/null
-        disable spoolss = yes
-        strict locking = no
-        aio read size = 0
-        aio write size = 0
-        vfs objects = acl_xattr catia fruit streams_xattr
-        inherit permissions = yes
+        "workgroup" = "WORKGROUP";
+        "server role" = "standalone server";
+        "dns proxy" = "no";
+
+        "pam password change" = "yes";
+        "map to guest" = "bad user";
+        "usershare allow guests" = "yes";
+        "create mask" = "0664";
+        "force create mode" = "0664";
+        "directory mask" = "0775";
+        "force directory mode" = "0775";
+        "follow symlinks" = "yes";
+        "load printers" = "no";
+        "printing" = "bsd";
+        "printcap name" = "/dev/null";
+        "disable spoolss" = "yes";
+        "strict locking" = "no";
+        "aio read size" = "0";
+        "aio write size" = "0";
+        "vfs objects" = "acl_xattr catia fruit streams_xattr";
+        "inherit permissions" = "yes";
 
         # Security
-        client ipc max protocol = SMB3
-        client ipc min protocol = SMB2_10
-        client max protocol = SMB3
-        client min protocol = SMB2_10
-        server max protocol = SMB3
-        server min protocol = SMB2_10
+        "client ipc max protocol" = "SMB3";
+        "client ipc min protocol" = "SMB2_10";
+        "client max protocol" = "SMB3";
+        "client min protocol" = "SMB2_10";
+        "server max protocol" = "SMB3";
+        "server min protocol" = "SMB2_10";
 
         # Time Machine
-        fruit:delete_empty_adfiles = yes
-        fruit:time machine = yes
-        fruit:veto_appledouble = no
-        fruit:wipe_intentionally_left_blank_rfork = yes
-        fruit:posix_rename = yes
-        fruit:metadata = stream
-      '';
+        "fruit:delete_empty_adfiles" = "yes";
+        "fruit:time machine" = "yes";
+        "fruit:veto_appledouble" = "no";
+        "fruit:wipe_intentionally_left_blank_rfork" = "yes";
+        "fruit:posix_rename" = "yes";
+        "fruit:metadata" = "stream";
+      };
 
-    shares = {
       "Time Capsule" = {
         path = "/pool/samba/timemachine";
         browseable = "yes";
