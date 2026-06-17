@@ -53,7 +53,7 @@
       eno1 = {
         useDHCP = false;
         ipv4.addresses = [{
-          address = "192.168.1.1";
+          address = "192.168.2.1";
           prefixLength = 24;
         }];
       };

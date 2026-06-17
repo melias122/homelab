@@ -27,19 +27,17 @@
         {
           id = 1;
           pools = [{
-            pool = "192.168.1.100 - 192.168.1.250";
+            pool = "192.168.2.100 - 192.168.2.250";
           }];
-          subnet = "192.168.1.0/24";
+          subnet = "192.168.2.0/24";
           interface = "eno1";
           option-data = [
-            { name = "routers"; data = "192.168.1.1"; }
-            { name = "domain-name-servers"; data = "192.168.1.1"; }
+            { name = "routers"; data = "192.168.2.1"; }
+            { name = "domain-name-servers"; data = "192.168.2.1"; }
           ];
           reservations = [
-            { hw-address = "80:2a:a8:40:3b:1c"; ip-address = "192.168.1.10"; hostname = "unifi-ap-pivnica"; }
-            { hw-address = "80:2a:a8:80:0d:fb"; ip-address = "192.168.1.11"; hostname = "unifi-ap-prizemie"; }
-            { hw-address = "0c:c4:7a:44:52:ea"; ip-address = "192.168.1.35"; hostname = "server-ipmi"; }
-            { hw-address = "00:1b:21:bc:15:67"; ip-address = "192.168.1.45"; hostname = "server-10gbe"; }
+            { hw-address = "80:2a:a8:40:3b:1c"; ip-address = "192.168.2.10"; hostname = "unifi-ap-pivnica"; }
+            { hw-address = "80:2a:a8:80:0d:fb"; ip-address = "192.168.2.11"; hostname = "unifi-ap-prizemie"; }
           ];
         }
       ];
