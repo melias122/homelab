@@ -10,14 +10,15 @@
       upstreams.groups = {
         default = [
           "https://dns.quad9.net/dns-query"
+          "https://one.one.one.one/dns-query"
         ];
 
         router = [
-          # https://quad9.net/service/service-addresses-and-features/#rec
+          "1.1.1.1"
           "9.9.9.9"
-          "149.112.112.112"
         ];
       };
+      upstreams.strategy = "strict";
 
       bootstrapDns = {
         upstream = "https://dns.quad9.net/dns-query";
@@ -25,13 +26,12 @@
       };
 
       caching = {
+        prefetching = true;
         minTime = "1m";
         maxTime = "1h";
         maxItemsCount = 100000;
       };
 
-      # https://v.firebog.net
-      # https://oisd.nl
       blocking = {
         denylists = {
           default = [
