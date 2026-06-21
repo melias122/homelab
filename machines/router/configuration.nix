@@ -15,7 +15,6 @@
 
       # services
       ./blocky.nix
-      ./caddy.nix
       ./cron.nix
       ./dhcpd4.nix
       ./nftables.nix
@@ -53,7 +52,7 @@
       eno1 = {
         useDHCP = false;
         ipv4.addresses = [{
-          address = "192.168.1.1";
+          address = "192.168.2.1";
           prefixLength = 24;
         }];
       };
@@ -86,6 +85,12 @@
     ];
     wants = [ "network-online.target" ];
   };
+
+  # for tailscale subnet router
+  services.tailscale.useRoutingFeatures = "server";
+  services.tailscale.extraSetFlags = [
+    "--advertise-routes=192.168.2.0/24"
+  ];
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
