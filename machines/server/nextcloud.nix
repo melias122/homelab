@@ -3,7 +3,7 @@
 {
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud32;
+    package = pkgs.nextcloud33;
     hostName = "nextcloud.elias.sx";
     home = "/pool/nextcloud-new";
     https = true;
@@ -17,9 +17,7 @@
     };
   };
 
-  services.nginx.virtualHosts = {
-    "nextcloud.elias.sx" = {
-      listen = [{ addr = "100.98.141.25"; port = 54443; }]; # use tailscale interface
-    };
+  services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
+    listen = [{ addr = "100.98.141.25"; port = 54443; }];
   };
 }

@@ -14,6 +14,7 @@
 
       ./apcupsd.nix
       ./avahi.nix
+      ./caddy.nix
       ./containers.nix
       ./minidlna.nix
       ./nextcloud.nix
@@ -34,6 +35,9 @@
 
     # Enable ZFS.
     supportedFilesystems = [ "zfs" ];
+
+    # Adopt the new 26.11 default; root is ext4 so no root pool is force-imported.
+    zfs.forceImportRoot = false;
 
     zfs.extraPools = [
       "backup"
@@ -105,6 +109,10 @@
       ZED_NOTIFY_VERBOSE = true;
     };
   };
+
+  services.tailscale.extraSetFlags = [
+    "--accept-routes"
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
