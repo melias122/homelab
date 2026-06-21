@@ -43,6 +43,7 @@
             { hw-address = "68:d7:9a:1c:33:1e"; ip-address = "192.168.1.13"; hostname = "unifi-ap-terasa"; }
             { hw-address = "e4:e7:49:a5:1e:86"; ip-address = "192.168.1.21"; hostname = "tlaciaren"; }
             { hw-address = "48:5f:99:2c:00:25"; ip-address = "192.168.1.22"; hostname = "tlaciaren-wifi"; }
+            { hw-address = "0c:c4:7a:44:53:14"; ip-address = "192.168.1.45"; hostname = "server"; }
           ];
         }
       ];

@@ -9,24 +9,25 @@
 
       upstreams.groups = {
         default = [
-          "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
-          "https://dns.google/dns-query"
+          "https://dns.quad9.net/dns-query"
         ];
 
         router = [
-          "1.1.1.1"
-          "8.8.8.8"
+          # https://quad9.net/service/service-addresses-and-features/#rec
+          "9.9.9.9"
+          "149.112.112.112"
         ];
       };
 
       bootstrapDns = {
-        upstream = "https://one.one.one.one/dns-query";
-        ips = [ "1.1.1.1" "1.0.0.1" ];
+        upstream = "https://dns.quad9.net/dns-query";
+        ips = [ "9.9.9.9" "149.112.112.112" ];
       };
 
       caching = {
+        minTime = "1m";
         maxTime = "1h";
-        prefetching = true;
+        maxItemsCount = 100000;
       };
 
       # https://v.firebog.net
@@ -41,7 +42,6 @@
           default = [
             "default"
           ];
-
           router = [];
         };
       };
