@@ -55,21 +55,24 @@
     hostName = "router";
     
     useDHCP = false;
+    useNetworkd = true;
     nat.enable = false;
     firewall.enable = false;
+  };
 
-    interfaces = {
-      # LAN
-      eno1 = {
-        useDHCP = false;
-        ipv4.addresses = [{
-          address = "192.168.1.1";
-          prefixLength = 24;
-        }];
-      };
+  systemd.network.networks = {
+    # LAN — static gateway address; serves DHCP (see dhcpd4.nix).
+    "10-lan" = {
+      matchConfig.Name = "eno1";
+      address = [ "192.168.1.1/24" ];
+      linkConfig.RequiredForOnline = "routable";
+    };
 
-      # WAN/PPPoE
-      eno2.useDHCP = false;
+    # WAN — raw link carrying the PPPoE session; pppd owns ppp0 (see pppd.nix).
+    "10-wan" = {
+      matchConfig.Name = "eno2";
+      networkConfig.LinkLocalAddressing = "no";
+      linkConfig.RequiredForOnline = "no";
     };
   };
 
