@@ -12,8 +12,9 @@
     };
 
     dhcpServerStaticLeases = [
-      { MACAddress = "80:2a:a8:40:3b:1c"; Address = "192.168.2.10"; } # unifi-ap-pivnica
+      { MACAddress = "80:2a:a8:40:3b:1c"; Address = "192.168.2.10"; } # unifi-ap-bazen
       { MACAddress = "80:2a:a8:80:0d:fb"; Address = "192.168.2.11"; } # unifi-ap-prizemie
+      { MACAddress = "0c:ea:14:8b:a2:ed"; Address = "192.168.2.12"; } # unifi-ap-pivnica
     ];
   };
 }

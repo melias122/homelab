@@ -90,10 +90,10 @@
     wants = [ "network-online.target" ];
   };
 
-  # for tailscale subnet router
+  # Tailscale subnet router
   services.tailscale.useRoutingFeatures = "server";
   services.tailscale.extraSetFlags = [
-    "--advertise-routes=192.168.2.0/24"
+    "--advertise-routes=192.168.2.10/32,192.168.2.11/32,192.168.2.12/32"
   ];
 
   environment.systemPackages = with pkgs; [
