@@ -13,6 +13,7 @@
 
     dhcpServerStaticLeases = [
       { MACAddress = "68:d7:9a:22:65:25"; Address = "192.168.1.2"; }  # unifi-switch-usw-pro-24
+      { MACAddress = "74:fa:29:5f:26:06"; Address = "192.168.1.3"; }  # unifi-switch-usw-pro-max-16-poe
       { MACAddress = "0c:ea:14:cc:aa:c1"; Address = "192.168.1.10"; } # unifi-ap-predsien
       { MACAddress = "0c:ea:14:c1:10:75"; Address = "192.168.1.11"; } # unifi-ap-satnik
       { MACAddress = "e0:63:da:21:09:46"; Address = "192.168.1.12"; } # unifi-ap-poschodie
