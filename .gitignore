@@ -1,0 +1,10 @@
+# Nix build outputs
+result
+result-*
+
+# direnv
+.direnv/
+
+# Editor
+*.swp
+*~
