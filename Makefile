@@ -1,4 +1,7 @@
 flake-switch-box:
+	sudo nixos-rebuild switch --flake ./machines/box
+
+flake-update-box:
 	nix flake update --flake ./machines/box
 	sudo nixos-rebuild switch --flake ./machines/box
 
@@ -21,7 +24,7 @@ nixos-rebuild boot"
 
 flake-switch-MacBook-Air:
 	nix flake update --flake ./machines/MacBook-Air
-	nix develop ./machines/MacBook-Air/flake.nix --command apply-nix-darwin-configuration
+	nix develop ./machines/MacBook-Air --command apply-nix-darwin-configuration
 
 # usage: make edit-secret name=caddy-env
 edit-secret:
