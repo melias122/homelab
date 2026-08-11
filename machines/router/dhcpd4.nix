@@ -7,6 +7,7 @@
     dhcpServerConfig = {
       PoolOffset = 100;
       PoolSize = 151; # .100 - .250 inclusive
+      DefaultLeaseTimeSec = 43200; # 12h (networkd default is 1h)
       EmitDNS = true;
       DNS = "192.168.2.1";
     };

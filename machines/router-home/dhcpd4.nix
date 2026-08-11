@@ -7,6 +7,7 @@
     dhcpServerConfig = {
       PoolOffset = 100;
       PoolSize = 151; # .100 - .250 inclusive
+      DefaultLeaseTimeSec = 43200; # 12h (networkd default is 1h)
       EmitDNS = true;
       DNS = "192.168.1.1";
     };
@@ -26,6 +27,8 @@
       { MACAddress = "30:dd:aa:77:af:13"; Address = "192.168.1.51"; } # cam2
       { MACAddress = "30:dd:aa:77:ab:af"; Address = "192.168.1.52"; } # cam3
       { MACAddress = "30:dd:aa:77:b2:1b"; Address = "192.168.1.53"; } # cam4
+
+      { MACAddress = "02:00:00:00:01:08"; Address = "192.168.1.108"; } # reserved: Dahua factory default
     ];
   };
 }
