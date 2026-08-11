@@ -21,6 +21,11 @@
       { MACAddress = "e4:e7:49:a5:1e:86"; Address = "192.168.1.21"; } # tlaciaren
       { MACAddress = "48:5f:99:2c:00:25"; Address = "192.168.1.22"; } # tlaciaren-wifi
       { MACAddress = "0c:c4:7a:44:53:14"; Address = "192.168.1.45"; } # server
+
+      { MACAddress = "30:dd:aa:77:ad:ca"; Address = "192.168.1.50"; } # cam1
+      { MACAddress = "30:dd:aa:77:af:13"; Address = "192.168.1.51"; } # cam2
+      { MACAddress = "30:dd:aa:77:ab:af"; Address = "192.168.1.52"; } # cam3
+      { MACAddress = "30:dd:aa:77:b2:1b"; Address = "192.168.1.53"; } # cam4
     ];
   };
 }
