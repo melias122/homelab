@@ -16,9 +16,11 @@
       ./avahi.nix
       ./caddy.nix
       ./containers.nix
+      ./frigate.nix
       ./minidlna.nix
       ./nextcloud.nix
       ./restic.nix
+      ./timemachine.nix
       ./unifi.nix
     ];
 

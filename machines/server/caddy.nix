@@ -42,5 +42,16 @@
         }
       }
     '';
+
+    virtualHosts."frigate.elias.sx".extraConfig = ''
+      tls {
+        dns cloudflare {env.CF_API_TOKEN}
+      }
+
+      @denied not remote_ip 100.64.0.0/10 192.168.1.0/24
+      abort @denied
+
+      reverse_proxy http://100.98.141.25:8971
+    '';
   };
 }

@@ -1,0 +1,114 @@
+version: 0.17-0
+
+mqtt:
+  enabled: false
+
+tls:
+  enabled: false
+
+auth:
+  enabled: true
+
+detectors:
+  cpu1:
+    type: cpu
+    num_threads: 3
+
+ffmpeg:
+  hwaccel_args: []
+
+go2rtc:
+  webrtc:
+    candidates:
+      - 100.98.141.25:8555
+      - 192.168.1.45:8555
+  streams:
+    cam1:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.50:554/cam/realmonitor?channel=1&subtype=0
+    cam1_sub:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.50:554/cam/realmonitor?channel=1&subtype=1
+    cam2:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.51:554/cam/realmonitor?channel=1&subtype=0
+    cam2_sub:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.51:554/cam/realmonitor?channel=1&subtype=1
+    cam3:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.52:554/cam/realmonitor?channel=1&subtype=0
+    cam3_sub:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.52:554/cam/realmonitor?channel=1&subtype=1
+    cam4:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.53:554/cam/realmonitor?channel=1&subtype=0
+    cam4_sub:
+      - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.53:554/cam/realmonitor?channel=1&subtype=1
+
+cameras:
+  cam1:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/cam1
+          input_args: preset-rtsp-restream
+          roles: [record]
+        - path: rtsp://127.0.0.1:8554/cam1_sub
+          input_args: preset-rtsp-restream
+          roles: [detect]
+
+  cam2:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/cam2
+          input_args: preset-rtsp-restream
+          roles: [record]
+        - path: rtsp://127.0.0.1:8554/cam2_sub
+          input_args: preset-rtsp-restream
+          roles: [detect]
+
+  cam3:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/cam3
+          input_args: preset-rtsp-restream
+          roles: [record]
+        - path: rtsp://127.0.0.1:8554/cam3_sub
+          input_args: preset-rtsp-restream
+          roles: [detect]
+
+  cam4:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/cam4
+          input_args: preset-rtsp-restream
+          roles: [record]
+        - path: rtsp://127.0.0.1:8554/cam4_sub
+          input_args: preset-rtsp-restream
+          roles: [detect]
+
+detect:
+  width: 1280
+  height: 720
+  fps: 5
+
+objects:
+  track:
+    - person
+    - car
+    - dog
+    - cat
+
+record:
+  enabled: true
+  motion:
+    days: 7
+  alerts:
+    retain:
+      days: 30
+  detections:
+    retain:
+      days: 30
+
+snapshots:
+  enabled: true
+  retain:
+    default: 30
