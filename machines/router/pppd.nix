@@ -1,10 +1,11 @@
 { config, pkgs, ... }:
-let
-  x = import ../../x/config.nix;
-in {
+{
   environment.systemPackages = with pkgs; [
     ppp
   ];
+
+  # Contains `name` and `password` pppd options.
+  age.secrets.pppd-telekom.file = ../../secrets/pppd-telekom.age;
 
   # setup pppoe session
   services.pppd = {
@@ -17,8 +18,7 @@ in {
         config = ''
           plugin pppoe.so eno2
 
-          name ${x.tcom.username}
-          password ${x.tcom.password}
+          file ${config.age.secrets.pppd-telekom.path}
 
           persist
           maxfail 0

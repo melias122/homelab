@@ -1,10 +1,15 @@
 { config, pkgs, ... }:
 
 {
+  age.secrets = {
+    restic-password.file = ../../secrets/restic-password.age;
+    restic-b2-env.file = ../../secrets/restic-b2-env.age;
+  };
+
   services.restic.backups = {
     local = {
       repository = "/backup/restic";
-      passwordFile = "/etc/nixos/x/restic-password";
+      passwordFile = config.age.secrets.restic-password.path;
       paths = [
         "/pool"
         "/var/lib/unifi/data/backup"
@@ -13,12 +18,13 @@
         "-e public/Movies"
         "-e public/Downloads"
         "-e samba/timemachine"
+        "-e timemachine"
       ];
     };
     b2 = {
       repository = "b2:restic-homelab-backup:/pve-homelab-backup";
-      passwordFile = "/etc/nixos/x/restic-password";
-      environmentFile = "/etc/nixos/x/restic-b2";
+      passwordFile = config.age.secrets.restic-password.path;
+      environmentFile = config.age.secrets.restic-b2-env.path;
       timerConfig = {
         OnCalendar = "monthly";
       };
@@ -30,6 +36,7 @@
         "-e public/Movies"
         "-e public/Downloads"
         "-e samba/timemachine"
+        "-e timemachine"
       ];
     };
   };

@@ -1,9 +1,8 @@
 { config, pkgs, ... }:
 
-let
-  x = import ../../x/config.nix;
+{
+  age.secrets.caddy-env.file = ../../secrets/caddy-env.age;
 
-in {
   services.caddy = {
     enable = true;
     package = pkgs.caddy.withPlugins {
@@ -14,16 +13,19 @@ in {
     };
     email = "melias122@gmail.com";
 
+    # Contains CF_API_TOKEN for the cloudflare dns plugin.
+    environmentFile = config.age.secrets.caddy-env.path;
+
     virtualHosts.${config.services.nextcloud.hostName}.extraConfig = ''
       tls {
-        dns cloudflare ${x.cloudflare-token}
+        dns cloudflare {env.CF_API_TOKEN}
       }
       reverse_proxy http://100.98.141.25:54443
     '';
 
     virtualHosts."unifi.elias.sx".extraConfig = ''
       tls {
-        dns cloudflare ${x.cloudflare-token}
+        dns cloudflare {env.CF_API_TOKEN}
       }
 
       # Device inform endpoint "set-inform https://unifi.elias.sx/inform"

@@ -109,6 +109,10 @@
               };
 
               environment.variables = {
+                GOPRIVATE = "github.com/corwyn-com,github.com/oddin-gg";
+              };
+
+              environment.variables = {
                 TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock";
                 DOCKER_HOST = "unix://\${HOME}/.colima/docker.sock";
               };

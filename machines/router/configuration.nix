@@ -15,7 +15,6 @@
 
       # services
       ./blocky.nix
-      ./cron.nix
       ./dhcpd4.nix
       ./nftables.nix
       ./pppd.nix

@@ -3,10 +3,15 @@
 { config, pkgs, ... }:
 
 let
-  x = import ../x/config.nix;
+  agenix = builtins.fetchTarball {
+    url = "https://github.com/ryantm/agenix/archive/0.15.0.tar.gz";
+    sha256 = "01dhrghwa7zw93cybvx4gnrskqk97b004nfxgsys0736823956la";
+  };
 in {
   imports =
     [
+      "${agenix}/modules/age.nix"
+
       ../services/openssh.nix
       ../services/tailscale.nix
     ];
@@ -73,12 +78,11 @@ in {
     };
 
     # Set melias122's account sudo, SSH login.
+    # Password is set imperatively with `passwd`.
     users.melias122 = {
       isNormalUser = true;
       uid = 1000;
       extraGroups = [ "wheel" "networkmanager" ];
-
-      hashedPassword = "$6$5OrUriMQbOhi$VpUVX6Fy3wS1adO8TLftjNFTRq9wRA7VQO6rMcm06HcyQlBnQH5pKiIQvpz2CwToVDhUiTwqFF.N888.VdZt31";
     };
   };
 

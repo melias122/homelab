@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  age.secrets.nextcloud-adminpass = {
+    file = ../../secrets/nextcloud-adminpass.age;
+    owner = "nextcloud";
+  };
+
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud33;
@@ -12,7 +17,7 @@
     configureRedis = true;
     config = {
       adminuser = "melias122";
-      adminpassFile = "/etc/nixos/x/nextcloud-adminpass";
+      adminpassFile = config.age.secrets.nextcloud-adminpass.path;
       dbtype = "sqlite";
     };
   };
