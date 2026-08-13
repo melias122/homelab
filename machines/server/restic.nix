@@ -14,8 +14,8 @@
         "/pool"
         "/var/lib/unifi/data/backup"
 
-        # State on the root SSD that git can't restore: HA .storage
-        # (pairings, entities), samba passdb, caddy certs.
+        # Root-SSD state git can't restore.
+        "/var/lib/hass"
         "/var/lib/samba"
         "/var/lib/caddy"
       ];
@@ -26,8 +26,7 @@
         "--keep-yearly 3"
       ];
       extraBackupArgs = [
-        # A check or prune started from the backrest UI holds an exclusive
-        # lock; wait it out instead of failing the nightly backup.
+        # A check/prune from the backrest UI holds an exclusive lock; wait it out.
         "--retry-lock=1h"
 
         "-e timemachine"
@@ -40,7 +39,10 @@
       timerConfig = {
         OnCalendar = "monthly";
       };
-      paths = [ "/pool" ];
+      paths = [
+        "/pool"
+        "/var/lib/hass"
+      ];
       extraBackupArgs = [
         "--retry-lock=1h"
 

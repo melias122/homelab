@@ -7,12 +7,10 @@
   # Contains `name` and `password` pppd options.
   age.secrets.pppd-telekom.file = ../../secrets/pppd-telekom.age;
 
-  # setup pppoe session
   services.pppd = {
     enable = true;
     peers = {
       telekom = {
-        # Autostart the PPPoE session on boot
         autostart = true;
         enable = true;
         config = ''

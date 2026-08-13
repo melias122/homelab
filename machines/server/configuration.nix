@@ -1,12 +1,8 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
 
       ../../roles/common.nix
@@ -17,8 +13,10 @@
       ./avahi.nix
       ./caddy.nix
       ./frigate.nix
+      ./home-assistant.nix
       ./minidlna.nix
       ./monitoring.nix
+      ./mosquitto.nix
       ./nextcloud.nix
       ./restic.nix
       ./timemachine.nix
@@ -31,18 +29,15 @@
     loader.grub = {
       enable = true;
 
-      # Boot SSD (ADATA SU800NS38, MBR, holds / and /boot/grub), addressed by
       # by-id because /dev/sd* enumeration drifts: after the 2026-08-18 reboot
-      # /dev/sda became a 3.6T ZFS pool disk, so grub-install failed with
-      # "no BIOS Boot Partition ... cross-disk install" and every
+      # /dev/sda was a ZFS pool disk, grub-install failed and every
       # switch-to-configuration aborted before activating any unit.
       device = "/dev/disk/by-id/ata-ADATA_SU800NS38_2I4820029397";
     };
 
-    # Enable ZFS.
     supportedFilesystems = [ "zfs" ];
 
-    # Adopt the new 26.11 default; root is ext4 so no root pool is force-imported.
+    # Root is ext4, no root pool to force-import (26.11 default).
     zfs.forceImportRoot = false;
 
     zfs.extraPools = [
@@ -52,20 +47,15 @@
       "frigate"
     ];
 
-    # Tune ZFS ARC size
-    kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16GB, was 8383029248 (8GB)
+    kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16G
   };
 
   networking = {
     hostName = "server";
 
-    # ZFS needs hostId
-    # generate the hostID through executing: `head -c4 /dev/urandom | od -A none -t x4`
+    # Required by ZFS.
     hostId = "e6680915";
 
-    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-    # Per-interface useDHCP will be mandatory in the future, so this generated config
-    # replicates the default behaviour.
     useDHCP = false;
 
     interfaces = {
@@ -85,22 +75,15 @@
       "robin-shark.ts.net"
     ];
 
-    # Open ports in the firewall.
-    # firewall.allowedTCPPorts = [ ... ];
-    # firewall.allowedUDPPorts = [ ... ];
-
-    # Or disable the firewall altogether.
     firewall.enable = false;
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     restic
     zfs
   ];
 
-  # SMART disk monitoring (ZED watches the pools, smartd the physical disks).
+  # ZED watches the pools, smartd the physical disks.
   services.smartd = {
     enable = true;
     notifications.mail = {
@@ -109,7 +92,6 @@
     };
   };
 
-  # ZFS
   services.zfs = {
     autoScrub.enable = true;
 
@@ -130,12 +112,6 @@
   # Tailscale sets MagicDNS per-interface via resolved instead of rewriting resolv.conf.
   services.resolved.enable = true;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
+  system.stateVersion = "22.05";
 
 }

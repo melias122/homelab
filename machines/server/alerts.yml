@@ -52,11 +52,10 @@ groups:
         annotations:
           summary: "{{ $labels.instance }} rebooted"
 
-      # server's eno1 flapped 9x over 2026-08-19/20 and took every frigate RTSP
-      # stream down at once. A marginal cable re-negotiates in ~3s, so the link
-      # reads healthy by the time anyone looks - only the counter shows it.
-      # 2 changes = 1 down/up pair, so >2 means a second flap within 15m; a lone
-      # reseat or switch reboot stays quiet. ppp/virtual devices flap by design.
+      # A marginal cable re-negotiates in ~3s and reads healthy by the time anyone
+      # looks (server eno1, 2026-08-19/20); only the counter shows it. 2 changes =
+      # one down/up pair, so a lone reseat or switch reboot stays quiet.
+      # ppp/virtual devices flap by design.
       - alert: NetworkLinkFlapping
         expr: increase(node_network_carrier_changes_total{device!~"lo|ppp.*|veth.*|podman.*|tailscale.*"}[15m]) > 2
         for: 5m
@@ -68,9 +67,8 @@ groups:
 
   - name: router
     rules:
-      # pppd removes ppp0 while the PPPoE session is down and the operstate of
-      # ppp devices is not reliable, so instead of node_network_up alert when
-      # the exporter answers but the interface is missing.
+      # pppd removes ppp0 while the session is down and ppp operstate is not
+      # reliable, so alert on the interface missing instead of node_network_up.
       - alert: WanDown
         expr: (up{job="node", instance=~"router.*"} == 1) unless on (instance) node_network_mtu_bytes{device="ppp0"}
         for: 3m
@@ -140,8 +138,7 @@ groups:
 
   - name: meta
     rules:
-      # Always firing on purpose: routed to the healthchecks.io webhook, which
-      # alarms from the outside when the pings stop (server/monitoring dead).
+      # Always firing on purpose: healthchecks.io alarms when the pings stop.
       - alert: Watchdog
         expr: vector(1)
         labels:
@@ -221,12 +218,13 @@ groups:
   - name: frigate
     rules:
       - alert: FrigateCameraDown
-        expr: frigate_camera_fps == 0
+        # Disabled cameras are still exported at 0 fps.
+        expr: frigate_camera_fps{camera_name!="zvoncek"} == 0
         for: 5m
         labels:
           severity: critical
         annotations:
-          summary: "Camera {{ $labels.camera }} is not delivering frames"
+          summary: "Camera {{ $labels.camera_name }} is not delivering frames"
 
   - name: temperature
     rules:

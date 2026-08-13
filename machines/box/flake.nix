@@ -11,8 +11,7 @@
   outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, ... }: let
     system = "x86_64-linux";
 
-    # Single source of truth, referenced by both `pkgs` below and the
-    # NixOS configuration (which builds its own pkgs from the module system).
+    # Shared by the pkgs below and the NixOS module system, which builds its own pkgs.
     permittedInsecurePackages = [
       "beekeeper-studio-6.0.5"
       "electron-41.10.6"
@@ -29,7 +28,6 @@
       config.permittedInsecurePackages = permittedInsecurePackages;
     };
   in {
-    # home-manager only config
     homeConfigurations = {
       melias122 = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;

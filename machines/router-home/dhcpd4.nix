@@ -28,21 +28,43 @@
       { MACAddress = "30:dd:aa:77:ab:af"; Address = "192.168.1.52"; } # cam3
       { MACAddress = "30:dd:aa:77:b2:1b"; Address = "192.168.1.53"; } # cam4
 
-      # Gree AC units. HA discovers them by broadcast, so these leases are not
-      # needed for the integration -- they keep the units at a known address.
+      { MACAddress = "f4:70:18:5b:df:e2"; Address = "192.168.1.54"; } # zvoncek-vchod (EZVIZ HP7 Pro)
+      { MACAddress = "50:91:e3:d0:d5:15"; Address = "192.168.1.55"; } # kamera-detska-poschodie (Tapo C225)
+
+      { MACAddress = "ec:b5:fa:aa:37:9d"; Address = "192.168.1.60"; } # hue-bridge
+      { MACAddress = "d4:d4:da:35:95:f4"; Address = "192.168.1.70"; } # svetlo-pracovna (Shelly Plus 1PM)
+      { MACAddress = "08:b6:1f:cc:18:0c"; Address = "192.168.1.71"; } # zaluzia-pracovna (Shelly Plus 2PM)
+      { MACAddress = "8c:bf:ea:94:e0:4c"; Address = "192.168.1.72"; } # zaluzia-obyvacka-hsportal (Shelly 2PM G3)
+      { MACAddress = "8c:bf:ea:99:de:74"; Address = "192.168.1.73"; } # zaluzia-obyvacka-fix (Shelly 2PM G3)
+      { MACAddress = "e4:b3:23:13:d5:c4"; Address = "192.168.1.74"; } # zaluzia-detska-prizemie-fix (Shelly 2PM G3)
+      { MACAddress = "8c:bf:ea:9b:8b:40"; Address = "192.168.1.75"; } # zaluzia-detska-prizemie-zahrada (Shelly 2PM G3)
+      { MACAddress = "d4:d4:da:ec:69:ac"; Address = "192.168.1.76"; } # zasuvka-cerpadlo-tuv (Shelly Plug S, obehove cerpadlo TUV)
+      { MACAddress = "08:92:72:4f:ae:04"; Address = "192.168.1.77"; } # zavlaha (Shelly XT1 irrigation)
+
+      # HA discovers the Gree units by broadcast; the leases only pin the addresses.
       { MACAddress = "c0:39:37:8c:93:39"; Address = "192.168.1.80"; } # klima-obyvacka
       { MACAddress = "c0:39:37:b1:2b:52"; Address = "192.168.1.81"; } # klima-pracovna
       { MACAddress = "c0:39:37:b0:db:ee"; Address = "192.168.1.82"; } # klima-spalna
       { MACAddress = "c0:39:37:b0:82:2c"; Address = "192.168.1.83"; } # klima-detska-prizemie
       { MACAddress = "c0:39:37:a0:f0:e3"; Address = "192.168.1.84"; } # klima-detska-poschodie
       { MACAddress = "c0:39:37:a1:41:cf"; Address = "192.168.1.85"; } # klima-izba3
+      { MACAddress = "00:0a:5c:85:15:35"; Address = "192.168.1.86"; } # ovladac-tepelne-cerpadlo
+
+      { MACAddress = "44:27:45:5d:09:dc"; Address = "192.168.1.90"; } # chladnicka-kuchyna
+      { MACAddress = "04:7b:cb:d1:00:2f"; Address = "192.168.1.91"; } # zmakcovac-technicka
+      { MACAddress = "ec:30:8e:2b:12:54"; Address = "192.168.1.92"; } # kosacka-zahrada
+      { MACAddress = "b0:4a:39:ba:fb:8e"; Address = "192.168.1.93"; } # vysavac-prizemie
+      { MACAddress = "b0:4a:39:31:04:a7"; Address = "192.168.1.94"; } # vysavac-poschodie
+      { MACAddress = "cc:98:8b:9f:33:7b"; Address = "192.168.1.95"; } # tv-obyvacka
+      { MACAddress = "ac:9b:0a:30:0c:42"; Address = "192.168.1.96"; } # reprak-prenosny (Sony SRS-X77, wired port)
+
+      # Inside the dynamic pool on purpose; the lease keeps .100 from being handed out.
+      { MACAddress = "08:bf:b8:01:ff:f0"; Address = "192.168.1.100"; } # box (pracovna)
 
       { MACAddress = "02:00:00:00:01:08"; Address = "192.168.1.108"; } # reserved: Dahua factory default
 
-      # Komfovent C6 rekuperacia. The unit has this address configured
-      # statically in its own web UI, so the lease is never requested; it is
-      # here only to keep the dynamic pool (.100-.250) from handing .119 to
-      # somebody else and breaking the Modbus TCP connection from HA.
+      # Static in the unit's own web UI, never requested; the lease only keeps
+      # the pool from handing .119 to somebody else and breaking Modbus from HA.
       { MACAddress = "00:12:13:16:80:02"; Address = "192.168.1.119"; } # rekuperacia (Komfovent C6)
     ];
   };

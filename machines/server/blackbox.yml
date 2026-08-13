@@ -9,7 +9,6 @@ modules:
     icmp:
       preferred_ip_protocol: ip4
 
-  # Asks blocky for a well-known name; any NOERROR answer counts.
   dns:
     prober: dns
     dns:

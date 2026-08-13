@@ -1,7 +1,10 @@
 version: 0.17-0
 
+# Required by the HA frigate integration; broker is ./mosquitto.nix, anonymous
+# because the tailnet-only bind is the access control.
 mqtt:
-  enabled: false
+  enabled: true
+  host: 100.98.141.25
 
 tls:
   enabled: false
@@ -22,70 +25,97 @@ go2rtc:
     candidates:
       - 100.98.141.25:8555
       - 192.168.1.45:8555
+  # Names become HA entity ids (never renamed once created) and key the
+  # recordings, so renaming here detaches old recordings in the UI.
   streams:
-    cam1:
+    # lava/prava = visitor's view from the street, not the cameras' own view
+    # (flipped 2026-08-24, the camera-view frame was confusing).
+    # .50: prava strana — zaber na branku a branu
+    kamera_ulica_prava:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.50:554/cam/realmonitor?channel=1&subtype=0
-    cam1_sub:
+    kamera_ulica_prava_sub:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.50:554/cam/realmonitor?channel=1&subtype=1
-    cam2:
+    # .51: lava strana — zaber na branu (ciastocne) a branku
+    kamera_ulica_lava:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.51:554/cam/realmonitor?channel=1&subtype=0
-    cam2_sub:
+    kamera_ulica_lava_sub:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.51:554/cam/realmonitor?channel=1&subtype=1
-    cam3:
+    # .52: dvor, bok domu — smerom na terasu a garaz
+    kamera_dvor:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.52:554/cam/realmonitor?channel=1&subtype=0
-    cam3_sub:
+    kamera_dvor_sub:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.52:554/cam/realmonitor?channel=1&subtype=1
-    cam4:
+    # .53: zahrada a garaz
+    kamera_zahrada:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.53:554/cam/realmonitor?channel=1&subtype=0
-    cam4_sub:
+    kamera_zahrada_sub:
       - rtsp://stream:{FRIGATE_RTSP_PASSWORD}@192.168.1.53:554/cam/realmonitor?channel=1&subtype=1
+    # No native RTSP: the ezviz_hp7 HA integration relays the doorbell's LAN
+    # stream as MPEG-PS over TCP on the tailnet IP (unauthenticated, so not on
+    # the LAN). The ffmpeg: wrapper is required, go2rtc's tcp:// expects MPEG-TS.
+    zvoncek:
+      - ffmpeg:tcp://100.98.141.25:18554#video=copy
 
 cameras:
-  cam1:
+  kamera_ulica_lava:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/cam1
+        - path: rtsp://127.0.0.1:8554/kamera_ulica_lava
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://127.0.0.1:8554/cam1_sub
+        - path: rtsp://127.0.0.1:8554/kamera_ulica_lava_sub
           input_args: preset-rtsp-restream
           roles: [detect]
 
-  cam2:
+  kamera_ulica_prava:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/cam2
+        - path: rtsp://127.0.0.1:8554/kamera_ulica_prava
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://127.0.0.1:8554/cam2_sub
+        - path: rtsp://127.0.0.1:8554/kamera_ulica_prava_sub
           input_args: preset-rtsp-restream
           roles: [detect]
 
-  cam3:
+  kamera_dvor:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/cam3
+        - path: rtsp://127.0.0.1:8554/kamera_dvor
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://127.0.0.1:8554/cam3_sub
+        - path: rtsp://127.0.0.1:8554/kamera_dvor_sub
           input_args: preset-rtsp-restream
           roles: [detect]
 
-  cam4:
+  kamera_zahrada:
     enabled: true
     ffmpeg:
       inputs:
-        - path: rtsp://127.0.0.1:8554/cam4
+        - path: rtsp://127.0.0.1:8554/kamera_zahrada
           input_args: preset-rtsp-restream
           roles: [record]
-        - path: rtsp://127.0.0.1:8554/cam4_sub
+        - path: rtsp://127.0.0.1:8554/kamera_zahrada_sub
           input_args: preset-rtsp-restream
           roles: [detect]
+
+  # TODO(zvoncek): live stream broken on doorbell fw V5.4.x
+  # (https://github.com/Bobsilvio/ezviz_hp7/issues/51). Re-enable once the
+  # ezviz_hp7 pin in home-assistant.nix carries a fix.
+  zvoncek:
+    enabled: false
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/zvoncek
+          input_args: preset-rtsp-restream
+          roles: [record, detect]
 
 detect:
+  # Deliberately off (2026-08-24): no object detections or occupancy sensors,
+  # cameras still record on motion.
+  enabled: false
   width: 1280
   height: 720
   fps: 5

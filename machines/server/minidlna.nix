@@ -9,7 +9,7 @@
     settings.inotify = "yes";
   };
 
-  # Add minidlna to nextcloud group (only when the service exists).
+  # Needs read access to the nextcloud data dir.
   users.users.minidlna = lib.mkIf config.services.minidlna.enable {
     extraGroups = [ "nextcloud" ];
   };

@@ -9,69 +9,57 @@
   home.packages = with pkgs; [
     appimage-run
     awscli2
-    # unstable: 26.05 has 5.3.4 marked insecure; 6.0.0 is clean and cached
-    unstable.beekeeper-studio # nice SQL browser
-    bruno # postman
-    unstable.codex # OpenAI Codex CLI
+    # unstable: 26.05 has 5.3.4 marked insecure
+    unstable.beekeeper-studio
+    bruno
+    unstable.codex
     curl
     docker-compose
     editorconfig-core-c
     emacs30
     firefox
     gcc
-    gh # GitHub CLI
-    gnomeExtensions.appindicator # tray icons in GNOME (needed by tailscale systray)
+    gh
+    gnomeExtensions.appindicator # tray icons, needed by the tailscale systray
     gnumake
     google-chrome
     graphviz
     grpcurl
-    hplip # HP printer drivers
+    hplip
     jq
     multimarkdown
     natscli
     kodi
     libreoffice
-    unstable.pi-coding-agent # AI coding agent, https://pi.dev
-    # unstable: 26.05 has 2.70.0 which depends on EOL nodejs-slim-20 (insecure,
-    # not in binary cache -> compiles nodejs locally); 3.6.0 does not
+    unstable.pi-coding-agent
+    # unstable: 26.05's 2.70.0 depends on EOL nodejs-slim-20 (insecure, compiles locally)
     unstable.redisinsight
     ripgrep
     thunderbird
     vlc
     vscode
-    wl-clipboard # clipboard actions in tailscale systray (Wayland)
+    wl-clipboard # tailscale systray clipboard actions on Wayland
     xarchiver
     zip unzip
 
-    #
-    # Langs.
-    # Cleanup later if needed move to separate config.
-    #
-
-    # Java :-(
     zulu
 
-    # Web magic
     nodejs
     yarn
     typescript-language-server
 
-    # Snake
     python3Minimal
     python3Packages.python-lsp-server
 
-    # Nextgen C++
     cargo
     rustc
     rust-analyzer
 
-    # terraform
     mise
     opentofu
     terraform
     terraform-ls
 
-    # Nextgen C
     zig
     zls
   ];
@@ -86,8 +74,7 @@
       recursive = true;
     };
 
-    # Official tailscale systray (beta); autostart declaratively instead of
-    # `tailscale configure systray --enable-startup` which writes outside nix.
+    # `tailscale configure systray --enable-startup` would write outside nix.
     "autostart/tailscale-systray.desktop".text = ''
       [Desktop Entry]
       Type=Application

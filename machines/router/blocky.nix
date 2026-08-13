@@ -7,8 +7,6 @@
       ports.dns = 53;
       connectIPVersion = "v4";
 
-      # Metrics for the server's Prometheus (scraped over the tailnet)
-      # and the Blocky DNS dashboard in Grafana.
       ports.http = 4000;
       prometheus.enable = true;
 

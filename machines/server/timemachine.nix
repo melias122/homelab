@@ -65,8 +65,7 @@
         "read only" = "no";
         "inherit acls" = "yes";
         "fruit:time machine" = "yes";
-        # Cap for TM so it doesn't eat the pool; ZFS refquota=1T is the
-        # second safeguard.
+        # Keeps TM from eating the pool; ZFS refquota=1T is the second safeguard.
         "fruit:time machine max size" = "950G";
       };
     };

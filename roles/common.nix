@@ -1,5 +1,3 @@
-# Common configuration accross all machines
-
 { config, pkgs, ... }:
 
 let
@@ -22,24 +20,18 @@ in {
     };
   };
 
-  # Scale down CPU frequency when load is low.
   powerManagement.cpuFreqGovernor = "ondemand";
 
-  # Enable firmware updates when possible.
   hardware.enableRedistributableFirmware = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Bratislava";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     bash
     curl
@@ -65,11 +57,7 @@ in {
     wget
   ];
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users = {
-    # Force declarative user configuration.
-    # mutableUsers = false;
-
     users.root = {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIND17TDL2rPoWedCiuSq2dklxRkvtDufAWo5U/ZCRCtD"
@@ -77,7 +65,6 @@ in {
       ];
     };
 
-    # Set melias122's account sudo, SSH login.
     # Password is set imperatively with `passwd`.
     users.melias122 = {
       isNormalUser = true;
@@ -87,7 +74,6 @@ in {
   };
 
   nix = {
-    # Automatic Nix GC.
     gc = {
       automatic = true;
       options = "--delete-older-than 30d";
@@ -101,19 +87,12 @@ in {
     package = pkgs.nixVersions.stable;
   };
 
-  # Enable unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Automatic upgrades.
   system.autoUpgrade.enable = true;
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-26.05-small";
 
-  # Don’t shutdown when power button is short-pressed
   services = {
-    # logind.settings.Login = ''
-      # HandlePowerKey=ignore
-    # '';
-
     fstrim.enable = true;
   };
 }

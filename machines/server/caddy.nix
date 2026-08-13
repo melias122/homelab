@@ -8,8 +8,8 @@ in
   age.secrets.cf-dns-api-token.file = ../../secrets/cf-dns-api-token.age;
 
   # Certs come from lego, not caddy's cloudflare plugin: withPlugins pins a hash
-  # over the whole xcaddy-vendored Go tree, which changes on any go/xcaddy bump
-  # and fails the entire system closure, killing autoUpgrade (twice in 2026-08).
+  # over the xcaddy-vendored Go tree, which changes on any go/xcaddy bump and
+  # fails the whole system closure, killing autoUpgrade (twice in 2026-08).
   security.acme = {
     acceptTerms = true;
     defaults.email = "melias122@gmail.com";
@@ -30,9 +30,9 @@ in
   };
 
   # acme-elias.sx.service drops the selfsigned placeholder into certDir on first
-  # run; caddy exits 1 on a missing cert file and the module sets
+  # run; caddy exits 1 on a missing cert and the module sets
   # RestartPreventExitStatus=1, so losing this race keeps caddy down until
-  # started by hand. Not acme-finished-elias.sx.target - this module version
+  # started by hand. Not acme-finished-elias.sx.target: this module version
   # never defines it and systemd silently ignores deps on unknown units.
   systemd.services.caddy = {
     after = [ "acme-elias.sx.service" ];
@@ -45,7 +45,7 @@ in
     # No `email` on purpose: every HTTPS vhost names its cert explicitly. A vhost
     # without a `tls` line falls back to caddy's ACME, which can't do DNS-01.
 
-    # Metrics on localhost:2019/metrics, scraped by monitoring.nix.
+    # Scraped by monitoring.nix.
     globalConfig = ''
       servers {
         metrics
