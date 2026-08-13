@@ -2,19 +2,21 @@ flake-switch-box:
 	nix flake update --flake ./machines/box
 	sudo nixos-rebuild switch --flake ./machines/box
 
+deploy-all: deploy-server deploy-router-home deploy-router
+
 deploy-server:
 	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@server:/etc/nixos --delete
-	ssh root@server -C "ln -s /etc/nixos/machines/server/configuration.nix /etc/nixos && \
+	ssh root@server -C "ln -sf /etc/nixos/machines/server/configuration.nix /etc/nixos && \
 nixos-rebuild switch"
 
 deploy-router:
 	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@router:/etc/nixos --delete
-	ssh root@router -C "ln -s /etc/nixos/machines/router/configuration.nix /etc/nixos/ && \
+	ssh root@router -C "ln -sf /etc/nixos/machines/router/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
 
 deploy-router-home:
 	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@router-home:/etc/nixos --delete
-	ssh root@router-home -C "ln -s /etc/nixos/machines/router-home/configuration.nix /etc/nixos/ && \
+	ssh root@router-home -C "ln -sf /etc/nixos/machines/router-home/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
 
 flake-switch-MacBook-Air:
