@@ -1,0 +1,254 @@
+groups:
+  - name: node
+    rules:
+      - alert: HostDown
+        expr: up{job="node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is unreachable"
+          description: "Prometheus has not been able to scrape {{ $labels.instance }} for 5 minutes."
+
+      - alert: SystemdUnitFailed
+        expr: node_systemd_unit_state{state="failed"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} failed on {{ $labels.instance }}"
+          description: "systemd unit {{ $labels.name }} is in failed state. This also covers the restic-backups-* services."
+
+      - alert: DiskAlmostFull
+        expr: node_filesystem_avail_bytes{fstype=~"ext4|xfs|vfat|zfs"} / node_filesystem_size_bytes < 0.15
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} {{ $labels.mountpoint }} below 15% free"
+          description: "{{ $labels.mountpoint }} ({{ $labels.fstype }}) has {{ $value | humanizePercentage }} space left."
+
+      - alert: LowMemory
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} is low on memory"
+          description: "Less than 10% of memory available for 15 minutes."
+
+      - alert: HighCpu
+        expr: 1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) > 0.9
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} CPU above 90% for 30 minutes"
+
+      - alert: HostRebooted
+        expr: node_time_seconds - node_boot_time_seconds < 600
+        labels:
+          severity: info
+        annotations:
+          summary: "{{ $labels.instance }} rebooted"
+
+  - name: router
+    rules:
+      # pppd removes ppp0 while the PPPoE session is down and the operstate of
+      # ppp devices is not reliable, so instead of node_network_up alert when
+      # the exporter answers but the interface is missing.
+      - alert: WanDown
+        expr: (up{job="node", instance=~"router.*"} == 1) unless on (instance) node_network_mtu_bytes{device="ppp0"}
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} WAN (ppp0) is down"
+
+  - name: zfs
+    rules:
+      - alert: ZfsPoolUnhealthy
+        expr: node_zfs_zpool_state{state!="online"} == 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "zpool {{ $labels.zpool }} on {{ $labels.instance }} is {{ $labels.state }}"
+
+  - name: exporters
+    rules:
+      - alert: ExporterDown
+        expr: up{job!="node"} == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.job }} exporter ({{ $labels.instance }}) is down"
+
+  - name: smart
+    rules:
+      - alert: SmartStatusFailed
+        expr: smartctl_device_smart_status == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SMART health failed on {{ $labels.device }}"
+          description: "smartctl overall-health self-assessment for {{ $labels.device }} is FAILED. Back up and replace the disk."
+
+      - alert: DiskTemperatureHigh
+        expr: smartctl_device_temperature{temperature_type="current"} > 60
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.device }} is at {{ $value }} °C"
+
+  - name: ups
+    rules:
+      - alert: UpsOnBattery
+        expr: apcupsd_battery_time_on_seconds > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "UPS {{ $labels.ups }} is on battery"
+          description: "Mains power has been out for over 2 minutes."
+
+      # time_left is an estimate that legitimately dips with load spikes while
+      # on mains, so only alert on it while actually discharging.
+      - alert: UpsBatteryLow
+        expr: apcupsd_battery_time_on_seconds > 0 and apcupsd_battery_time_left_seconds < 600
+        labels:
+          severity: critical
+        annotations:
+          summary: "UPS {{ $labels.ups }} has less than 10 minutes of runtime left"
+
+  - name: meta
+    rules:
+      # Always firing on purpose: routed to the healthchecks.io webhook, which
+      # alarms from the outside when the pings stop (server/monitoring dead).
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: none
+        annotations:
+          summary: "Dead-man's switch heartbeat"
+
+  - name: blackbox
+    rules:
+      - alert: HttpEndpointDown
+        expr: probe_success{job="blackbox-http"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} does not answer with HTTP 2xx"
+
+      - alert: TlsCertExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry{job="blackbox-http"} - time() < 14 * 86400
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificate for {{ $labels.instance }} expires in less than 14 days"
+          description: "Caddy renews ~30 days before expiry, so renewal has been failing for a while."
+
+      - alert: DnsProbeFailed
+        expr: probe_success{job="blackbox-dns"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "blocky on {{ $labels.instance }} is not answering DNS queries"
+
+      - alert: WanHighLatency
+        expr: avg_over_time(probe_duration_seconds{job="blackbox-icmp", instance="1.1.1.1"}[15m]) > 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WAN latency to 1.1.1.1 above 150 ms for 15 minutes"
+
+      - alert: IcmpPacketLoss
+        expr: avg_over_time(probe_success{job="blackbox-icmp"}[15m]) < 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Over 10% packet loss towards {{ $labels.instance }}"
+
+  - name: backups
+    rules:
+      - alert: ResticBackupStaleLocal
+        expr: time() - restic_backup_last_success_seconds{repo="local"} > 26 * 3600
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Local restic backup has not succeeded for over 26 hours"
+
+      - alert: ResticBackupStaleB2
+        expr: time() - restic_backup_last_success_seconds{repo="b2"} > 35 * 86400
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "B2 restic backup has not succeeded for over 35 days"
+
+      - alert: ZfsScrubTooOld
+        expr: time() - zfs_last_scrub_seconds > 45 * 86400
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "zpool {{ $labels.zpool }} last scrubbed {{ $value | humanizeDuration }} ago"
+
+  - name: frigate
+    rules:
+      - alert: FrigateCameraDown
+        expr: frigate_camera_fps == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Camera {{ $labels.camera }} is not delivering frames"
+
+  - name: temperature
+    rules:
+      - alert: HwTemperatureHigh
+        expr: node_hwmon_temp_celsius > 85
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} {{ $labels.chip }}/{{ $labels.sensor }} at {{ $value }} °C"
+
+  - name: caddy
+    rules:
+      - alert: CaddyHttp5xx
+        expr: sum by (server) (rate(caddy_http_request_duration_seconds_count{code=~"5.."}[10m])) > 0.02
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Caddy is returning 5xx responses (server {{ $labels.server }})"
+
+  - name: blocky
+    rules:
+      - alert: BlockyUpstreamErrors
+        expr: rate(blocky_error_total[15m]) > 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "blocky on {{ $labels.instance }} is failing to resolve via upstreams"
+
+      - alert: UpsBatteryNotCharging
+        expr: apcupsd_battery_time_on_seconds == 0 and apcupsd_battery_charge_percent < 95
+        for: 24h
+        labels:
+          severity: warning
+        annotations:
+          summary: "UPS {{ $labels.ups }} battery has stayed below 95% for a day"
+          description: "On mains but not reaching full charge - the battery or charger may be failing."

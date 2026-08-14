@@ -11,6 +11,7 @@
 
       # roles
       ../../roles/common.nix
+      ../../services/node-exporter.nix
      ../../services/postfix.nix
 
       # services

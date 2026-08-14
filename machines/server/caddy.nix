@@ -9,9 +9,20 @@
       plugins = [
         "github.com/caddy-dns/cloudflare@v0.2.4"
       ];
-      hash = "sha256-8yZDrejNKsaUnUaTUFYbarWNmxafqp2z2rWo+XRsxV8=";
+      # Vendor hash of caddy+plugins; changes when the channel bumps caddy or
+      # Go. On mismatch nixos-upgrade fails with the new hash in the log
+      # ("got: sha256-..."), paste it here.
+      hash = "sha256-7GoH8YLCoPmPExQxoga2FHB58zQDoZVf1BBwkVi0SsQ=";
     };
     email = "melias122@gmail.com";
+
+    # Per-request Prometheus metrics, scraped from the admin endpoint
+    # (localhost:2019/metrics) by machines/server/monitoring.nix.
+    globalConfig = ''
+      servers {
+        metrics
+      }
+    '';
 
     # Contains CF_API_TOKEN for the cloudflare dns plugin.
     environmentFile = config.age.secrets.caddy-env.path;

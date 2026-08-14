@@ -1,0 +1,18 @@
+modules:
+  http_2xx:
+    prober: http
+    http:
+      preferred_ip_protocol: ip4
+
+  icmp:
+    prober: icmp
+    icmp:
+      preferred_ip_protocol: ip4
+
+  # Asks blocky for a well-known name; any NOERROR answer counts.
+  dns:
+    prober: dns
+    dns:
+      query_name: google.com
+      query_type: A
+      preferred_ip_protocol: ip4

@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
 
       ../../roles/common.nix
+      ../../services/node-exporter.nix
       ../../services/postfix.nix
 
       ./apcupsd.nix
@@ -18,6 +19,7 @@
       ./containers.nix
       ./frigate.nix
       ./minidlna.nix
+      ./monitoring.nix
       ./nextcloud.nix
       ./restic.nix
       ./timemachine.nix
