@@ -98,9 +98,6 @@
 
   # Tailscale subnet router
   services.tailscale.useRoutingFeatures = "server";
-  services.tailscale.extraSetFlags = [
-    "--advertise-routes=192.168.1.10/32,192.168.1.11/32,192.168.1.12/32,192.168.1.13/32"
-  ];
 
   environment.systemPackages = with pkgs; [
     conntrack-tools

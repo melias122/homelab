@@ -34,6 +34,20 @@
       reverse_proxy http://100.98.141.25:54443
     '';
 
+    # Devices inform to http://unifi.elias.sx/inform (port 80, no explicit
+    # :8080 in the controller's Override Inform Host). Without this, port 80
+    # 308-redirects to https and the UniFi inform agent drops the POST, so
+    # remote-site APs loop offline. Proxy /inform straight to the inform port;
+    # everything else on :80 keeps redirecting to https.
+    virtualHosts."http://unifi.elias.sx".extraConfig = ''
+      handle /inform* {
+        reverse_proxy http://100.98.141.25:8080
+      }
+      handle {
+        redir https://{host}{uri} permanent
+      }
+    '';
+
     virtualHosts."unifi.elias.sx".extraConfig = ''
       tls {
         dns cloudflare {env.CF_API_TOKEN}

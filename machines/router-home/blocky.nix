@@ -42,6 +42,7 @@
       customDNS.mapping = {
         "frigate.elias.sx" = "192.168.1.45";
         "timemachine.elias.sx" = "192.168.1.45";
+        "unifi.elias.sx" = "192.168.1.45";
       };
 
       blocking = {
