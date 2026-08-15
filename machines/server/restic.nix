@@ -15,6 +15,10 @@
         "/var/lib/unifi/data/backup"
       ];
       extraBackupArgs = [
+        # A check or prune started from the backrest UI holds an exclusive
+        # lock; wait it out instead of failing the nightly backup.
+        "--retry-lock=1h"
+
         "-e public/Movies"
         "-e public/Downloads"
         "-e samba/timemachine"
@@ -30,6 +34,8 @@
       };
       paths = [ "/pool" ];
       extraBackupArgs = [
+        "--retry-lock=1h"
+
         "-e pool/containers"
         "-e pool/nextcloud"
 
