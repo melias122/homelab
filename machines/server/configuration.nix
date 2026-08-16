@@ -71,9 +71,6 @@
 
       # lower 1GbE
       eno1.useDHCP = true;
-
-      # 10GbE
-      enp2s0.useDHCP = true;
     };
 
     nameservers = [
