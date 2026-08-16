@@ -37,8 +37,8 @@
         maxItemsCount = 100000;
       };
 
-      # Split-DNS: LAN klienti bez tailscale sa cez verejny zaznam
-      # (-> tailnet IP) nedostanu, tak ich posleme na LAN IP servera.
+      # Split-DNS: LAN clients without tailscale can't reach these over the
+      # public record (-> tailnet IP), so send them to the server's LAN IP.
       customDNS.mapping = {
         "frigate.elias.sx" = "192.168.1.45";
         "timemachine.elias.sx" = "192.168.1.45";

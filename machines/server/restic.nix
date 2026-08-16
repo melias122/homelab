@@ -13,9 +13,12 @@
       paths = [
         "/pool"
         "/var/lib/unifi/data/backup"
+
+        # State on the root SSD that git can't restore: HA .storage
+        # (pairings, entities), samba passdb, caddy certs.
+        "/var/lib/samba"
+        "/var/lib/caddy"
       ];
-      # Runs `forget --prune` after each nightly backup; without this the
-      # repo grew unbounded (1944 daily snapshots, 2019-2026, 3.09T).
       pruneOpts = [
         "--keep-daily 14"
         "--keep-weekly 8"
@@ -27,9 +30,6 @@
         # lock; wait it out instead of failing the nightly backup.
         "--retry-lock=1h"
 
-        "-e public/Movies"
-        "-e public/Downloads"
-        "-e samba/timemachine"
         "-e timemachine"
       ];
     };
@@ -45,12 +45,10 @@
         "--retry-lock=1h"
 
         "-e pool/containers"
-        "-e pool/nextcloud"
-
-        "-e public/Movies"
-        "-e public/Downloads"
-        "-e samba/timemachine"
         "-e timemachine"
+      ];
+      pruneOpts = [
+        "--keep-monthly 12"
       ];
     };
   };

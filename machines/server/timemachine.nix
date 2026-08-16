@@ -26,7 +26,7 @@
 
   services.samba = {
     enable = true;
-    openFirewall = false; # firewall je vypnuty, server je za NAT
+    openFirewall = false; # firewall is off, the server sits behind NAT
     settings = {
       global = {
         security = "user";
@@ -50,7 +50,7 @@
         "fruit:wipe_intentionally_left_blank_rfork" = "yes";
         "fruit:delete_empty_adfiles" = "yes";
 
-        # Durable handles: TM session prezije kratke vypadky/sleep.
+        # Durable handles: the TM session survives short dropouts/sleep.
         "durable handles" = "yes";
         "kernel oplocks" = "no";
         "kernel share modes" = "no";
@@ -65,7 +65,8 @@
         "read only" = "no";
         "inherit acls" = "yes";
         "fruit:time machine" = "yes";
-        # Strop pre TM, aby nezral pool; ZFS refquota=1T je druha poistka.
+        # Cap for TM so it doesn't eat the pool; ZFS refquota=1T is the
+        # second safeguard.
         "fruit:time machine max size" = "950G";
       };
     };

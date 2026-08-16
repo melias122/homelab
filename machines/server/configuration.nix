@@ -97,7 +97,7 @@
     zfs
   ];
 
-  # SMART monitoring diskov (ZED strazi pooly, smartd fyzicke disky).
+  # SMART disk monitoring (ZED watches the pools, smartd the physical disks).
   services.smartd = {
     enable = true;
     notifications.mail = {
