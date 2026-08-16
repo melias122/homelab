@@ -97,6 +97,15 @@
     zfs
   ];
 
+  # SMART monitoring diskov (ZED strazi pooly, smartd fyzicke disky).
+  services.smartd = {
+    enable = true;
+    notifications.mail = {
+      enable = true;
+      recipient = "martin@elias.sx";
+    };
+  };
+
   # ZFS
   services.zfs = {
     autoScrub.enable = true;
