@@ -14,6 +14,14 @@
         "/pool"
         "/var/lib/unifi/data/backup"
       ];
+      # Runs `forget --prune` after each nightly backup; without this the
+      # repo grew unbounded (1944 daily snapshots, 2019-2026, 3.09T).
+      pruneOpts = [
+        "--keep-daily 14"
+        "--keep-weekly 8"
+        "--keep-monthly 12"
+        "--keep-yearly 3"
+      ];
       extraBackupArgs = [
         # A check or prune started from the backrest UI holds an exclusive
         # lock; wait it out instead of failing the nightly backup.

@@ -36,7 +36,7 @@ in
   services.prometheus.exporters.smartctl = {
     enable = true;
     listenAddress = "100.98.141.25";
-    devices = [ "/dev/sda" "/dev/sdb" "/dev/sdc" "/dev/sdd" "/dev/nvme0n1" ];
+    devices = [ "/dev/sda" "/dev/sdb" "/dev/sdc" "/dev/sdd" "/dev/sde" "/dev/nvme0n1" "/dev/nvme1n1" ];
   };
 
   # UPS metrics from the local apcupsd NIS socket (127.0.0.1:3551).

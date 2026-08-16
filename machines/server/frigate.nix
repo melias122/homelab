@@ -7,7 +7,9 @@
   # upstream only supports the Docker image. Config comes from
   # ./frigate-config.yml in this repo (mounted read-only, so the UI config
   # editor can't write — edit here + redeploy). /pool/frigate/config keeps
-  # only state (frigate.db, model cache), recordings land on pool/frigate.
+  # only state (frigate.db, model cache) and is backed up by restic;
+  # recordings land on the frigate pool (dedicated 6TB surveillance disk,
+  # deliberately NOT backed up — restic only covers /pool).
   # UI: http://server:8971 (authenticated; the initial admin password is
   # printed to the logs on first start: `podman logs frigate`).
   # Camera RTSP password; frigate substitutes {FRIGATE_*} placeholders
@@ -20,7 +22,7 @@
     volumes = [
       "${./frigate-config.yml}:/config.yml:ro"
       "/pool/frigate/config:/config"
-      "/pool/frigate:/media/frigate"
+      "/frigate:/media/frigate"
     ];
 
     environmentFiles = [ config.age.secrets.frigate-env.path ];

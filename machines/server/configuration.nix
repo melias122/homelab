@@ -46,6 +46,7 @@
       "backup"
       "pool"
       "nvme"
+      "frigate"
     ];
 
     # Tune ZFS ARC size
