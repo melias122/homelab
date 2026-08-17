@@ -1,9 +1,13 @@
 flake-switch-box:
 	sudo nixos-rebuild switch --flake ./machines/box
 
-flake-update-box:
+flake-update-switch-box:
 	nix flake update --flake ./machines/box
 	sudo nixos-rebuild switch --flake ./machines/box
+
+flake-update-boot-box:
+	nix flake update --flake ./machines/box
+	sudo nixos-rebuild boot --flake ./machines/box
 
 deploy-all: deploy-server deploy-router-home deploy-router
 

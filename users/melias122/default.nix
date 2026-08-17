@@ -1,4 +1,4 @@
-{ config, pkgs, unstable, home, ... }:
+{ config, pkgs, unstable, ... }:
 
 {
   imports = [
@@ -9,7 +9,8 @@
   home.packages = with pkgs; [
     appimage-run
     awscli2
-    beekeeper-studio # nice SQL browser
+    # unstable: 26.05 has 5.3.4 marked insecure; 6.0.0 is clean and cached
+    unstable.beekeeper-studio # nice SQL browser
     bruno # postman
     curl
     docker-compose
@@ -28,7 +29,10 @@
     natscli
     kodi
     libreoffice
-    redisinsight
+    unstable.pi-coding-agent # AI coding agent, https://pi.dev
+    # unstable: 26.05 has 2.70.0 which depends on EOL nodejs-slim-20 (insecure,
+    # not in binary cache -> compiles nodejs locally); 3.6.0 does not
+    unstable.redisinsight
     ripgrep
     thunderbird
     vlc
@@ -99,9 +103,6 @@
   };
 
   programs = {
-    # Fast terminal emulator
-    alacritty.enable = true;
-
     bash = {
       enable = true;
       historyControl = [
@@ -156,13 +157,6 @@
     ssh = {
       enable = true;
       enableDefaultConfig = false;
-    };
-
-    # Terminal multiplexer
-    tmux = {
-      enable = true;
-      keyMode = "emacs";
-      mouse = true;
     };
   };
 

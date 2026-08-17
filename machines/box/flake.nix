@@ -10,13 +10,15 @@
 
   outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, ... }: let
     system = "x86_64-linux";
+
+    # Single source of truth, referenced by both `pkgs` below and the
+    # NixOS configuration (which builds its own pkgs from the module system).
+    permittedInsecurePackages = [ ];
+
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
-      config.permittedInsecurePackages = [
-        "beekeeper-studio-5.3.4"
-        "nodejs-slim-20.20.2" # bundled by redisinsight; EOL but local-only dev GUI
-      ];
+      config.permittedInsecurePackages = permittedInsecurePackages;
     };
     unstable = import nixpkgs-unstable {
       inherit system;
@@ -36,9 +38,10 @@
 
     nixosConfigurations = {
       box = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         modules = [
           ./.
+          { nixpkgs.config.permittedInsecurePackages = permittedInsecurePackages; }
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

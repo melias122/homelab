@@ -20,7 +20,15 @@
 
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
 
-  # Allow unfree packages
+  # Automatic Nix store garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  # Allow unfree packages.
+  # permittedInsecurePackages is set in flake.nix (single source of truth).
   nixpkgs.config.allowUnfree = true;
 
   # Bootloader.
@@ -91,13 +99,11 @@
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  # User packages are managed by Home Manager (see users/melias122).
   users.users.melias122 = {
     isNormalUser = true;
     description = "Martin Eliáš";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      # No packages here as I am using Home Manager.
-    ];
   };
 
   fonts.packages = with pkgs; [
@@ -106,14 +112,15 @@
     ibm-plex
   ];
 
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
+  # Firewall. Note: services.openssh opens port 22 by default.
   networking.firewall.enable = true;
 
-  # Firmware updater
+  # Firmware updater + redistributable firmware (also enables AMD microcode updates)
   services.fwupd.enable = true;
+  hardware.enableRedistributableFirmware = true;
+
+  # Periodic TRIM for the NVMe SSD
+  services.fstrim.enable = true;
 
   # Use kanata to remap caps -> ctrl
   services.kanata.enable = true;
@@ -133,11 +140,6 @@
   programs.nix-ld.libraries = with pkgs; [
     # Add any missing dynamic libraries for unpackaged programs
     # here, NOT in environment.systemPackages
-  ];
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "beekeeper-studio-5.3.4"
-    "nodejs-slim-20.20.2" # bundled by redisinsight; EOL but local-only dev GUI
   ];
 
   system.stateVersion = "22.11"; # Did you read the comment? YES!
