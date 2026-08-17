@@ -15,6 +15,9 @@
       ../../services/tailscale.nix
     ];
 
+  # Let the user-session systray control tailscaled without sudo.
+  services.tailscale.extraSetFlags = [ "--operator=melias122" ];
+
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
 
   # Allow unfree packages

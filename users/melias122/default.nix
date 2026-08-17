@@ -17,6 +17,7 @@
     emacs30
     gcc
     gh # GitHub CLI
+    gnomeExtensions.appindicator # tray icons in GNOME (needed by tailscale systray)
     gnumake
     google-chrome
     graphviz
@@ -32,6 +33,7 @@
     thunderbird
     vlc
     vscode
+    wl-clipboard # clipboard actions in tailscale systray (Wayland)
     xarchiver
     zip unzip
 
@@ -76,6 +78,23 @@
     "." = {
       source = ./home/.config;
       recursive = true;
+    };
+
+    # Official tailscale systray (beta); autostart declaratively instead of
+    # `tailscale configure systray --enable-startup` which writes outside nix.
+    "autostart/tailscale-systray.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=Tailscale Systray
+      Exec=/run/current-system/sw/bin/tailscale systray
+    '';
+  };
+
+  dconf.settings = {
+    "org/gnome/shell" = {
+      enabled-extensions = [
+        "appindicatorsupport@rgcjonas.gmail.com"
+      ];
     };
   };
 
