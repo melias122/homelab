@@ -49,6 +49,7 @@
       ];
       pruneOpts = [
         "--keep-monthly 12"
+        "--keep-yearly 3"
       ];
     };
   };
