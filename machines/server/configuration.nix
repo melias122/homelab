@@ -16,7 +16,6 @@
       ./apcupsd.nix
       ./avahi.nix
       ./caddy.nix
-      ./containers.nix
       ./frigate.nix
       ./minidlna.nix
       ./monitoring.nix
