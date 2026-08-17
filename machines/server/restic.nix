@@ -44,7 +44,6 @@
       extraBackupArgs = [
         "--retry-lock=1h"
 
-        "-e pool/containers"
         "-e timemachine"
       ];
       pruneOpts = [
