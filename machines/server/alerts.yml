@@ -52,6 +52,20 @@ groups:
         annotations:
           summary: "{{ $labels.instance }} rebooted"
 
+      # server's eno1 flapped 9x over 2026-08-19/20 and took every frigate RTSP
+      # stream down at once. A marginal cable re-negotiates in ~3s, so the link
+      # reads healthy by the time anyone looks - only the counter shows it.
+      # 2 changes = 1 down/up pair, so >2 means a second flap within 15m; a lone
+      # reseat or switch reboot stays quiet. ppp/virtual devices flap by design.
+      - alert: NetworkLinkFlapping
+        expr: increase(node_network_carrier_changes_total{device!~"lo|ppp.*|veth.*|podman.*|tailscale.*"}[15m]) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }} {{ $labels.device }} link is flapping"
+          description: "{{ $labels.device }} logged {{ $value }} carrier changes in 15 minutes - usually a marginal cable, connector or switch port."
+
   - name: router
     rules:
       # pppd removes ppp0 while the PPPoE session is down and the operstate of

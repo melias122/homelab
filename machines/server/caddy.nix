@@ -12,7 +12,7 @@
       # Vendor hash of caddy+plugins; changes when the channel bumps caddy or
       # Go. On mismatch nixos-upgrade fails with the new hash in the log
       # ("got: sha256-..."), paste it here.
-      hash = "sha256-7GoH8YLCoPmPExQxoga2FHB58zQDoZVf1BBwkVi0SsQ=";
+      hash = "sha256-PWadA5qr/gR2qDcT8l8u1Xku7LM2HIfWTLOkzezCYy0=";
     };
     email = "melias122@gmail.com";
 

@@ -51,6 +51,15 @@
     ];
 
     extraOptions = [
+      # Hard memory cap: a frigate.capture worker leaked to 9.5G on 2026-08-20
+      # (after eno1 link flaps killed all RTSP streams at once), drained the
+      # host's 8G swap and tripped the global OOM killer, which shot cam2's
+      # capture worker and left that camera dead. Steady state is ~1.2G, worst
+      # legit case ~2.5G with tmpfs+shm full, so 6G only ever catches a runaway.
+      # memory-swap == memory keeps the container out of swap entirely, so a
+      # leak can no longer starve HA/Nextcloud/mongo on this host.
+      "--memory=6g"
+      "--memory-swap=6g"
       # Decoded frames are handed between processes through /dev/shm.
       "--shm-size=256m"
       # Recording segments are buffered in tmpfs before moving to disk.

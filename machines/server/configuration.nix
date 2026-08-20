@@ -31,8 +31,12 @@
     loader.grub = {
       enable = true;
 
-      # Define on which hard drive you want to install Grub.
-      device = "/dev/sda";
+      # Boot SSD (ADATA SU800NS38, MBR, holds / and /boot/grub), addressed by
+      # by-id because /dev/sd* enumeration drifts: after the 2026-08-18 reboot
+      # /dev/sda became a 3.6T ZFS pool disk, so grub-install failed with
+      # "no BIOS Boot Partition ... cross-disk install" and every
+      # switch-to-configuration aborted before activating any unit.
+      device = "/dev/disk/by-id/ata-ADATA_SU800NS38_2I4820029397";
     };
 
     # Enable ZFS.
