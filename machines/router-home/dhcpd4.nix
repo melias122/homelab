@@ -29,6 +29,12 @@
       { MACAddress = "30:dd:aa:77:b2:1b"; Address = "192.168.1.53"; } # cam4
 
       { MACAddress = "02:00:00:00:01:08"; Address = "192.168.1.108"; } # reserved: Dahua factory default
+
+      # Komfovent C6 rekuperacia. The unit has this address configured
+      # statically in its own web UI, so the lease is never requested; it is
+      # here only to keep the dynamic pool (.100-.250) from handing .119 to
+      # somebody else and breaking the Modbus TCP connection from HA.
+      { MACAddress = "00:12:13:16:80:02"; Address = "192.168.1.119"; } # rekuperacia (Komfovent C6)
     ];
   };
 }

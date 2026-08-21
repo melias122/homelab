@@ -26,6 +26,12 @@
 
           noipdefault
           defaultroute
+
+          # Ask for IPV6CP on the session (link-local only, probe whether
+          # Telekom supports v6 on PPPoE). If the BRAS rejects it, pppd
+          # continues IPv4-only, so this is safe to keep enabled. Routable
+          # v6 would additionally need RA/DHCPv6-PD handling on ppp0.
+          +ipv6
         '';
       };
     };
