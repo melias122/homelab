@@ -10,7 +10,7 @@ the repo; per-secret recipients (machine SSH host keys + personal keys) are decl
 
 Edit an existing secret (opens $EDITOR):
 
-    make edit-secret name=caddy-env
+    make edit-secret name=cf-dns-api-token
 
 Add a new secret:
 

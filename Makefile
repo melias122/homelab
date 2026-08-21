@@ -30,7 +30,11 @@ flake-switch-MacBook-Air:
 	nix flake update --flake ./machines/MacBook-Air
 	nix develop ./machines/MacBook-Air --command apply-nix-darwin-configuration
 
-# usage: make edit-secret name=caddy-env
+# upload the pracovna wall-button script (tap/hold -> Hue) to the Shelly 1PM
+deploy-shelly-pracovna:
+	./shelly/deploy.sh
+
+# usage: make edit-secret name=cf-dns-api-token
 edit-secret:
 	cd secrets && nix run github:ryantm/agenix/0.15.0 -- -e $(name).age -i ~/.ssh/id_ed25519
 

@@ -16,7 +16,7 @@ in
   "restic-password.age".publicKeys = users ++ [ server ];
   "restic-b2-env.age".publicKeys = users ++ [ server ];
   "nextcloud-adminpass.age".publicKeys = users ++ [ server ];
-  "caddy-env.age".publicKeys = users ++ [ server ];
+  "cf-dns-api-token.age".publicKeys = users ++ [ server ];
   "frigate-env.age".publicKeys = users ++ [ server ];
   "grafana-secret-key.age".publicKeys = users ++ [ server ];
   "hc-ping-url.age".publicKeys = users ++ [ server ];
