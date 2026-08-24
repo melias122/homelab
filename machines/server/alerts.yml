@@ -185,12 +185,12 @@ groups:
           summary: "WAN latency to 1.1.1.1 above 150 ms for 15 minutes"
 
       - alert: IcmpPacketLoss
-        expr: avg_over_time(probe_success{job="blackbox-icmp"}[15m]) < 0.9
+        expr: avg_over_time(probe_success{job="blackbox-icmp"}[15m]) < 0.8
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Over 10% packet loss towards {{ $labels.instance }}"
+          summary: "Over 20% packet loss towards {{ $labels.instance }}"
 
   - name: backups
     rules:
