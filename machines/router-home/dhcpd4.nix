@@ -28,6 +28,15 @@
       { MACAddress = "30:dd:aa:77:ab:af"; Address = "192.168.1.52"; } # cam3
       { MACAddress = "30:dd:aa:77:b2:1b"; Address = "192.168.1.53"; } # cam4
 
+      # Gree AC units. HA discovers them by broadcast, so these leases are not
+      # needed for the integration -- they keep the units at a known address.
+      { MACAddress = "c0:39:37:8c:93:39"; Address = "192.168.1.80"; } # klima-obyvacka
+      { MACAddress = "c0:39:37:b1:2b:52"; Address = "192.168.1.81"; } # klima-pracovna
+      { MACAddress = "c0:39:37:b0:db:ee"; Address = "192.168.1.82"; } # klima-spalna
+      { MACAddress = "c0:39:37:b0:82:2c"; Address = "192.168.1.83"; } # klima-detska-prizemie
+      { MACAddress = "c0:39:37:a0:f0:e3"; Address = "192.168.1.84"; } # klima-detska-poschodie
+      { MACAddress = "c0:39:37:a1:41:cf"; Address = "192.168.1.85"; } # klima-izba3
+
       { MACAddress = "02:00:00:00:01:08"; Address = "192.168.1.108"; } # reserved: Dahua factory default
 
       # Komfovent C6 rekuperacia. The unit has this address configured
