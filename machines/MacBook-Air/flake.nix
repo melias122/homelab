@@ -83,17 +83,13 @@
                   "redis-insight"
                   "tailscale-app"
                   "the-unarchiver"
-                  "tunnelblick"
                   "visual-studio-code"
                   "karabiner-elements"
                   "steam"
                 ];
 
                 brews = [
-                  {
-                    name = "colima";
-                    restart_service = true;
-                  }
+                  "colima"
                   "gh"
                   "go"
                   "gopls"
