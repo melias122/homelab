@@ -76,8 +76,8 @@
       eno1.useDHCP = true;
     };
 
+    # No 100.100.100.100 here: tailscaled reads it back as a system resolver and forwards to itself (DNS loop).
     nameservers = [
-      "100.100.100.100"
       "192.168.1.1"
     ];
 
@@ -126,6 +126,9 @@
   services.tailscale.extraSetFlags = [
     "--accept-routes"
   ];
+
+  # Tailscale sets MagicDNS per-interface via resolved instead of rewriting resolv.conf.
+  services.resolved.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
