@@ -23,6 +23,9 @@
 
   hardware.cpu.intel.updateMicrocode = true;
 
+  # "switch" restarts networkd/pppd mid-night when glibc bumps (~10s WAN outage); apply on reboot like deploy.
+  system.autoUpgrade.operation = "boot";
+
   boot = {
     loader.grub = {
       enable = true;
