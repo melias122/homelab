@@ -13,7 +13,10 @@
 
     # Single source of truth, referenced by both `pkgs` below and the
     # NixOS configuration (which builds its own pkgs from the module system).
-    permittedInsecurePackages = [ ];
+    permittedInsecurePackages = [
+      "beekeeper-studio-6.0.5"
+      "electron-41.10.6"
+    ];
 
     pkgs = import nixpkgs {
       inherit system;
@@ -23,6 +26,7 @@
     unstable = import nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
+      config.permittedInsecurePackages = permittedInsecurePackages;
     };
   in {
     # home-manager only config

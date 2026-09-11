@@ -1,6 +1,9 @@
 flake-switch-box:
 	sudo nixos-rebuild switch --flake ./machines/box
 
+flake-boot-box:
+	sudo nixos-rebuild boot --flake ./machines/box
+
 flake-update-switch-box:
 	nix flake update --flake ./machines/box
 	sudo nixos-rebuild switch --flake ./machines/box

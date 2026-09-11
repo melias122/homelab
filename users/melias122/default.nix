@@ -12,10 +12,12 @@
     # unstable: 26.05 has 5.3.4 marked insecure; 6.0.0 is clean and cached
     unstable.beekeeper-studio # nice SQL browser
     bruno # postman
+    unstable.codex # OpenAI Codex CLI
     curl
     docker-compose
     editorconfig-core-c
     emacs30
+    firefox
     gcc
     gh # GitHub CLI
     gnomeExtensions.appindicator # tray icons in GNOME (needed by tailscale systray)
