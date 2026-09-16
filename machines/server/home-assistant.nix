@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Morning tilt at max(sunrise, `morning`): winter sunrises would open the
+  # Morning tilt at max(sunrise, `morningAt`): winter sunrises would open the
   # blinds in the dark, summer ones at 05:00. A manual move starts the blind's
   # timer and the automations leave it alone while it runs; the timer expires
   # on its own, so a forgotten override can't disable the automation for good.
@@ -19,10 +19,9 @@ let
     { key = "zaluzie_detska_prizemie_zahrada"; cover = "cover.zaluzia_detska_prizemie_zahrada"; label = "Žalúzie detská prízemie záhrada"; }
   ];
 
-  morningOf = b: b.morning or "07:00:00";
   manualDurationOf = b: b.manualDuration or "02:00:00";
-  morningHM = b: builtins.substring 0 5 (morningOf b);
-  morningLabel = b: lib.removePrefix "0" (morningHM b);
+  # Jinja expression, zero-padded HH:MM: 06:30 Mon–Fri, 07:00 Sat/Sun.
+  morningAt = "('07:00' if now().weekday() >= 5 else '06:30')";
 
   manualTimer = c: "timer.${c.key}_manual";
 
@@ -145,18 +144,19 @@ let
 
   mkMorning = b: {
     id = "${b.key}_vychod";
-    alias = "${b.label}: ráno odklopiť lamely, nie pred ${morningLabel b}";
+    alias = "${b.label}: ráno odklopiť lamely, nie pred 6:30 (víkend 7:00)";
     # Both moments trigger; the conditions let only the later one through.
+    # `now()` makes HA re-render the template every minute, so it fires once.
     triggers = [
       { trigger = "sun"; event = "sunrise"; }
-      { trigger = "time"; at = morningOf b; }
+      { trigger = "template"; value_template = "{{ now().strftime('%H:%M') == ${morningAt} }}"; }
     ];
     conditions = lib.optional (!(b.morningIgnoresManual or false)) (manualIdle b)
     ++ [
-      # Zero-padded HH:MM compares as a string; `>=` lets the exact-time trigger pass.
+      # String compare; `>=` lets the exact-time trigger pass.
       {
         condition = "template";
-        value_template = "{{ now().strftime('%H:%M') >= '${morningHM b}' }}";
+        value_template = "{{ now().strftime('%H:%M') >= ${morningAt} }}";
       }
       # The sunrise event fires at elevation ~ -0.833°.
       {
