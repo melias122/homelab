@@ -328,4 +328,22 @@ in
       ];
     };
   };
+
+  # autoUpgrade can die between "stopping" and "starting" units (2026-09-20:
+  # systemd 260.2→260.4 reexec hung past the 180s limit, ~45 units incl. HA
+  # stayed down 3h). Re-run the switch for the now-current generation to start
+  # them, and flip the deadman check to failed so healthchecks alerts.
+  systemd.services.nixos-upgrade.onFailure = [ "nixos-upgrade-recover.service" ];
+  systemd.services.nixos-upgrade-recover = {
+    path = [ pkgs.curl ];
+    serviceConfig = {
+      Type = "oneshot";
+      LoadCredential = [ "hc-ping-url:${config.age.secrets.hc-ping-url.path}" ];
+    };
+    script = ''
+      curl -fsS -m 10 --retry 3 --data-raw "nixos-upgrade failed, re-running switch-to-configuration" \
+        "$(< "$CREDENTIALS_DIRECTORY/hc-ping-url")/fail" || true
+      /run/current-system/bin/switch-to-configuration switch
+    '';
+  };
 }
