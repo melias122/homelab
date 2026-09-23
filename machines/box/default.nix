@@ -15,6 +15,9 @@
   services.tailscale.extraSetFlags = [ "--operator=melias122" ];
 
   nix.settings.experimental-features = [ "flakes" "nix-command" ];
+  # Prebuilt llm-agents packages; without it they build locally.
+  nix.settings.extra-substituters = [ "https://cache.numtide.com" ];
+  nix.settings.extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
 
   nix.gc = {
     automatic = true;

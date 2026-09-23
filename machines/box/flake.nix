@@ -6,9 +6,11 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # No nixpkgs follows: keeps their CI-tested pin and cache.numtide.com hits.
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
-  outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, ... }: let
+  outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, llm-agents, ... }: let
     system = "x86_64-linux";
 
     # Shared by the pkgs below and the NixOS module system, which builds its own pkgs.
@@ -27,11 +29,12 @@
       config.allowUnfree = true;
       config.permittedInsecurePackages = permittedInsecurePackages;
     };
+    agents = llm-agents.packages.${system};
   in {
     homeConfigurations = {
       melias122 = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        extraSpecialArgs = { inherit unstable; };
+        extraSpecialArgs = { inherit unstable agents; };
         modules = [
           ../../users/melias122
         ];
@@ -48,7 +51,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit unstable; };
+            home-manager.extraSpecialArgs = { inherit unstable agents; };
             home-manager.users.melias122 = import ../../users/melias122;
           }
         ];

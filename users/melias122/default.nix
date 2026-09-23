@@ -1,4 +1,4 @@
-{ config, pkgs, unstable, ... }:
+{ config, pkgs, unstable, agents, ... }:
 
 {
   imports = [
@@ -12,7 +12,7 @@
     # unstable: 26.05 has 5.3.4 marked insecure
     unstable.beekeeper-studio
     bruno
-    unstable.codex
+    agents.codex
     curl
     docker-compose
     editorconfig-core-c
@@ -124,7 +124,7 @@
 
     opencode = {
       enable = true;
-      package = unstable.opencode;
+      package = agents.opencode;
       settings = {
         permission = {
           external_directory = {
@@ -139,7 +139,7 @@
 
     claude-code = {
       enable = true;
-      package = unstable.claude-code;
+      package = agents.claude-code;
     };
 
 
