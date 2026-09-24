@@ -31,7 +31,7 @@
     natscli
     kodi
     libreoffice
-    unstable.pi-coding-agent
+    agents.pi
     # unstable: 26.05 has 2.70.0 which depends on EOL nodejs-slim-20 (insecure,
     # not in binary cache -> compiles nodejs locally); 3.6.0 does not
     # unstable.redisinsight
