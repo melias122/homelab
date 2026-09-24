@@ -12,7 +12,7 @@
     # unstable: 26.05 has 5.3.4 marked insecure
     unstable.beekeeper-studio
     bruno
-    agents.codex
+    unstable.codex
     curl
     docker-compose
     editorconfig-core-c
