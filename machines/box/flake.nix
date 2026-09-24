@@ -15,7 +15,7 @@
 
     # Shared by the pkgs below and the NixOS module system, which builds its own pkgs.
     permittedInsecurePackages = [
-      "beekeeper-studio-6.0.5"
+      "beekeeper-studio-6.1.1"
       "electron-41.10.6"
     ];
 
