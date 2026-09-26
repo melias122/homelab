@@ -1,0 +1,295 @@
+# Mastertherm heat pump, read through the pGDx touch controller (192.168.1.86:502,
+# Modbus TCP, no auth, unit id ignored). Reverse-engineered 2026-09-26.
+#
+# The pGDx exposes the pCO variables as one flat holding-register block
+# (PDU address, exporter address = 3 + 5-digit PDU):
+#   analog   A_n -> PDU n + 1   (value x10, int16)
+#   digital  D_n -> PDU n + 501 (0/1 in a full register, so int16 not bool)
+#   integer  I_n -> PDU n + 997
+# Variable names follow the cloud API (masterthermconnect/datamapread.py);
+# verified against live values: heating curve, DHW setpoint, drive rps/power,
+# compressor/DHW flags while running. The pCO5/pGD OEM manual (sw_41, cerbos.ee)
+# lists parameters by the same A/I codes. Coils and input registers are empty.
+modules:
+  - name: mastertherm
+    protocol: tcp/ip
+    metrics:
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: water_actual }        # A_1 control probe, sits before the condenser = return side
+        address: 300002
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: outside }             # A_3
+        address: 300004
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: water_requested }     # A_5 (DHW / aux target when those run)
+        address: 300006
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: condensing }          # A_33
+        address: 300034
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: evaporating }         # A_80
+        address: 300081
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: discharge }             # A_2 compressor discharge
+        address: 300003
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: suction }               # A_77 compressor suction
+        address: 300078
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: source_water }        # A_189, likely: 20.5 stagnant with the well pump off, 9.1 while running
+        address: 300190
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: dhw_actual }          # A_126
+        address: 300127
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: dhw_requested }       # A_129
+        address: 300130
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: room_requested }      # A_210
+        address: 300211
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: room_actual }         # A_211
+        address: 300212
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: heating_requested }   # A_212 (heating/cooling water target)
+        address: 300213
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      # Heating circuit 1 (hc1) is off here, no room thermostat, no name. The cloud
+      # map's A_90 "hc1 water temp" mirrors A_77 (suction) on this unit, so it is out.
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: hc1_water_requested }   # A_96
+        address: 300097
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+
+      # Refrigerant circuit, matched 2026-09-26 against the pGDx service screen
+      # while idle (superheat = discharge - condensing / suction - evaporating).
+      - name: mastertherm_superheat_kelvin
+        help: Refrigerant superheat (A_n / 10)
+        labels: { side: suction }               # A_78
+        address: 300079
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_superheat_kelvin
+        help: Refrigerant superheat (A_n / 10)
+        labels: { side: discharge }             # A_7
+        address: 300008
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_pressure_bar
+        help: Refrigerant pressure (A_n / 10)
+        labels: { side: suction }               # A_79
+        address: 300080
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_pressure_bar
+        help: Refrigerant pressure (A_n / 10)
+        labels: { side: discharge }             # A_24
+        address: 300025
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+
+      - name: mastertherm_compressor_speed_rps
+        help: Inverter compressor speed (A_475 / 10)
+        address: 300476
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_compressor_current_amperes
+        help: Inverter drive current (A_476 / 10)
+        address: 300477
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_power_watts
+        help: Inverter drive input power (A_477 in 0.1 kW)
+        address: 300478
+        dataType: int16
+        metricType: gauge
+        factor: 100
+      # Found by diffing idle vs running snapshots on 2026-09-26.
+      - name: mastertherm_compressor_speed_requested_rps
+        help: Requested compressor speed (A_450 / 10, pCO5 OEM manual sw_41)
+        address: 300451
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_eev_steps
+        help: Electronic expansion valve position (I_169), 50 at rest
+        address: 301166
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_drive_voltage_volts
+        help: Inverter output voltage (I_295), 0 at rest and rising with speed
+        address: 301292
+        dataType: int16
+        metricType: gauge
+
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: power_on }             # D_3
+        address: 300504
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: cooling }              # D_4
+        address: 300505
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: compressor }           # D_5
+        address: 300506
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: aux_heater_1 }         # D_6
+        address: 300507
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: aux_heater_2 }         # D_7
+        address: 300508
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: source_pump }          # D_8: fan on A/W, source (well) pump on W/W; I_14 hp_type = 2 = W/W here
+        address: 300509
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: circulation_pump }     # D_10
+        address: 300511
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: error }                # D_20
+        address: 300521
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: three_errors }         # D_21, manual reset needed
+        address: 300522
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: winter }               # D_24
+        address: 300525
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: dhw_heating }          # D_66
+        address: 300567
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: hc1_on }                 # D_212
+        address: 300713
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: hc1_cooling }            # D_213
+        address: 300714
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: hc1_valve }              # D_68 circulation valve
+        address: 300569
+        dataType: int16
+        metricType: gauge
+
+      - name: mastertherm_compressor_runtime_hours
+        help: Compressor run time (I_11)
+        address: 301008
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_compressor_starts
+        help: Compressor starts (I_12 x10)
+        address: 301009
+        dataType: int16
+        metricType: gauge
+        factor: 10
+      - name: mastertherm_pump_runtime_hours
+        help: Circulation pump run time (I_13)
+        address: 301010
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_hp_function
+        help: 0 heating, 1 cooling, 2 auto (I_51)
+        address: 301048
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_room_humidity_percent
+        help: pGDx / pAD humidity (I_185)
+        address: 301182
+        dataType: int16
+        metricType: gauge

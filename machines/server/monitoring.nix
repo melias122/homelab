@@ -96,6 +96,23 @@ in
 
   systemd.tmpfiles.rules = [ "d ${textfileDir} 0755 root root -" ];
 
+  # Mastertherm heat pump: the pGDx touch controller serves the pCO variables over
+  # Modbus TCP, register map in ./mastertherm-modbus.yml. nixpkgs ships the package
+  # but no exporters.modbus module. Multi-target exporter: the scrape job below
+  # passes the device in ?target=.
+  systemd.services.prometheus-modbus-exporter = {
+    description = "Prometheus Modbus exporter";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" "tailscaled.service" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.prometheus-modbus-exporter}/bin/modbus_exporter --config.file=${./mastertherm-modbus.yml} --web.listen-address=100.98.141.25:9602";
+      DynamicUser = true;
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
+
   # Without a seed the staleness alerts fire (or stay blind) until the first timer run.
   system.activationScripts.monitoring-stamps.text = ''
     mkdir -p ${textfileDir}
@@ -220,6 +237,17 @@ in
       {
         job_name = "restic";
         static_configs = [{ targets = [ "100.98.141.25:9753" ]; }];
+      }
+      {
+        job_name = "mastertherm";
+        metrics_path = "/modbus";
+        params = {
+          target = [ "192.168.1.86:502" ];
+          module = [ "mastertherm" ];
+          sub_target = [ "1" ];
+        };
+        scrape_interval = "30s";
+        static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
       }
     ];
 
