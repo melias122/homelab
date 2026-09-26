@@ -8,15 +8,16 @@
 #   integer  I_n -> PDU n + 997
 # Variable names follow the cloud API (masterthermconnect/datamapread.py);
 # verified against live values: heating curve, DHW setpoint, drive rps/power,
-# compressor/DHW flags while running. The pCO5/pGD OEM manual (sw_41, cerbos.ee)
-# lists parameters by the same A/I codes. Coils and input registers are empty.
+# compressor/DHW flags while running. Full variable list with labels (from the
+# mastertherm.online service apps): ./mastertherm-registers.md. Coils and input
+# registers are empty.
 modules:
   - name: mastertherm
     protocol: tcp/ip
     metrics:
       - name: mastertherm_temperature_celsius
         help: Temperature sensor (A_n / 10)
-        labels: { sensor: water_actual }        # A_1 control probe, sits before the condenser = return side
+        labels: { sensor: water_actual }        # A_1 control probe before the condenser = common return into the HP (heating and DHW)
         address: 300002
         dataType: int16
         metricType: gauge
@@ -65,8 +66,37 @@ modules:
         factor: 0.1
       - name: mastertherm_temperature_celsius
         help: Temperature sensor (A_n / 10)
-        labels: { sensor: source_water }        # A_189, likely: 20.5 stagnant with the well pump off, 9.1 while running
+        labels: { sensor: source_water }        # A_189, likely the well probe: 20.5 stagnant with the pump off, 9.1 running; unlabeled in the service apps
         address: 300190
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: discharge_requested }   # A_486 DGT setpoint the EEV control aims for
+        address: 300487
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      # Passive cooling (D_276 = 1 here) and dew point protection.
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: dewpoint }              # A_13 calculated from pGDx humidity
+        address: 300014
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: dewpoint_water_limit }  # A_310 lowest allowed water temp
+        address: 300311
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: passive_cooling_requested } # A_312
+        address: 300313
         dataType: int16
         metricType: gauge
         factor: 0.1
@@ -131,6 +161,20 @@ modules:
         dataType: int16
         metricType: gauge
         factor: 0.1
+      - name: mastertherm_superheat_requested_kelvin
+        help: Requested superheat (A_n / 10)
+        labels: { side: suction }               # A_181
+        address: 300182
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_superheat_requested_kelvin
+        help: Requested superheat (A_n / 10)
+        labels: { side: discharge }             # A_8
+        address: 300009
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
       - name: mastertherm_pressure_bar
         help: Refrigerant pressure (A_n / 10)
         labels: { side: suction }               # A_79
@@ -164,6 +208,12 @@ modules:
         dataType: int16
         metricType: gauge
         factor: 100
+      - name: mastertherm_source_pump_speed_percent
+        help: Source (well) pump speed command (A_313 / 10); holds the last value while the pump is off
+        address: 300314
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
       # Found by diffing idle vs running snapshots on 2026-09-26.
       - name: mastertherm_compressor_speed_requested_rps
         help: Requested compressor speed (A_450 / 10, pCO5 OEM manual sw_41)
@@ -179,6 +229,26 @@ modules:
       - name: mastertherm_drive_voltage_volts
         help: Inverter output voltage (I_295), 0 at rest and rising with speed
         address: 301292
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_drive_dc_voltage_volts
+        help: Drive DC bus voltage (I_296)
+        address: 301293
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_drive_temperature_celsius
+        help: Drive (inverter) temperature (I_297)
+        address: 301294
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_drive_status
+        help: 0 stop, 1 run, 2 alarm (I_298)
+        address: 301295
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_drive_alarm_code
+        help: Drive alarm code (I_299), see mastertherm-registers.md
+        address: 301296
         dataType: int16
         metricType: gauge
 
@@ -234,6 +304,36 @@ modules:
         help: Digital flag (D_n)
         labels: { state: three_errors }         # D_21, manual reset needed
         address: 300522
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: flow_ok }                # D_14, 1 = OK
+        address: 300515
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: high_pressure_ok }       # D_16, 1 = OK
+        address: 300517
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: low_pressure_ok }        # D_17, 1 = OK
+        address: 300518
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: dc_drive_ok }            # D_355, 1 = OK
+        address: 300856
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_state
+        help: Digital flag (D_n)
+        labels: { state: dewpoint_protection }  # D_197, 1 = limiting cooling water temp
+        address: 300698
         dataType: int16
         metricType: gauge
       - name: mastertherm_state
