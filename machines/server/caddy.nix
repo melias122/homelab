@@ -93,5 +93,15 @@ in
 
       reverse_proxy http://100.98.141.25:8971
     '';
+
+    # Tailnet only, no LAN: grafana allows anonymous viewing.
+    virtualHosts."grafana.elias.sx".extraConfig = ''
+      tls ${certDir}/fullchain.pem ${certDir}/key.pem
+
+      @denied not remote_ip 100.64.0.0/10
+      abort @denied
+
+      reverse_proxy http://100.98.141.25:3000
+    '';
   };
 }

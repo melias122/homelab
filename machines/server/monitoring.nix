@@ -270,6 +270,9 @@ in
       server = {
         http_addr = "100.98.141.25";
         http_port = 3000;
+        # Behind caddy: login redirects and links must point at the vhost.
+        domain = "grafana.elias.sx";
+        root_url = "https://grafana.elias.sx/";
       };
 
       # 26.05 requires an explicit secret_key.
