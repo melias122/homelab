@@ -66,7 +66,7 @@ modules:
         factor: 0.1
       - name: mastertherm_temperature_celsius
         help: Temperature sensor (A_n / 10)
-        labels: { sensor: source_water }        # A_189, likely the well probe: 20.5 stagnant with the pump off, 9.1 running; unlabeled in the service apps
+        labels: { sensor: a189 }                # A_189, unidentified: not the well (well is ~12 °C, this reads 9 in heating, 4 in DHW, 20.5 idle = cabinet air); unlabeled in the service apps
         address: 300190
         dataType: int16
         metricType: gauge
@@ -218,6 +218,12 @@ modules:
       - name: mastertherm_compressor_speed_requested_rps
         help: Requested compressor speed (A_450 / 10, pCO5 OEM manual sw_41)
         address: 300451
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_compressor_speed_dhw_max_rps
+        help: Max compressor speed in DHW mode (A_16 / 10); 60 = DHW runs flat out, compressor map floors at 35-40 rps for 33-36 bar
+        address: 300017
         dataType: int16
         metricType: gauge
         factor: 0.1
