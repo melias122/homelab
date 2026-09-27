@@ -443,6 +443,8 @@ in
       "shopping_list"
       # Faster zlib compression.
       "isal"
+      # /api/prometheus, scraped by ./monitoring.nix.
+      "prometheus"
 
       "gree"
       "shelly"
@@ -473,6 +475,13 @@ in
 
       # No firewall on this host: the tailnet bind is what keeps HA off the LAN.
       http.server_host = "100.98.141.25";
+
+      # Only what Grafana shows next to the heat pump: the TUV circulation pump
+      # plug (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh).
+      prometheus.filter.include_entities = [
+        "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
+        "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
+      ];
 
       # `unique_id` puts it in the entity registry, so it can get an area in the UI.
       cover = [

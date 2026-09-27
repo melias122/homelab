@@ -55,6 +55,16 @@
           "instant": true
         },
         {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_switch_state{entity=\"switch.zasuvka_technicka_obehove_cerpadlo_tuv\"}",
+          "legendFormat": "cirkulácia TÚV",
+          "instant": true
+        },
+        {
           "refId": "D",
           "datasource": {
             "type": "prometheus",
@@ -568,15 +578,6 @@
           "legendFormat": "sanie"
         },
         {
-          "refId": "F",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "mastertherm_temperature_celsius{sensor=\"source_water\"}",
-          "legendFormat": "studničná voda"
-        },
-        {
           "refId": "G",
           "datasource": {
             "type": "prometheus",
@@ -825,6 +826,15 @@
           },
           "expr": "mastertherm_state{state=\"dhw_heating\"}",
           "legendFormat": "ohrev TÚV"
+        },
+        {
+          "refId": "L",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_switch_state{entity=\"switch.zasuvka_technicka_obehove_cerpadlo_tuv\"}",
+          "legendFormat": "cirkulácia TÚV"
         },
         {
           "refId": "E",
@@ -1479,7 +1489,7 @@
     {
       "id": 16,
       "type": "timeseries",
-      "title": "Studňa a pasívne chladenie",
+      "title": "Pasívne chladenie a ponorka",
       "gridPos": {
         "x": 12,
         "y": 37,
@@ -1492,15 +1502,6 @@
       },
       "description": "Otáčky ponorky sú povel v %, po vypnutí čerpadla drží poslednú hodnotu. Rosný bod sa počíta z vlhkosti na pGDx, limit vody je najnižšia povolená teplota vody pri chladení.",
       "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "mastertherm_temperature_celsius{sensor=\"source_water\"}",
-          "legendFormat": "studničná voda"
-        },
         {
           "refId": "B",
           "datasource": {

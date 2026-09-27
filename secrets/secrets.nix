@@ -17,6 +17,7 @@ in
   "grafana-secret-key.age".publicKeys = users ++ [ server ];
   "hc-ping-url.age".publicKeys = users ++ [ server ];
   "unpoller-pass.age".publicKeys = users ++ [ server ];
+  "hass-prometheus-token.age".publicKeys = users ++ [ server ];
   "postfix-sasl.age".publicKeys = users ++ [ server router router-home ];
   "pppd-telekom.age".publicKeys = users ++ [ router ];
   "pppd-telekom-home.age".publicKeys = users ++ [ router-home ];

@@ -42,6 +42,12 @@ in
     configFile = ./blackbox.yml;
   };
 
+  # HA long-lived access token (profile -> security) for /api/prometheus.
+  age.secrets.hass-prometheus-token = {
+    file = ../../secrets/hass-prometheus-token.age;
+    owner = "prometheus";
+  };
+
   # Password of the read-only UniFi admin "unpoller".
   age.secrets.unpoller-pass = {
     file = ../../secrets/unpoller-pass.age;
@@ -155,6 +161,9 @@ in
   services.prometheus = {
     enable = true;
     listenAddress = "100.98.141.25";
+    # The build-time promtool check stats credentials_file, and /run/agenix
+    # only exists on the running system.
+    checkConfig = "syntax-only";
 
     # The server needs its FQDN: the bare name resolves to scoped IPv6
     # self-entries, not the tailnet IPv4 the exporters are bound to.
@@ -248,6 +257,14 @@ in
         };
         scrape_interval = "30s";
         static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
+      }
+      {
+        # 15s: the TUV pump runs 90 s at a time, a 60 s scrape could miss a run.
+        job_name = "hass";
+        metrics_path = "/api/prometheus";
+        authorization.credentials_file = config.age.secrets.hass-prometheus-token.path;
+        scrape_interval = "15s";
+        static_configs = [{ targets = [ "100.98.141.25:8123" ]; }];
       }
     ];
 
