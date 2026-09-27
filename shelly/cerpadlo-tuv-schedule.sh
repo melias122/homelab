@@ -22,13 +22,16 @@ shelly_auth "$SHELLY" "$PASS"
 run() { printf '%-22s ' "$1"; shelly_rpc "$SHELLY" "{\"id\":0,\"method\":\"$1\",\"params\":$2}"; echo; }
 job() { run Schedule.Create "{\"enable\":true,\"timespec\":\"$1\",\"calls\":[{\"method\":\"switch.set\",\"params\":{\"id\":0,$2}}]}"; }
 
-ON90='"on":true,"toggle_after":90'
+ON180='"on":true,"toggle_after":180'
 DAYS=SUN,MON,TUE,WED,THU,FRI,SAT
-every() { seq -s, 0 "$1" 59 | sed "s/,$//"; } # minute list with the given step (BSD seq leaves a trailing comma)
+list() { seq -s, "$@" | sed "s/,$//"; }  # BSD seq leaves a trailing comma
+every() { list 0 "$1" 59; }               # minute list with the given step
 
 run Schedule.DeleteAll '{}'
 job "0 45 5 * * $DAYS"                                  '"on":true,"toggle_after":300' # morning pre-heat
-job "0 $(every 5) 6,7,8,9,19,20,21,22 * * $DAYS"        "$ON90"                        # peaks: 90 s every 5 min (showers 6-9, 19-22)
-job "0 $(every 15) 10,11,12,13,14,15,16,17,18,23 * * $DAYS" "$ON90"                    # off-peak: 90 s every 15 min
+# 2026-09-27: one flat cadence instead of 5 min peaks / 15 min off-peak. The
+# loop takes ~150 s to turn over (return pipe measured by hand), so the old
+# 90 s runs never brought hot water to the far bathrooms.
+job "0 $(every 15) $(list 6 23) * * $DAYS"                "$ON180"                       # 180 s every 15 min, 6:00-23:45
 job "0 1 0 * * $DAYS"                                   '"on":false'                   # safety off after midnight
 run Schedule.List '{}'
