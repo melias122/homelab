@@ -1,10 +1,11 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Morning tilt at max(sunrise, `morningAt`): winter sunrises would open the
-  # blinds in the dark, summer ones at 05:00. A manual move starts the blind's
-  # timer and the automations leave it alone while it runs; the timer expires
-  # on its own, so a forgotten override can't disable the automation for good.
+  # Close just before dark, morning tilt at max(civil dawn, `morningAt`): winter
+  # dawns would open the blinds in the dark, summer ones at 04:00. A manual
+  # move starts the blind's timer and the automations leave it alone while it
+  # runs; the timer expires on its own, so a forgotten override can't disable
+  # the automation for good.
   # Tilt works because all five Shellys have slat control calibrated.
   blinds = [
     { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; }
@@ -20,6 +21,11 @@ let
   ];
 
   manualDurationOf = b: b.manualDuration or "02:00:00";
+  # Sun elevations. Closing at sunset left it light outside (18:30 on
+  # 2026-09-30); at -5° (18:56 that day) it's nearly dark and no light gets in.
+  # Tilt from civil dawn, before that it's still dark.
+  duskElevation = -5;
+  dawnElevation = -6;
   # Jinja expression, zero-padded HH:MM: 06:30 Mon–Fri, 07:00 Sat/Sun.
   morningAt = "('07:00' if now().weekday() >= 5 else '06:30')";
 
@@ -132,9 +138,9 @@ let
 
   mkSunset = b: {
     id = "${b.key}_zapad";
-    alias = "${b.label}: dole pri západe slnka";
+    alias = "${b.label}: dole po zotmení";
     triggers = [
-      { trigger = "sun"; event = "sunset"; }
+      { trigger = "numeric_state"; entity_id = "sun.sun"; attribute = "elevation"; below = duskElevation; }
     ];
     conditions = [ (manualIdle b) ];
     actions = [
@@ -148,7 +154,7 @@ let
     # Both moments trigger; the conditions let only the later one through.
     # `now()` makes HA re-render the template every minute, so it fires once.
     triggers = [
-      { trigger = "sun"; event = "sunrise"; }
+      { trigger = "numeric_state"; entity_id = "sun.sun"; attribute = "elevation"; above = dawnElevation; }
       { trigger = "template"; value_template = "{{ now().strftime('%H:%M') == ${morningAt} }}"; }
     ];
     conditions = lib.optional (!(b.morningIgnoresManual or false)) (manualIdle b)
@@ -158,12 +164,11 @@ let
         condition = "template";
         value_template = "{{ now().strftime('%H:%M') >= ${morningAt} }}";
       }
-      # The sunrise event fires at elevation ~ -0.833°.
       {
         condition = "numeric_state";
         entity_id = "sun.sun";
         attribute = "elevation";
-        above = -1;
+        above = dawnElevation;
       }
       # Shelly fw 2.0.0 answers a slat-only GoToPosition on a partly raised
       # blind by driving it down for ~15 s (hsportal 2026-08-26, 2026-09-03).
