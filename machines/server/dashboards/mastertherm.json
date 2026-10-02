@@ -1500,7 +1500,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Otáčky ponorky sú povel v %, po vypnutí čerpadla drží poslednú hodnotu. Rosný bod sa počíta z vlhkosti na pGDx, limit vody je najnižšia povolená teplota vody pri chladení.",
+      "description": "Otáčky ponorky sú analógový výstup v % (skrytá os 0–100 %, hodnota v tooltipe). Rosný bod sa počíta z vlhkosti na pGDx, limit vody je najnižšia povolená teplota vody pri chladení.",
       "targets": [
         {
           "refId": "B",
@@ -1559,7 +1559,7 @@
               },
               {
                 "id": "custom.axisPlacement",
-                "value": "right"
+                "value": "hidden"
               },
               {
                 "id": "min",
@@ -1579,6 +1579,86 @@
             "matcher": {
               "id": "byRegexp",
               "options": "limit.*|.*požadovaná"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "COP",
+      "gridPos": {
+        "x": 0,
+        "y": 42,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Len kompresor, bez ponoriek a obehového čerpadla; zobrazené pri otáčkach nad 30 rps.\nPodľa TČ: výkon / príkon, ktoré počíta pCO (A444 / A445). Výkon je modelový, vychádza okolo 80 % Carnota, preto je optimistický.\nOdhad: 0,475 × Carnot z kondenzačnej a výparnej teploty.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_heating_capacity_watts / mastertherm_power_input_watts and on() mastertherm_compressor_speed_rps > 30",
+          "legendFormat": "podľa TČ"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "0.475 * (mastertherm_temperature_celsius{sensor=\"condensing\"} + 273.15) / ignoring(sensor) (mastertherm_temperature_celsius{sensor=\"condensing\"} - ignoring(sensor) mastertherm_temperature_celsius{sensor=\"evaporating\"}) and on() mastertherm_compressor_speed_rps > 30",
+          "legendFormat": "odhad (0,475 × Carnot)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 1,
+          "min": 0,
+          "custom": {
+            "fillOpacity": 10,
+            "spanNulls": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "odhad (0,475 × Carnot)"
             },
             "properties": [
               {

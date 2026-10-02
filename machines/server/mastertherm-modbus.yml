@@ -66,7 +66,14 @@ modules:
         factor: 0.1
       - name: mastertherm_temperature_celsius
         help: Temperature sensor (A_n / 10)
-        labels: { sensor: a189 }                # A_189, unidentified: not the well (well is ~12 °C, this reads 9 in heating, 4 in DHW, 20.5 idle = cabinet air); unlabeled in the service apps
+        labels: { sensor: a188 }                # A_188, unidentified: 10.5 running, 2.8 idle; undocumented
+        address: 300189
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: a189 }                # A_189, unidentified: not well water (well ~12 °C; 9 in heating, 4.3 in DHW = below evaporating, 20.5 idle within 2 min); undocumented
         address: 300190
         dataType: int16
         metricType: gauge
@@ -208,9 +215,31 @@ modules:
         dataType: int16
         metricType: gauge
         factor: 100
+      # A_444/A_445 per the Mastertherm supervisor table (2016). Capacity looks
+      # modelled, not measured: 11.9 / 1.3 kW at 32/5.5 °C cond/evap is ~80 % of Carnot.
+      - name: mastertherm_heating_capacity_watts
+        help: Heating capacity calculated by the pCO (A_444 in 0.1 kW)
+        address: 300445
+        dataType: int16
+        metricType: gauge
+        factor: 100
+      - name: mastertherm_power_input_watts
+        help: Compressor power input (A_445 in 0.1 kW), tracks A_477
+        address: 300446
+        dataType: int16
+        metricType: gauge
+        factor: 100
+      # A_313 (used before) is the passive-cooling brine pump speed: it sat at 65
+      # while the pump was really driven at 88.
       - name: mastertherm_source_pump_speed_percent
-        help: Source (well) pump speed command (A_313 / 10); holds the last value while the pump is off
-        address: 300314
+        help: Source (well) pump analog output (A_19 / 10, "fan" on A/W)
+        address: 300020
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_circulation_pump_speed_percent
+        help: Circulation pump analog output (A_21 / 10)
+        address: 300022
         dataType: int16
         metricType: gauge
         factor: 0.1
@@ -255,6 +284,11 @@ modules:
       - name: mastertherm_drive_alarm_code
         help: Drive alarm code (I_299), see mastertherm-registers.md
         address: 301296
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_alarm_code
+        help: Active alarm code (I_36), 0 = none
+        address: 301033
         dataType: int16
         metricType: gauge
 

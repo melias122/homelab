@@ -9,10 +9,37 @@ Modbus TCP on the pGDx (192.168.1.86:502), holding registers, PDU address:
 `A_n -> n+1` (value x10), `D_n -> 501+n`, `I_n -> 997+n`. Exporter config:
 [mastertherm-modbus.yml](./mastertherm-modbus.yml).
 
-Caveats on our unit: `A90/A91` (HC1 water) mirror `A77` (suction) and `A433` (brine
-temperature) mirrors `A126` (DHW), because HC1 and brine control are not configured.
-`A189` behaves like the well (source) water probe but has no label in these apps.
-Unknown but compressor-linked: `A188`, `A444`, `A445`.
+Caveats on our unit: `A90/A91` (HC1 water) mirror `A77` (suction), `A433` (brine) and
+`A202` (heating tank) mirror `A126` (DHW), `A440` (cpc probe) mirrors `A3`, because
+those functions are not configured.
+`A188`/`A189` are unlabeled everywhere and unidentified. `A188`: 10.5 running, 2.8 idle.
+`A189` is not well water: 8.9 in heating but 4.3 in DHW (3 K below evaporating), back to
+cabinet air (20.5) within 2 min of a stop.
+
+## Supervisor table (Mastertherm, AQ30i pCO5, 2016)
+
+`supervisor_13082016_Supervisor.html`: BMS address = variable index, same numbering
+and meaning as above for every code we use. Older SW: no `A182-A189`, `D84`, `D88`,
+`D166`, `I44`, `I79`, `I160`. It has `A500-A542` and `D496-D524` (EVI etc.), which
+fall outside our flat Modbus block. MemType `T` = settings (likely retained memory,
+don't write cyclically), `X` = runtime; its R/W column means nothing (probes are R/W).
+Speeds are labelled % there, they are rps.
+
+```
+Heating capacity (A444) kW x10, calculated (11.9 at 1.3 kW input, ~80 % of Carnot)
+Power input (A445) kW x10, tracks A477
+Fan analog out speed (A19) %   = source (well) pump output on W/W
+Pump analog out speed (A21) %  = circulation pump output
+Alarm active code (I36)
+Clock: hour (I201), minute (I202), second (I203), day (I204), month (I205), year (I206), weekday (I207)
+  (2026-09-27 the pCO was 2 h 33 min behind)
+Tariff (HDO) digital input (D15); D74/D75/D76 = tariff control enable for heater/compressor/SHW
+Pump circulation time (I8) = also minimum compressor ON time
+Aux heater outdoor limit (A39) compares the geometric outdoor temperature (A34)
+Superheat (A174) = suction superheat setpoint
+Drive online > 60 s (D358); drive temperature (I297) = Power+ drive
+Crankcase heater DGT setpoint (A192) °C
+```
 
 ## Pump Settings (Heat Pump Settings, aid 13)
 
@@ -259,7 +286,7 @@ Compressors rotation (D206)
 Delay of the 2nd compressor start (I209) s
 Pump before compressor (I9) s
 Pump after compressor (I10) s
-Remote ON/OFF compressor (D75), auxiliary heater (D74), sanitary hot water (D76)
+Remote ON/OFF compressor (D75), auxiliary heater (D74), sanitary hot water (D76)  (tariff/HDO control)
 Maximum time in SHW mode (I53) min
 Minimum time in H/C mode (I54) min
 Total compressor starts (I12) x10
