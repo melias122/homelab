@@ -15,17 +15,17 @@ flake-update-boot-box:
 deploy-all: deploy-server deploy-router-home deploy-router
 
 deploy-server:
-	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@server:/etc/nixos --delete
+	rsync -avh --exclude={'.git','flake*','*oddin*','work-*'} --delete-excluded . root@server:/etc/nixos --delete
 	ssh root@server -C "ln -sf /etc/nixos/machines/server/configuration.nix /etc/nixos && \
 nixos-rebuild switch"
 
 deploy-router:
-	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@router:/etc/nixos --delete
+	rsync -avh --exclude={'.git','flake*','*oddin*','work-*'} --delete-excluded . root@router:/etc/nixos --delete
 	ssh root@router -C "ln -sf /etc/nixos/machines/router/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
 
 deploy-router-home:
-	rsync -avh --exclude={'.git','flake*','*oddin*'} --delete-excluded . root@router-home:/etc/nixos --delete
+	rsync -avh --exclude={'.git','flake*','*oddin*','work-*'} --delete-excluded . root@router-home:/etc/nixos --delete
 	ssh root@router-home -C "ln -sf /etc/nixos/machines/router-home/configuration.nix /etc/nixos/ && \
 nixos-rebuild boot"
 

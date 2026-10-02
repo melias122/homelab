@@ -72,7 +72,8 @@ in
   # B2 freshness comes from the textfile stamp below.
   services.prometheus.exporters.restic = {
     enable = true;
-    listenAddress = "100.98.141.25";
+    # Runs as root (below), so keep it off the network; prometheus is local.
+    listenAddress = "127.0.0.1";
     repository = "/backup/restic";
     passwordFile = config.age.secrets.restic-password.path;
     refreshInterval = 3600;
@@ -245,7 +246,7 @@ in
       }
       {
         job_name = "restic";
-        static_configs = [{ targets = [ "100.98.141.25:9753" ]; }];
+        static_configs = [{ targets = [ "127.0.0.1:9753" ]; }];
       }
       {
         job_name = "mastertherm";

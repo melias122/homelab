@@ -25,7 +25,8 @@
     };
 
     # No firewall on this host: the bind addresses are what keeps this off the
-    # internet. Web access goes through caddy; these are for WebRTC/RTSP.
+    # internet. Web access goes through caddy (split-DNS covers the LAN). RTSP has
+    # no auth, so it stays off the flat LAN; only WebRTC is published there.
     ports = [
       "100.98.141.25:8971:8971" # web UI + API (authenticated)
       "100.98.141.25:8554:8554" # go2rtc RTSP restream
@@ -33,8 +34,6 @@
       "100.98.141.25:8555:8555/udp"
       # Internal UNAUTHENTICATED API, tailnet only (the cameras live on the LAN).
       "100.98.141.25:5000:5000"
-      "192.168.1.45:8971:8971"
-      "192.168.1.45:8554:8554"
       "192.168.1.45:8555:8555/tcp"
       "192.168.1.45:8555:8555/udp"
     ];
