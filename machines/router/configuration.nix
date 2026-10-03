@@ -8,6 +8,7 @@
       ../../roles/common.nix
       ../../services/node-exporter.nix
       ../../services/postfix.nix
+      ../../services/router-upgrade.nix
 
       ./blocky.nix
       ./dhcpd4.nix
@@ -16,9 +17,6 @@
     ];
 
   hardware.cpu.intel.updateMicrocode = true;
-
-  # "switch" restarts networkd/pppd mid-night when glibc bumps (~10s WAN outage); apply on reboot like deploy.
-  system.autoUpgrade.operation = "boot";
 
   boot = {
     loader.grub = {
