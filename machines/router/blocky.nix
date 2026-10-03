@@ -10,6 +10,9 @@
       ports.http = 4000;
       prometheus.enable = true;
 
+      # Console log floods the journal (4G/24d), boot logs rotate away.
+      queryLog.type = "none";
+
       upstreams.groups = {
         default = [
           "https://dns.quad9.net/dns-query"
