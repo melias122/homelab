@@ -46,6 +46,10 @@
     ];
   };
 
+  # Without resolved, tailscaled reads upstream DNS from resolv.conf right after
+  # resume, before NM has written the DHCP server, and SERVFAILs until a LAN toggle.
+  services.resolved.enable = true;
+
   time.timeZone = "Europe/Bratislava";
 
   i18n.defaultLocale = "en_US.UTF-8";
