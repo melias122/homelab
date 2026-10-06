@@ -389,7 +389,7 @@
           }
         ]
       },
-      "description": "Znížený prietok nie je porucha: ECO s blokovaním ohrevu/chladenia stiahne ventilátory na minimum, keď prívod nevie udržať v rozsahu ECO min/max (napr. vonku > 24 °C).",
+      "description": "Znížený prietok nie je porucha: ECO s blokovaním ohrevu/chladenia stiahne ventilátory na minimum, keď prívod nevie udržať v rozsahu ECO min/max (ECO max prívodu = 26 °C, nastavené na jednotke).",
       "options": {
         "reduceOptions": {
           "calcs": [
