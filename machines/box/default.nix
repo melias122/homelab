@@ -25,6 +25,12 @@
     options = "--delete-older-than 30d";
   };
 
+  # Not HM programs.claude-code.settings: that replaces ~/.claude/settings.json with a
+  # read-only symlink and drops the hooks/plugins Claude Code and Orca write there.
+  environment.etc."claude-code/managed-settings.json".text = builtins.toJSON {
+    attribution.pr = "";
+  };
+
   # permittedInsecurePackages is set in flake.nix (single source of truth).
   nixpkgs.config.allowUnfree = true;
 
