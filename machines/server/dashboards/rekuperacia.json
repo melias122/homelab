@@ -914,8 +914,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_heat_exchanger_efficiency\"}",
-          "legendFormat": "účinnosť výmenníka"
+          "expr": "100 * (homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"} - on() homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_exhaust_temperature\"}) / (homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"} - on() mastertherm_temperature_celsius{sensor=\"outside\"} > 6) and on() homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_heat_exchanger\"} >= 99",
+          "legendFormat": "účinnosť na strane výfuku"
         },
         {
           "refId": "C",
@@ -969,7 +969,7 @@
           "mode": "multi"
         }
       },
-      "description": "Jednotka prietok nemeria (prietok % = otáčky %), zamrznutú mriežku nevidí priamo. Podozrivé pri mraze: skok zanesenia filtra, rast účinnosti a čidlo vonku v nasávaní teplejšie ako čidlo TČ (pomalý vzduch sa ohreje v potrubí). Neoverené na skutočnej udalosti."
+      "description": "Jednotka prietok nemeria (prietok % = otáčky %), zamrznutú mriežku nevidí priamo. Podozrivé pri mraze: skok zanesenia filtra, pokles účinnosti na strane výfuku (odťah − výfuk) / (odťah − vonku podľa TČ), len pri výmenníku na 100 % a rozdiele > 6 °C, bežne ~55–59 %; hlásená účinnosť je pri 100 % zastropená na 87 %; a čidlo vonku v nasávaní teplejšie ako čidlo TČ (pomalý vzduch sa ohreje v potrubí). Neoverené na skutočnej udalosti."
     }
   ]
 }
