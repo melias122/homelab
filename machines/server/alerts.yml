@@ -226,6 +226,43 @@ groups:
         annotations:
           summary: "Camera {{ $labels.camera_name }} is not delivering frames"
 
+  # Inter-switch LAG (rack-24 25+26 <-> rack-16-poe 17+18). With two members a
+  # dead or flapping DAC no longer stalls the LAN, so the blackbox alerts stay
+  # quiet (2026-10-05 the trunk flapped 10G/1G for days). unpoller has no
+  # link-down counter and drops ports that are down, so gaps stand in for it.
+  - name: switch
+    rules:
+      - alert: SwitchTrunkSlow
+        expr: unpoller_device_port_port_speed_bps{port_name=~"SFP.*"} < 10e9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} port {{ $labels.port_num }} runs at {{ $value | humanize }}bps instead of 10G"
+          description: "SFP+ trunk member negotiated below 10G - reseat or replace the DAC."
+
+      - alert: SwitchTrunkMemberDown
+        expr: count by (name) (unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}) < 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} has only {{ $value }} of 2 SFP+ trunk links up"
+          description: "The LAG runs on a single DAC. Both down is caught by HostDown/IcmpPacketLoss instead."
+
+      # A port missing from some successful unpoller scrapes was down at that
+      # moment; also fires once when a cable is plugged in.
+      - alert: SwitchTrunkFlapping
+        expr: >-
+          count_over_time(unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}[15m])
+            < on () group_left sum_over_time(up{job="unpoller"}[15m])
+          or changes(unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}[15m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} port {{ $labels.port_num }} link is flapping"
+          description: "SFP+ trunk member went down or renegotiated its speed in the last 15 minutes."
+
   - name: temperature
     rules:
       - alert: HwTemperatureHigh
