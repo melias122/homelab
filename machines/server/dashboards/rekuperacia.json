@@ -31,7 +31,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_outdoor_temperature\"}",
-          "legendFormat": "vonku",
+          "legendFormat": "zvonku",
           "instant": true
         },
         {
@@ -41,7 +41,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_supply_temperature\"}",
-          "legendFormat": "prívod",
+          "legendFormat": "do domu",
           "instant": true
         },
         {
@@ -51,7 +51,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"}",
-          "legendFormat": "odťah",
+          "legendFormat": "z domu",
           "instant": true
         },
         {
@@ -61,7 +61,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_exhaust_temperature\"}",
-          "legendFormat": "výfuk",
+          "legendFormat": "von",
           "instant": true
         }
       ],
@@ -108,7 +108,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_supply_fan\"}",
-          "legendFormat": "prívod",
+          "legendFormat": "do domu",
           "instant": true
         },
         {
@@ -118,7 +118,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_extract_fan\"}",
-          "legendFormat": "odťah",
+          "legendFormat": "z domu",
           "instant": true
         }
       ],
@@ -389,7 +389,7 @@
           }
         ]
       },
-      "description": "Znížený prietok nie je porucha: ECO s blokovaním ohrevu/chladenia stiahne ventilátory na minimum, keď prívod nevie udržať v rozsahu ECO min/max (ECO max prívodu = 26 °C, nastavené na jednotke).",
+      "description": "Znížený prietok nie je porucha: ECO s blokovaním ohrevu/chladenia stiahne ventilátory na minimum, keď vzduch do domu nevie udržať v rozsahu ECO min/max (ECO max = 26 °C, nastavené na jednotke).",
       "options": {
         "reduceOptions": {
           "calcs": [
@@ -422,7 +422,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_outdoor_temperature\"}",
-          "legendFormat": "vonku"
+          "legendFormat": "zvonku"
         },
         {
           "refId": "B",
@@ -431,7 +431,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_supply_temperature\"}",
-          "legendFormat": "prívod"
+          "legendFormat": "do domu"
         },
         {
           "refId": "C",
@@ -440,7 +440,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"}",
-          "legendFormat": "odťah"
+          "legendFormat": "z domu"
         },
         {
           "refId": "D",
@@ -449,7 +449,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_exhaust_temperature\"}",
-          "legendFormat": "výfuk"
+          "legendFormat": "von"
         }
       ],
       "fieldConfig": {
@@ -470,7 +470,7 @@
           "mode": "multi"
         }
       },
-      "description": "Odťah ≈ teplota v dome. Výfuk je vzduch po výmenníku, ide von."
+      "description": "„Z domu“ ≈ teplota v dome. „Von“ je ten istý vzduch po odovzdaní tepla vo výmenníku."
     },
     {
       "id": 7,
@@ -494,7 +494,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_supply_fan\"}",
-          "legendFormat": "ventilátor prívod"
+          "legendFormat": "ventilátor do domu"
         },
         {
           "refId": "B",
@@ -503,7 +503,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_extract_fan\"}",
-          "legendFormat": "ventilátor odťah"
+          "legendFormat": "ventilátor z domu"
         },
         {
           "refId": "C",
@@ -512,7 +512,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_supply_flow\"}",
-          "legendFormat": "prietok prívod"
+          "legendFormat": "prietok do domu"
         },
         {
           "refId": "D",
@@ -521,7 +521,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_extract_flow\"}",
-          "legendFormat": "prietok odťah"
+          "legendFormat": "prietok z domu"
         }
       ],
       "fieldConfig": {
@@ -915,7 +915,7 @@
             "uid": "prometheus"
           },
           "expr": "100 * (homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"} - on() homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_exhaust_temperature\"}) / (homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"} - on() mastertherm_temperature_celsius{sensor=\"outside\"} > 6) and on() homeassistant_sensor_unit_percent{entity=\"sensor.rekuperacia_heat_exchanger\"} >= 99",
-          "legendFormat": "účinnosť na strane výfuku"
+          "legendFormat": "účinnosť (z domu → von)"
         },
         {
           "refId": "C",
@@ -924,7 +924,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_outdoor_temperature\"} - on() mastertherm_temperature_celsius{sensor=\"outside\"}",
-          "legendFormat": "vonku: rekuperácia − TČ"
+          "legendFormat": "zvonku: rekuperácia − TČ"
         }
       ],
       "fieldConfig": {
@@ -938,7 +938,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "vonku: rekuperácia − TČ"
+              "options": "zvonku: rekuperácia − TČ"
             },
             "properties": [
               {
@@ -969,7 +969,7 @@
           "mode": "multi"
         }
       },
-      "description": "Jednotka prietok nemeria (prietok % = otáčky %), zamrznutú mriežku nevidí priamo. Podozrivé pri mraze: skok zanesenia filtra, pokles účinnosti na strane výfuku (odťah − výfuk) / (odťah − vonku podľa TČ), len pri výmenníku na 100 % a rozdiele > 6 °C, bežne ~55–59 %; hlásená účinnosť je pri 100 % zastropená na 87 %; a čidlo vonku v nasávaní teplejšie ako čidlo TČ (pomalý vzduch sa ohreje v potrubí). Neoverené na skutočnej udalosti."
+      "description": "Jednotka prietok nemeria (prietok % = otáčky %), zamrznutú mriežku nevidí priamo. Podozrivé pri mraze: skok zanesenia filtra, pokles účinnosti (z domu − von) / (z domu − zvonku podľa TČ), len pri výmenníku na 100 % a rozdiele > 6 °C, bežne ~55–59 %; hlásená účinnosť je pri 100 % zastropená na 87 %; a čidlo „zvonku“ v nasávaní teplejšie ako čidlo TČ (pomalý vzduch sa ohreje v potrubí). Neoverené na skutočnej udalosti."
     }
   ]
 }
