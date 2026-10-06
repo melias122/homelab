@@ -481,11 +481,16 @@ in
       # No firewall on this host: the tailnet bind is what keeps HA off the LAN.
       http.server_host = "100.98.141.25";
 
-      # Only what Grafana shows next to the heat pump: the TUV circulation pump
-      # plug (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh).
+      # Only what Grafana shows: the TUV circulation pump plug next to the heat
+      # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
+      # Komfovent, whose only Modbus client stays HA.
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
+      ];
+      prometheus.filter.include_entity_globs = [
+        "sensor.rekuperacia_*"
+        "binary_sensor.rekuperacia_*"
       ];
 
       # `unique_id` puts it in the entity registry, so it can get an area in the UI.
