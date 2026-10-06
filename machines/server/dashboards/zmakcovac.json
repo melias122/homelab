@@ -79,7 +79,7 @@
       "gridPos": {
         "x": 4,
         "y": 0,
-        "w": 5,
+        "w": 6,
         "h": 5
       },
       "datasource": {
@@ -156,11 +156,11 @@
     },
     {
       "type": "stat",
-      "title": "Voda",
+      "title": "Voda za deň",
       "gridPos": {
-        "x": 9,
-        "y": 0,
-        "w": 5,
+        "x": 0,
+        "y": 5,
+        "w": 8,
         "h": 5
       },
       "datasource": {
@@ -215,9 +215,9 @@
       "type": "stat",
       "title": "Regenerácia",
       "gridPos": {
-        "x": 14,
+        "x": 10,
         "y": 0,
-        "w": 4,
+        "w": 6,
         "h": 5
       },
       "datasource": {
@@ -272,9 +272,9 @@
       "type": "stat",
       "title": "Stav",
       "gridPos": {
-        "x": 18,
+        "x": 16,
         "y": 0,
-        "w": 6,
+        "w": 8,
         "h": 5
       },
       "datasource": {
@@ -361,11 +361,11 @@
     },
     {
       "type": "stat",
-      "title": "Voda za mesiac a rok",
+      "title": "Voda za mesiac",
       "gridPos": {
-        "x": 0,
+        "x": 8,
         "y": 5,
-        "w": 24,
+        "w": 8,
         "h": 5
       },
       "datasource": {
@@ -380,7 +380,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_water_l{entity=\"sensor.zmakcovac_total_water_used\"} / on() homeassistant_sensor_duration_d{entity=\"sensor.zmakcovac_days_in_operation\"} * 30.44 / 1000",
-          "legendFormat": "priemer za mesiac",
+          "legendFormat": "priemer",
           "instant": true
         },
         {
@@ -389,28 +389,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "homeassistant_sensor_water_l{entity=\"sensor.zmakcovac_total_water_used\"} / on() homeassistant_sensor_duration_d{entity=\"sensor.zmakcovac_days_in_operation\"} * 365 / 1000",
-          "legendFormat": "priemer za rok",
-          "instant": true
-        },
-        {
-          "refId": "C",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
           "expr": "homeassistant_sensor_volume_l{entity=\"sensor.zmakcovac_average_daily_water_use\"} * 30.44 / 1000",
-          "legendFormat": "odhad na mesiac",
-          "instant": true
-        },
-        {
-          "refId": "D",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "homeassistant_sensor_volume_l{entity=\"sensor.zmakcovac_average_daily_water_use\"} * 365 / 1000",
-          "legendFormat": "odhad na rok",
+          "legendFormat": "odhad",
           "instant": true
         }
       ],
@@ -426,8 +406,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "odhad.*"
+              "id": "byName",
+              "options": "odhad"
             },
             "properties": [
               {
@@ -450,8 +430,82 @@
         "colorMode": "value",
         "textMode": "value_and_name"
       },
-      "description": "Priemer = celkové počítadlo zmäkčovača / dni prevádzky. Odhad = aktuálny denný priemer zmäkčovača (posledné týždne) × 30,44 alebo 365.",
+      "description": "Priemer = celkové počítadlo zmäkčovača / dni prevádzky. Odhad = aktuálny denný priemer zmäkčovača (posledné týždne).",
       "id": 6
+    },
+    {
+      "type": "stat",
+      "title": "Voda za rok",
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_water_l{entity=\"sensor.zmakcovac_total_water_used\"} / on() homeassistant_sensor_duration_d{entity=\"sensor.zmakcovac_days_in_operation\"} * 365 / 1000",
+          "legendFormat": "priemer",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_volume_l{entity=\"sensor.zmakcovac_average_daily_water_use\"} * 365 / 1000",
+          "legendFormat": "odhad",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "odhad"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name"
+      },
+      "description": "Priemer = celkové počítadlo zmäkčovača / dni prevádzky. Odhad = aktuálny denný priemer zmäkčovača (posledné týždne).",
+      "id": 7
     },
     {
       "type": "timeseries",
@@ -504,7 +558,7 @@
           "mode": "multi"
         }
       },
-      "id": 7
+      "id": 8
     },
     {
       "type": "timeseries",
@@ -580,7 +634,7 @@
         }
       },
       "description": "Pokles = spotrebovaná zmäkčená voda, skok na 100 % = regenerácia. Dáta prichádzajú z cloudu každých 30 min, krátku regeneráciu nemusí zachytiť.",
-      "id": 8
+      "id": 9
     },
     {
       "type": "timeseries",
@@ -634,7 +688,7 @@
         }
       },
       "description": "Soľ sa míňa len pri regenerácii, preto stĺpce len v dňoch regenerácie.",
-      "id": 9
+      "id": 10
     },
     {
       "type": "timeseries",
@@ -712,7 +766,7 @@
           "mode": "multi"
         }
       },
-      "id": 10
+      "id": 11
     },
     {
       "type": "timeseries",
@@ -784,7 +838,7 @@
         }
       },
       "description": "Vek dát = ako dávno zmäkčovač naposledy poslal hodnoty do cloudu. Nad 24 h integrácia hlási zastarané dáta.",
-      "id": 11
+      "id": 12
     }
   ]
 }
