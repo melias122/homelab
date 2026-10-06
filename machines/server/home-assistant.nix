@@ -95,6 +95,28 @@ let
     };
   };
 
+  # EcoWater zmakcovac (192.168.1.91, Ayla module). No local API, the Ayla
+  # cloud of the "EcoWater Wifi Manager" app is the only source. Hydrolink
+  # Home accounts need ha-ecowater-hydrolink instead. No HACS on this host.
+  ecowater-cloud = pkgs.buildHomeAssistantComponent rec {
+    owner = "andrewtryder";
+    domain = "ecowater_cloud";
+    version = "0.7.3";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "andrewtryder";
+      repo = "ha-ecowater-cloud";
+      tag = "v${version}";
+      hash = "sha256-ZAj2Zk4pRsWxrSym+7m/G+lDpuoQBiQ3dvbhxLHpbZE=";
+    };
+
+    meta = {
+      description = "Home Assistant integration for EcoWater cloud-connected water softeners";
+      homepage = "https://github.com/andrewtryder/ha-ecowater-cloud";
+      license = pkgs.lib.licenses.mit;
+    };
+  };
+
   mkManualDetector = c: {
     id = "${c.key}_manual_detekcia";
     alias = "${c.label}: zapamätať manuálny zásah";
@@ -467,6 +489,7 @@ in
       pkgs.home-assistant-custom-components.localtuya # https://github.com/xZetsubou/hass-localtuya
       komfovent # https://github.com/lnagel/hass-komfovent
       ezviz-hp7 # https://github.com/Bobsilvio/ezviz_hp7
+      ecowater-cloud # https://github.com/andrewtryder/ha-ecowater-cloud
       pkgs.home-assistant-custom-components.frigate # https://github.com/blakeblackshear/frigate-hass-integration
     ];
 
@@ -483,7 +506,7 @@ in
 
       # Only what Grafana shows: the TUV circulation pump plug next to the heat
       # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
-      # Komfovent, whose only Modbus client stays HA.
+      # Komfovent, whose only Modbus client stays HA, and the cloud-only zmakcovac.
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
@@ -491,6 +514,8 @@ in
       prometheus.filter.include_entity_globs = [
         "sensor.rekuperacia_*"
         "binary_sensor.rekuperacia_*"
+        "sensor.zmakcovac_*"
+        "binary_sensor.zmakcovac_*"
       ];
 
       # `unique_id` puts it in the entity registry, so it can get an area in the UI.

@@ -263,6 +263,52 @@ groups:
           summary: "{{ $labels.name }} port {{ $labels.port_num }} link is flapping"
           description: "SFP+ trunk member went down or renegotiated its speed in the last 15 minutes."
 
+  # EcoWater zmakcovac via HA ecowater_cloud. Its Ayla module can stay on
+  # Wi-Fi yet drop off the cloud for good (2026-09-07 → 10-06, unnoticed until
+  # a power cycle), so watch the cloud side, not the network.
+  - name: zmakcovac
+    rules:
+      - alert: ZmakcovacOffline
+        expr: >-
+          homeassistant_binary_sensor_state{entity="binary_sensor.zmakcovac_device_reported_online"} == 0
+          or homeassistant_binary_sensor_state{entity="binary_sensor.zmakcovac_data_stale"} == 1
+        for: 2h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Zmäkčovač is offline in the EcoWater cloud"
+          description: "No fresh data from the softener. Unplug it for ~30 s; if that doesn't help, redo Wi-Fi setup in the EcoWater Wifi Manager app."
+
+      # Polls every 30 min; a broken login or cloud API leaves the last values
+      # in place, so the offline alert above would stay quiet.
+      - alert: ZmakcovacIntegrationFailing
+        expr: time() - homeassistant_sensor_timestamp_seconds{entity="sensor.zmakcovac_integration_last_successful_update"} > 3 * 3600
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HA ecowater_cloud has not updated for {{ $value | humanizeDuration }}"
+          description: "Check the EcoWater Cloud integration in HA (login, region us)."
+
+      - alert: ZmakcovacLowSalt
+        expr: >-
+          homeassistant_sensor_duration_d{entity="sensor.zmakcovac_days_until_out_of_salt"} < 14
+          or homeassistant_binary_sensor_state{entity="binary_sensor.zmakcovac_low_salt_alert"} == 1
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Zmäkčovač: doplniť soľ"
+          description: "Salt runs out in under 14 days or the softener reports low salt."
+
+      - alert: ZmakcovacAlarm
+        expr: homeassistant_binary_sensor_state{entity=~"binary_sensor.zmakcovac_(error_code|depletion|excessive_water_use|flow_monitor|service_reminder)_alert"} == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Zmäkčovač reports {{ $labels.friendly_name }}"
+
   - name: temperature
     rules:
       - alert: HwTemperatureHigh
