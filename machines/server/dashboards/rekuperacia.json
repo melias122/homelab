@@ -360,8 +360,36 @@
             }
           ]
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "nie",
+                        "color": "green"
+                      },
+                      "1": {
+                        "text": "ECO",
+                        "color": "blue"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
+      "description": "Znížený prietok nie je porucha: ECO s blokovaním ohrevu/chladenia stiahne ventilátory na minimum, keď prívod nevie udržať v rozsahu ECO min/max (napr. vonku > 24 °C).",
       "options": {
         "reduceOptions": {
           "calcs": [
