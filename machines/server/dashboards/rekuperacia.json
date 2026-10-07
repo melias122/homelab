@@ -16,7 +16,7 @@
       "gridPos": {
         "x": 0,
         "y": 0,
-        "w": 8,
+        "w": 6,
         "h": 5
       },
       "datasource": {
@@ -91,7 +91,7 @@
       "type": "stat",
       "title": "Ventilátory",
       "gridPos": {
-        "x": 8,
+        "x": 6,
         "y": 0,
         "w": 4,
         "h": 5
@@ -148,7 +148,7 @@
       "type": "stat",
       "title": "Príkon / rekuperované",
       "gridPos": {
-        "x": 12,
+        "x": 10,
         "y": 0,
         "w": 4,
         "h": 5
@@ -221,7 +221,7 @@
       "type": "stat",
       "title": "Filter",
       "gridPos": {
-        "x": 16,
+        "x": 14,
         "y": 0,
         "w": 3,
         "h": 5
@@ -283,13 +283,82 @@
       }
     },
     {
+      "id": 14,
+      "type": "stat",
+      "title": "Sezóna",
+      "gridPos": {
+        "x": 17,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_input_boolean_state{entity=\"input_boolean.rekuperacia_zimny_rezim\"}",
+          "legendFormat": "režim",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Leto",
+                  "color": "orange"
+                },
+                "1": {
+                  "text": "Zima",
+                  "color": "blue"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "textMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
       "id": 5,
       "type": "stat",
       "title": "Chyby",
       "gridPos": {
-        "x": 19,
+        "x": 20,
         "y": 0,
-        "w": 5,
+        "w": 4,
         "h": 5
       },
       "datasource": {

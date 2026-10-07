@@ -565,6 +565,7 @@ in
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
+        "input_boolean.rekuperacia_zimny_rezim"
       ];
       prometheus.filter.include_entity_globs = [
         "sensor.rekuperacia_*"
