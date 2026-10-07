@@ -15,7 +15,7 @@
       "gridPos": {
         "x": 0,
         "y": 0,
-        "w": 4,
+        "w": 5,
         "h": 5
       },
       "datasource": {
@@ -30,7 +30,7 @@
             "uid": "prometheus"
           },
           "expr": "homeassistant_sensor_duration_d{entity=\"sensor.zmakcovac_days_until_out_of_salt\"}",
-          "legendFormat": "dní"
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -67,8 +67,8 @@
           ]
         },
         "colorMode": "value",
-        "textMode": "value_and_name",
-        "graphMode": "area"
+        "textMode": "value",
+        "graphMode": "none"
       },
       "description": "Odhad zmäkčovača z priemernej spotreby soli.",
       "id": 1
@@ -77,7 +77,7 @@
       "type": "stat",
       "title": "Do regenerácie",
       "gridPos": {
-        "x": 4,
+        "x": 5,
         "y": 0,
         "w": 6,
         "h": 5
@@ -215,7 +215,7 @@
       "type": "stat",
       "title": "Regenerácia",
       "gridPos": {
-        "x": 10,
+        "x": 11,
         "y": 0,
         "w": 6,
         "h": 5
@@ -272,9 +272,9 @@
       "type": "stat",
       "title": "Stav",
       "gridPos": {
-        "x": 16,
+        "x": 17,
         "y": 0,
-        "w": 8,
+        "w": 7,
         "h": 5
       },
       "datasource": {
