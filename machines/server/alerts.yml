@@ -250,12 +250,15 @@ groups:
           summary: "{{ $labels.name }} has only {{ $value }} of 2 SFP+ trunk links up"
           description: "The LAG runs on a single DAC. Both down is caught by HostDown/IcmpPacketLoss instead."
 
-      # A port missing from some successful unpoller scrapes was down at that
-      # moment; also fires once when a cable is plugged in.
+      # A port missing while its switch reported other ports was down at that
+      # moment; also fires once when a cable is plugged in. Compared per switch,
+      # not against up: during a UniFi restart (every deploy that bumps it)
+      # unpoller scrapes fine but gets no ports at all.
       - alert: SwitchTrunkFlapping
         expr: >-
-          count_over_time(unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}[15m])
-            < on () group_left sum_over_time(up{job="unpoller"}[15m])
+          count_over_time(unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}[15m:1m])
+            < on (name) group_left
+          count_over_time((count by (name) (unpoller_device_port_port_speed_bps))[15m:1m])
           or changes(unpoller_device_port_port_speed_bps{port_name=~"SFP.*"}[15m]) > 0
         labels:
           severity: warning
