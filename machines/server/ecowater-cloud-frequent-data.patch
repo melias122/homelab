@@ -1,0 +1,69 @@
+--- a/custom_components/ecowater_cloud/backends/ayla/api.py
++++ b/custom_components/ecowater_cloud/backends/ayla/api.py
+@@ -238,6 +238,11 @@
+ 
+         return properties
+ 
++    async def async_request_fresh_data(self, dsn: str) -> None:
++        """Ask the device to upload its live properties, as the app does on open."""
++        url = f"{self._ads_url}/apiv1/dsns/{dsn}/properties/get_frequent_data/datapoints.json"
++        await self._async_request("POST", url, json={"datapoint": {"value": 1}})
++
+     async def async_clear_authentication(self) -> None:
+         """Sign out and clear internal token state."""
+         _LOGGER.debug("Signing out of Ayla API")
+--- a/custom_components/ecowater_cloud/backends/ayla/backend.py
++++ b/custom_components/ecowater_cloud/backends/ayla/backend.py
+@@ -1,5 +1,6 @@
+ """Ayla IoT Platform backend adapter."""
+ 
++import asyncio
+ import datetime
+ import logging
+ from collections.abc import Callable, Coroutine
+@@ -17,6 +18,7 @@
+ )
+ 
+ from .api import AylaApi
++from .exceptions import AylaConnectivityError, AylaProtocolError
+ from .models import AylaDeviceData, AylaPropertyData
+ from .normalization import normalize_device
+ 
+@@ -25,7 +27,10 @@
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
++# Time the device gets to upload after get_frequent_data (old integration: 30 s).
++FRESH_DATA_WAIT = 30
+ 
++
+ class AylaBackend(BackendAdapter):
+     """Async client for the Ayla IoT Platform."""
+ 
+@@ -141,7 +146,6 @@
+         raw_devices = await self._api.async_list_devices()
+ 
+         devices_data = {}
+-        received_at = datetime.datetime.now(datetime.UTC)
+ 
+         for d in raw_devices:
+             dev = cast(AylaDeviceData, d)
+@@ -155,8 +159,18 @@
+                 _LOGGER.warning("Ignoring unsupported device model: %s", oem_model)
+                 continue
+ 
++            # Live properties (water today, capacity, salt) stay frozen in the
++            # cloud until something asks the device for them.
+             try:
++                await self._api.async_request_fresh_data(dsn)
++                await asyncio.sleep(FRESH_DATA_WAIT)
++            except (AylaConnectivityError, AylaProtocolError) as err:
++                _LOGGER.warning("get_frequent_data failed, reading cached data: %s", err)
++
++            try:
+                 raw_props = await self._api.async_get_device_properties(dsn)
++                # Taken after the wait, else the fresh data looks newer than its receipt.
++                received_at = datetime.datetime.now(datetime.UTC)
+                 unwrapped_props: list[AylaPropertyData] = [
+                     cast(AylaPropertyData, p) for p in raw_props
+                 ]

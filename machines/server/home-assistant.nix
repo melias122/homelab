@@ -110,6 +110,11 @@ let
       hash = "sha256-ZAj2Zk4pRsWxrSym+7m/G+lDpuoQBiQ3dvbhxLHpbZE=";
     };
 
+    # Without a get_frequent_data write (the app does it on open) water today,
+    # capacity and salt stay frozen in the cloud for days and the low-salt
+    # alert never fires. Upstream left the force refresh out on purpose.
+    patches = [ ./ecowater-cloud-frequent-data.patch ];
+
     meta = {
       description = "Home Assistant integration for EcoWater cloud-connected water softeners";
       homepage = "https://github.com/andrewtryder/ha-ecowater-cloud";
