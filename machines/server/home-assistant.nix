@@ -238,6 +238,8 @@ let
       { condition = "state"; entity_id = "climate.rekuperacia"; attribute = "preset_mode"; state = "normal"; }
       # See rekuManualDetector: 2026-09-10 set to Normal at 21:07, re-flushed at 21:30.
       { condition = "state"; entity_id = "timer.rekuperacia_manual"; state = "idle"; }
+      # Winter Intensive is 25 °C (rekuSeasonApply), a flush would just recover heat.
+      { condition = "state"; entity_id = "input_boolean.rekuperacia_zimny_rezim"; state = "off"; }
     ];
     actions = [
       { action = "input_boolean.turn_on"; target.entity_id = "input_boolean.rekuperacia_nocne_vetranie"; }
@@ -274,6 +276,54 @@ let
         "then" = [{ action = "climate.set_preset_mode"; target.entity_id = "climate.rekuperacia"; data.preset_mode = "normal"; }];
       }
       { action = "input_boolean.turn_off"; target.entity_id = "input_boolean.rekuperacia_nocne_vetranie"; }
+    ];
+  };
+
+  # Heating season: Normal 23.5 equals the HP room setpoint, so ECO free cooling
+  # (outdoor within ECO min–max, 10–26 °C) would vent heat the HP just made.
+  # 3-day mean (house and floor heating are slow) sampled daily; the HP still
+  # did not heat at a 3-day mean of 14 °C (Sep 2026), hence 12.
+  rekuSeason = {
+    id = "rekuperacia_sezona_prepnut";
+    alias = "Rekuperácia: zimný režim podľa vonkajšej teploty";
+    triggers = [ { trigger = "time"; at = "12:00:00"; } ];
+    actions = [
+      {
+        choose = [
+          {
+            conditions = [ { condition = "numeric_state"; entity_id = "sensor.rekuperacia_vonkajsia_teplota_3d"; below = 12; } ];
+            sequence = [ { action = "input_boolean.turn_on"; target.entity_id = "input_boolean.rekuperacia_zimny_rezim"; } ];
+          }
+          {
+            conditions = [ { condition = "numeric_state"; entity_id = "sensor.rekuperacia_vonkajsia_teplota_3d"; above = 18; } ];
+            sequence = [ { action = "input_boolean.turn_off"; target.entity_id = "input_boolean.rekuperacia_zimny_rezim"; } ];
+          }
+        ];
+      }
+    ];
+  };
+
+  # Driven by the flag, so flipping it by hand in the UI applies too.
+  rekuSeasonApply = {
+    id = "rekuperacia_sezona_nastavit";
+    alias = "Rekuperácia: použiť zimné/letné teploty";
+    mode = "restart";
+    triggers = [
+      # from/to: the restore at HA start must not rewrite the unit.
+      { trigger = "state"; entity_id = "input_boolean.rekuperacia_zimny_rezim"; from = [ "on" "off" ]; to = [ "on" "off" ]; }
+    ];
+    actions = [
+      # Nothing retries a write lost in a ~30 s Modbus dropout.
+      {
+        wait_template = "{{ states('climate.rekuperacia') not in ['unavailable', 'unknown'] }}";
+        timeout = "00:10:00";
+        continue_on_timeout = false;
+      }
+      { variables.zima = "{{ is_state('input_boolean.rekuperacia_zimny_rezim', 'on') }}"; }
+      { action = "number.set_value"; target.entity_id = "number.rekuperacia_normal_temperature"; data.value = "{{ 25 if zima else 23.5 }}"; }
+      { action = "number.set_value"; target.entity_id = "number.rekuperacia_override_temperature"; data.value = "{{ 25 if zima else 23 }}"; }
+      # Summer 10 °C = rekuNightStart flush; in winter a manual Intensive would blow ~10 °C air.
+      { action = "number.set_value"; target.entity_id = "number.rekuperacia_intensive_temperature"; data.value = "{{ 25 if zima else 10 }}"; }
     ];
   };
 
@@ -554,6 +604,25 @@ in
         icon = "mdi:weather-night";
       };
 
+      # See rekuSeason/rekuSeasonApply.
+      input_boolean.rekuperacia_zimny_rezim = {
+        name = "Rekuperácia: zimný režim";
+        icon = "mdi:snowflake";
+      };
+
+      # rekuperacia_ prefix: picked up by the prometheus glob above.
+      sensor = [
+        {
+          platform = "statistics";
+          name = "Rekuperácia vonkajšia teplota 3d";
+          unique_id = "rekuperacia_vonkajsia_teplota_3d";
+          entity_id = "sensor.rekuperacia_outdoor_temperature";
+          # Time-weighted: the sensor only reports changes.
+          state_characteristic = "average_step";
+          max_age.days = 3;
+        }
+      ];
+
       # Split so the UI editor keeps working next to the declarative ones; HA merges labeled blocks.
       "automation ui" = "!include automations.yaml";
       "automation manual" = lib.concatMap (b: [
@@ -565,6 +634,8 @@ in
         rekuNightStart
         rekuNightStop
         rekuManualDetector
+        rekuSeason
+        rekuSeasonApply
         rekuFilterNotify
         rekuFaultNotify
         zvoncekRingNotify
