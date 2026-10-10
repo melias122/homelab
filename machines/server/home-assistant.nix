@@ -511,6 +511,25 @@ let
       }
     ];
   };
+
+  # With nobody home the runs only cool the loop. The schedule stays on the
+  # Shelly (shelly/cerpadlo-tuv-schedule.sh), HA cuts each run within a second;
+  # the off also cancels the run's toggle_after. A dead HA runs the pump as before.
+  tuvNiktoDoma = {
+    id = "obehove_cerpadlo_tuv_nikto_doma";
+    alias = "Obehové čerpadlo TÚV: nebeží, keď nikto nie je doma";
+    triggers = [
+      { trigger = "state"; entity_id = "switch.zasuvka_technicka_obehove_cerpadlo_tuv"; to = "on"; }
+    ];
+    conditions = [
+      # All listed must match, and an unknown phone isn't not_home, so it lets
+      # the pump run. zone.home's count would read unknown as away.
+      { condition = "state"; entity_id = [ "person.641" "person.lulu" ]; state = "not_home"; }
+    ];
+    actions = [
+      { action = "switch.turn_off"; target.entity_id = "switch.zasuvka_technicka_obehove_cerpadlo_tuv"; }
+    ];
+  };
 in
 {
   services.home-assistant = {
@@ -531,6 +550,9 @@ in
       "gree"
       "shelly"
       "hue"
+      # WiFi presence for person.*, works even when the phone app reports no
+      # location. Controller is on this host (./unifi.nix), config flow to localhost:8443.
+      "unifi"
 
       # Required by the frigate custom component; broker is ./mosquitto.nix.
       "mqtt"
@@ -643,6 +665,7 @@ in
         zvoncekNotifyAction
         zavlahaRainSkip
         zavlahaStuck
+        tuvNiktoDoma
       ];
       scene = "!include scenes.yaml";
       script = "!include scripts.yaml";
