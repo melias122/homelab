@@ -122,6 +122,29 @@ let
     };
   };
 
+  # Deye FVE striedac. Its DeyeCloud logger (192.168.1.87) has no local Modbus or
+  # Solarman port, only an encrypted web UI, so without extra hardware the
+  # official developer API is the only source; values are 3-5 min old.
+  # No HACS on this host.
+  deye-cloud = pkgs.buildHomeAssistantComponent rec {
+    owner = "maxbanton";
+    domain = "deye_cloud";
+    version = "1.5.3";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "maxbanton";
+      repo = "hass-deye-cloud";
+      tag = "v${version}";
+      hash = "sha256-HYnVpZ0oyyZKrkUggOZMAu/+KRSLiO5k8266oz9KgVs=";
+    };
+
+    meta = {
+      description = "Home Assistant integration for Deye inverters via the Deye Cloud API";
+      homepage = "https://github.com/maxbanton/hass-deye-cloud";
+      license = pkgs.lib.licenses.mit;
+    };
+  };
+
   mkManualDetector = c: {
     id = "${c.key}_manual_detekcia";
     alias = "${c.label}: zapamätať manuálny zásah";
@@ -567,6 +590,7 @@ in
       komfovent # https://github.com/lnagel/hass-komfovent
       ezviz-hp7 # https://github.com/Bobsilvio/ezviz_hp7
       ecowater-cloud # https://github.com/andrewtryder/ha-ecowater-cloud
+      deye-cloud # https://github.com/maxbanton/hass-deye-cloud
       pkgs.home-assistant-custom-components.frigate # https://github.com/blakeblackshear/frigate-hass-integration
     ];
 
@@ -583,7 +607,8 @@ in
 
       # Only what Grafana shows: the TUV circulation pump plug next to the heat
       # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
-      # Komfovent, whose only Modbus client stays HA, and the cloud-only zmakcovac.
+      # Komfovent, whose only Modbus client stays HA, and the cloud-only zmakcovac
+      # and FVE (deye_cloud).
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
@@ -594,6 +619,7 @@ in
         "binary_sensor.rekuperacia_*"
         "sensor.zmakcovac_*"
         "binary_sensor.zmakcovac_*"
+        "sensor.fve_*"
       ];
 
       # `unique_id` puts it in the entity registry, so it can get an area in the UI.
