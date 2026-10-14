@@ -312,6 +312,58 @@ groups:
         annotations:
           summary: "Zmäkčovač reports {{ $labels.friendly_name }}"
 
+  - name: fve
+    rules:
+      # The logger uploads every 3-5 min day and night (the inverter runs off the
+      # grid). Also fires when deye_cloud in HA stops polling: the value freezes.
+      - alert: FveCloudStale
+        expr: time() - homeassistant_sensor_state{entity="sensor.fve_station_last_update_time"} > 30 * 60
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: no fresh data from the Deye cloud for {{ $value | humanizeDuration }}"
+          description: "Logger 192.168.1.87 stopped uploading or the Deye Cloud integration in HA is failing. Check the logger's Wi-Fi/web UI, then the integration."
+
+      # The station timestamp above keeps ticking while the inverter itself is
+      # offline in the cloud (2026-10-14: frozen 23:10-09:40 and from 10:20).
+      # Grid voltage (0.1 V) changes 10-20x an hour while uploads are real.
+      - alert: FveDataFrozen
+        expr: >-
+          changes(homeassistant_sensor_voltage_v{entity="sensor.fve_grid_voltage_l1"}[1h]) == 0
+          or homeassistant_entity_available{entity="sensor.fve_grid_voltage_l1"} == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: inverter data from the Deye cloud have not changed for over an hour"
+          description: "The Deye app shows partial devices offline: the logger reaches the cloud but sends no inverter data. Check Sub-device information in the logger web UI (http://192.168.1.87), then reseat or power-cycle the logger."
+
+      # EN 50160 caps the 10-min mean at 253 V; above it the inverter derates or
+      # disconnects, so production is lost without any fault showing.
+      - alert: FveGridVoltageHigh
+        expr: homeassistant_sensor_voltage_v{entity=~"sensor.fve_grid_voltage_l[123]"} > 250
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: grid voltage {{ $value }} V ({{ $labels.entity }})"
+          description: "Close to the 253 V limit. If it repeats while exporting, the DSO's grid is curtailing the plant; keep the Grafana fve dashboard as evidence."
+
+      # Only strings that produced during the last week, so unused MPPT inputs
+      # stay quiet without listing them.
+      - alert: FveStringNoProduction
+        expr: >-
+          homeassistant_sensor_power_w{entity=~"sensor.fve_dc_power_pv[1-4]"} < 10
+          and max_over_time(homeassistant_sensor_power_w{entity=~"sensor.fve_dc_power_pv[1-4]"}[7d]) > 200
+          and on() homeassistant_sensor_power_w{entity="sensor.fve_total_solar_power"} > 1000
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: {{ $labels.entity }} produces nothing while the plant makes > 1 kW"
+          description: "Check the string's fuse/MC4 connectors and the inverter's alarms in the Deye app."
+
   - name: temperature
     rules:
       - alert: HwTemperatureHigh
