@@ -18,6 +18,9 @@
         "/var/lib/hass"
         "/var/lib/samba"
         "/var/lib/caddy"
+
+        # Heat pump history on nvme/prometheus. Not in b2: compaction keeps rewriting blocks.
+        "/var/lib/prometheus2"
       ];
       pruneOpts = [
         "--keep-daily 14"
