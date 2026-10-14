@@ -1688,6 +1688,134 @@
           "mode": "multi"
         }
       }
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Vykurovacia krivka",
+      "gridPos": {
+        "x": 12,
+        "y": 45,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Cieľ vody (A212) = krivka z vonkajšej teploty pre krivku (A34, A3 obmedzená 0,5 K / 30 min) + kompenzácia miestnosťou (A198, pravá os). Kompenzácia ≈ −5 × (miestnosť − požadovaná), len keď je požiadavka na kúrenie.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"heating_requested\"}",
+          "legendFormat": "kúrenie požadovaná"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "scalar(mastertherm_temperature_celsius{sensor=\"curve_water_a\"}) + (scalar(mastertherm_temperature_celsius{sensor=\"curve_water_b\"}) - scalar(mastertherm_temperature_celsius{sensor=\"curve_water_a\"})) * (scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_a\"}) - mastertherm_temperature_celsius{sensor=\"outside_curve\"}) / (scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_a\"}) - scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_b\"}))",
+          "legendFormat": "krivka"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"room_compensation\"}",
+          "legendFormat": "kompenzácia miestnosťou"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"room_actual\"}",
+          "legendFormat": "miestnosť aktuálna"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"room_requested\"}",
+          "legendFormat": "miestnosť požadovaná"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kompenzácia miestnosťou"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kelvin"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisSoftMin",
+                "value": -5
+              },
+              {
+                "id": "custom.axisSoftMax",
+                "value": 5
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "krivka|.*požadovaná"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
     }
   ]
 }

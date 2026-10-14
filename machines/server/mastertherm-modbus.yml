@@ -142,6 +142,49 @@ modules:
         dataType: int16
         metricType: gauge
         factor: 0.1
+      # Heating curve: A_212 = curve(A_34) + A_198, linear between points A and B.
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: outside_curve }       # A_34 "geometric" outdoor the curve uses, A_3 slewed 0.5 K / 30 min
+        address: 300035
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: room_compensation }   # A_198, K not °C: ≈ -5 × (room - setpoint) while heating demand is on
+        address: 300199
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: curve_outside_a }     # A_35, 20.0
+        address: 300036
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: curve_water_a }       # A_37, 22.5
+        address: 300038
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: curve_outside_b }     # A_36, -15.0
+        address: 300037
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
+      - name: mastertherm_temperature_celsius
+        help: Temperature sensor (A_n / 10)
+        labels: { sensor: curve_water_b }       # A_38, 32.5
+        address: 300039
+        dataType: int16
+        metricType: gauge
+        factor: 0.1
       # Heating circuit 1 (hc1) is off here, no room thermostat, no name. The cloud
       # map's A_90 "hc1 water temp" mirrors A_77 (suction) on this unit, so it is out.
       - name: mastertherm_temperature_celsius
