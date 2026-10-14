@@ -2247,9 +2247,73 @@
     },
     {
       "type": "timeseries",
-      "title": "Sieť po fázach",
+      "title": "Spotreba po fázach",
       "gridPos": {
         "x": 0,
+        "y": 30,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{entity=\"sensor.fve_grid_power_l1\"} + on() homeassistant_sensor_power_w{entity=\"sensor.fve_inverter_output_power_l1\"}",
+          "legendFormat": "L1"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{entity=\"sensor.fve_grid_power_l2\"} + on() homeassistant_sensor_power_w{entity=\"sensor.fve_inverter_output_power_l2\"}",
+          "legendFormat": "L2"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_power_w{entity=\"sensor.fve_grid_power_l3\"} + on() homeassistant_sensor_power_w{entity=\"sensor.fve_inverter_output_power_l3\"}",
+          "legendFormat": "L3"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 1,
+          "custom": {
+            "fillOpacity": 0
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "description": "Koľko dom berie na každej fáze: sieť + výstup striedača na tej fáze.",
+      "id": 10
+    },
+    {
+      "type": "timeseries",
+      "title": "Sieť po fázach",
+      "gridPos": {
+        "x": 12,
         "y": 30,
         "w": 12,
         "h": 8
@@ -2306,16 +2370,16 @@
           "mode": "multi"
         }
       },
-      "description": "Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
-      "id": 10
+      "description": "Len to, čo tečie cez prípojku z distribúcie; cez deň kryje spotrebu FV. Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "id": 11
     },
     {
       "type": "timeseries",
       "title": "Napätie siete",
       "gridPos": {
-        "x": 12,
-        "y": 30,
-        "w": 12,
+        "x": 0,
+        "y": 38,
+        "w": 24,
         "h": 8
       },
       "datasource": {
@@ -2393,14 +2457,14 @@
         }
       },
       "description": "EN 50160: 10-min priemer má byť 207–253 V (230 V ± 10 %). Pri dodávke do siete napätie v prípojke stúpa a nad ~253 V striedač obmedzí výkon alebo sa odpojí. Vzorky každé 3–5 min, krátke špičky nezachytia.",
-      "id": 11
+      "id": 12
     },
     {
       "type": "timeseries",
       "title": "FV stringy – výkon",
       "gridPos": {
         "x": 0,
-        "y": 38,
+        "y": 46,
         "w": 12,
         "h": 8
       },
@@ -2448,14 +2512,14 @@
         }
       },
       "description": "Výkon stringov (2 stringy na PV1 a PV2; PV3/PV4 sú nezapojené).",
-      "id": 12
+      "id": 13
     },
     {
       "type": "timeseries",
       "title": "FV stringy – napätie",
       "gridPos": {
         "x": 12,
-        "y": 38,
+        "y": 46,
         "w": 12,
         "h": 8
       },
@@ -2503,14 +2567,14 @@
         }
       },
       "description": "Pokles napätia jedného stringu pri rovnakom slnku = tieň, vadný panel alebo bypass dióda.",
-      "id": 13
+      "id": 14
     },
     {
       "type": "timeseries",
       "title": "Batéria",
       "gridPos": {
         "x": 0,
-        "y": 46,
+        "y": 54,
         "w": 12,
         "h": 8
       },
@@ -2609,14 +2673,14 @@
         }
       },
       "description": "Batéria zatiaľ nie je zapojená, hodnoty sú nezmyselné (SOC 0 %, 10,8 V, teplota stále 25 °C).",
-      "id": 14
+      "id": 15
     },
     {
       "type": "timeseries",
       "title": "Teploty",
       "gridPos": {
         "x": 12,
-        "y": 46,
+        "y": 54,
         "w": 6,
         "h": 8
       },
@@ -2663,14 +2727,14 @@
           "mode": "multi"
         }
       },
-      "id": 15
+      "id": 16
     },
     {
       "type": "timeseries",
       "title": "Spojenie s cloudom",
       "gridPos": {
         "x": 18,
-        "y": 46,
+        "y": 54,
         "w": 6,
         "h": 8
       },
@@ -2735,7 +2799,7 @@
         }
       },
       "description": "Vek dát = ako dávno logger naposledy poslal čokoľvek do Deye cloudu, bežne 3–5 min. Zmeny za hodinu = koľkokrát sa zmenili údaje meniča (napätie L1); 0 = menič je v cloude offline a hodnoty sú zamrznuté, aj keď vek dát vyzerá v poriadku.",
-      "id": 16
+      "id": 17
     }
   ]
 }
