@@ -167,9 +167,9 @@ in
     checkConfig = "syntax-only";
 
     # Heat pump curve needs whole winters (default 15d). ~28 MB/d measured 2026-10-14,
-    # 2y ≈ 20 GB; the cap leaves room for new exporters. The data dir is the imperative
+    # 3y ≈ 30 GB; the cap leaves room for new exporters. The data dir is the imperative
     # ZFS dataset nvme/prometheus (mirror), not the single root SSD.
-    retentionTime = "2y";
+    retentionTime = "3y";
     extraFlags = [ "--storage.tsdb.retention.size=50GB" ];
 
     # The server needs its FQDN: the bare name resolves to scoped IPv6
