@@ -106,6 +106,35 @@ modules:
         dataType: uint16
         metricType: gauge
         factor: 0.01
+      # Includes the reactive current the inverter doesn't compensate, so it isn't ~0 under zero export.
+      - name: deye_grid_current_amperes
+        help: Grid current at the connection point
+        labels: { phase: L1 }
+        address: 300613
+        dataType: int16
+        metricType: gauge
+        factor: 0.01
+      - name: deye_grid_current_amperes
+        help: Grid current at the connection point
+        labels: { phase: L2 }
+        address: 300614
+        dataType: int16
+        metricType: gauge
+        factor: 0.01
+      - name: deye_grid_current_amperes
+        help: Grid current at the connection point
+        labels: { phase: L3 }
+        address: 300615
+        dataType: int16
+        metricType: gauge
+        factor: 0.01
+      # Bit 0 inverter relay, bit 2 grid relay (5 = both closed): grid closed = floor(x / 4) % 2.
+      # Not dataType bool: exporter 0.4.1 tests bitOffset against the high byte only.
+      - name: deye_relay_status
+        help: Relay status bits (0 inverter, 2 grid)
+        address: 300552
+        dataType: uint16
+        metricType: gauge
 
       # Inverter AC output and house load (load = grid + inverter output).
       - name: deye_inverter_power_watts
@@ -330,5 +359,272 @@ modules:
         help: Fault bit field word, 0 = none
         labels: { word: "4" }
         address: 300558
+        dataType: uint16
+        metricType: gauge
+
+  # Settings, scraped rarely by their own job: shows when the installer changes the work mode,
+  # export or battery config. Holding registers 60-499, read-only here as well.
+  - name: deye_settings
+    protocol: tcp/ip
+    timeout: 2000
+    metrics:
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: work_mode }  # 0 export first, 1 zero export to load, 2 zero export to CT
+        address: 300142
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: energy_pattern }  # 0 battery first, 1 load first
+        address: 300141
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: export_surplus }  # solar sell: 0 off, 1 on
+        address: 300145
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: export_surplus_watts }
+        address: 300143
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: zero_export_watts }  # import kept as margin under zero export
+        address: 300104
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: grid_max_export_watts }
+        address: 300231
+        dataType: uint16
+        metricType: gauge
+        factor: 10
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: grid_max_import_watts }
+        address: 300233
+        dataType: uint16
+        metricType: gauge
+        factor: 10
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_operation_mode }  # 0 voltage, 1 capacity (SOC), 2 no battery
+        address: 300111
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_control_mode }  # 0 lead-acid, 1 lithium
+        address: 300098
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_capacity_ah }
+        address: 300102
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_max_charge_amperes }
+        address: 300108
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_max_discharge_amperes }
+        address: 300109
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_shutdown_soc_percent }
+        address: 300115
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_restart_soc_percent }
+        address: 300116
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_low_soc_percent }
+        address: 300117
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_grid_charging }  # 0 off, 1 on
+        address: 300130
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_grid_charge_start_soc_percent }
+        address: 300127
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: battery_grid_charge_amperes }
+        address: 300128
+        dataType: uint16
+        metricType: gauge
+      - name: deye_setting
+        help: Inverter setting, see the setting label
+        labels: { setting: tou }  # bit 0 enabled, bits 1-7 Mon-Sun (254 = all days, off)
+        address: 300146
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "1" }  # HHMM slot start
+        address: 300148
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "2" }
+        address: 300149
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "3" }
+        address: 300150
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "4" }
+        address: 300151
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "5" }
+        address: 300152
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: time, slot: "6" }
+        address: 300153
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "1" }
+        address: 300154
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "2" }
+        address: 300155
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "3" }
+        address: 300156
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "4" }
+        address: 300157
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "5" }
+        address: 300158
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: power_watts, slot: "6" }
+        address: 300159
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "1" }
+        address: 300166
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "2" }
+        address: 300167
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "3" }
+        address: 300168
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "4" }
+        address: 300169
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "5" }
+        address: 300170
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: soc_percent, slot: "6" }
+        address: 300171
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "1" }  # 0 off, 1 grid, 2 generator, 3 both
+        address: 300172
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "2" }
+        address: 300173
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "3" }
+        address: 300174
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "4" }
+        address: 300175
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "5" }
+        address: 300176
+        dataType: uint16
+        metricType: gauge
+      - name: deye_tou
+        help: Time-of-use program setting per slot
+        labels: { setting: charging, slot: "6" }
+        address: 300177
         dataType: uint16
         metricType: gauge

@@ -287,6 +287,19 @@ in
         static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
       }
       {
+        # Inverter settings rarely change. 4m, not 5m: with the 5 min query lookback a 5m
+        # interval leaves gaps between scrapes.
+        job_name = "deye_settings";
+        metrics_path = "/modbus";
+        params = {
+          target = [ "192.168.1.88:502" ];
+          module = [ "deye_settings" ];
+          sub_target = [ "1" ];
+        };
+        scrape_interval = "4m";
+        static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
+      }
+      {
         # 15s: the TUV pump runs 90 s at a time, a 60 s scrape could miss a run.
         job_name = "hass";
         metrics_path = "/api/prometheus";
