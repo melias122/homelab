@@ -1,6 +1,6 @@
 {
   "uid": "fve",
-  "title": "Fotovoltika",
+  "title": "Fotovoltika logger",
   "timezone": "browser",
   "schemaVersion": 39,
   "refresh": "5m",

@@ -1,0 +1,334 @@
+# Deye SUN-10K-SG05LP3-EU-SM2 (3-phase LV hybrid) on its "Modbus" RJ45 port, through the
+# Waveshare RS485 TO POE ETH (B) at 192.168.1.88:502 (Modbus TCP -> RTU, 9600 8N1), slave 1.
+# The inverter only answers once its Modbus SN is non-zero (factory 00, set to 1 2026-10-15).
+#
+# Register map: Deye 3-phase hybrid protocol V1.04 (reg 2 = 0x0104), addresses as in
+# davidrapan/ha-solarman deye_p3.yaml, checked against live values 2026-10-15. Read-only.
+# 32-bit counters are low word first -> endianness yolo (word swap). 32-bit powers keep their
+# high word elsewhere (622 + 687), so powers are read as int16, enough up to ±32 kW.
+# Temperatures carry a +1000 offset the exporter can't subtract: °C = deye_temperature_raw - 100.
+modules:
+  - name: deye
+    protocol: tcp/ip
+    timeout: 2000 # ms; with the 10 s default one lost RTU reply stalls the whole scrape
+    metrics:
+      # PV strings, only PV1/PV2 are wired.
+      - name: deye_pv_power_watts
+        help: PV string power
+        labels: { string: "1" }
+        address: 300672
+        dataType: uint16
+        metricType: gauge
+      - name: deye_pv_power_watts
+        help: PV string power
+        labels: { string: "2" }
+        address: 300673
+        dataType: uint16
+        metricType: gauge
+      - name: deye_pv_voltage_volts
+        help: PV string voltage
+        labels: { string: "1" }
+        address: 300676
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_pv_voltage_volts
+        help: PV string voltage
+        labels: { string: "2" }
+        address: 300678
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_pv_current_amperes
+        help: PV string current
+        labels: { string: "1" }
+        address: 300677
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_pv_current_amperes
+        help: PV string current
+        labels: { string: "2" }
+        address: 300679
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+
+      # Grid connection, measured by the CT clamps on the supply (no external meter). + = import.
+      - name: deye_grid_power_watts
+        help: Grid power at the connection point, + = import
+        labels: { phase: L1 }
+        address: 300622
+        dataType: int16
+        metricType: gauge
+      - name: deye_grid_power_watts
+        help: Grid power at the connection point, + = import
+        labels: { phase: L2 }
+        address: 300623
+        dataType: int16
+        metricType: gauge
+      - name: deye_grid_power_watts
+        help: Grid power at the connection point, + = import
+        labels: { phase: L3 }
+        address: 300624
+        dataType: int16
+        metricType: gauge
+      - name: deye_grid_power_watts
+        help: Grid power at the connection point, + = import
+        labels: { phase: total }
+        address: 300625
+        dataType: int16
+        metricType: gauge
+      - name: deye_grid_voltage_volts
+        help: Grid voltage
+        labels: { phase: L1 }
+        address: 300598
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_grid_voltage_volts
+        help: Grid voltage
+        labels: { phase: L2 }
+        address: 300599
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_grid_voltage_volts
+        help: Grid voltage
+        labels: { phase: L3 }
+        address: 300600
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_grid_frequency_hertz
+        help: Grid frequency
+        address: 300609
+        dataType: uint16
+        metricType: gauge
+        factor: 0.01
+
+      # Inverter AC output and house load (load = grid + inverter output).
+      - name: deye_inverter_power_watts
+        help: Inverter AC output power
+        labels: { phase: L1 }
+        address: 300633
+        dataType: int16
+        metricType: gauge
+      - name: deye_inverter_power_watts
+        help: Inverter AC output power
+        labels: { phase: L2 }
+        address: 300634
+        dataType: int16
+        metricType: gauge
+      - name: deye_inverter_power_watts
+        help: Inverter AC output power
+        labels: { phase: L3 }
+        address: 300635
+        dataType: int16
+        metricType: gauge
+      - name: deye_inverter_power_watts
+        help: Inverter AC output power
+        labels: { phase: total }
+        address: 300636
+        dataType: int16
+        metricType: gauge
+      - name: deye_load_power_watts
+        help: House load power
+        labels: { phase: L1 }
+        address: 300650
+        dataType: int16
+        metricType: gauge
+      - name: deye_load_power_watts
+        help: House load power
+        labels: { phase: L2 }
+        address: 300651
+        dataType: int16
+        metricType: gauge
+      - name: deye_load_power_watts
+        help: House load power
+        labels: { phase: L3 }
+        address: 300652
+        dataType: int16
+        metricType: gauge
+      - name: deye_load_power_watts
+        help: House load power
+        labels: { phase: total }
+        address: 300653
+        dataType: int16
+        metricType: gauge
+
+      # Battery: not connected yet, sign of the power unverified (Deye: + = discharge).
+      - name: deye_battery_soc_percent
+        help: Battery state of charge
+        address: 300588
+        dataType: uint16
+        metricType: gauge
+      - name: deye_battery_voltage_volts
+        help: Battery voltage
+        address: 300587
+        dataType: uint16
+        metricType: gauge
+        factor: 0.01
+      - name: deye_battery_power_watts
+        help: Battery power
+        address: 300590
+        dataType: int16
+        metricType: gauge
+
+      - name: deye_temperature_raw
+        help: Temperature + 100 (degC = value - 100)
+        labels: { sensor: dc }
+        address: 300540
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_temperature_raw
+        help: Temperature + 100 (degC = value - 100)
+        labels: { sensor: heatsink }
+        address: 300541
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_temperature_raw
+        help: Temperature + 100 (degC = value - 100)
+        labels: { sensor: battery }
+        address: 300586
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+
+      # Lifetime energy counters.
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: pv }
+        address: 300534
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: grid_import }
+        address: 300522
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: grid_export }
+        address: 300524
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: load }
+        address: 300527
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: battery_charge }
+        address: 300516
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+      - name: deye_energy_kwh_total
+        help: Lifetime energy
+        labels: { kind: battery_discharge }
+        address: 300518
+        dataType: uint32
+        endianness: yolo
+        metricType: counter
+        factor: 0.1
+
+      # Today's energy, reset at the inverter's local midnight (daily bars without UTC skew).
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: pv }
+        address: 300529
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: grid_import }
+        address: 300520
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: grid_export }
+        address: 300521
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: load }
+        address: 300526
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: battery_charge }
+        address: 300514
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+      - name: deye_energy_today_kwh
+        help: Energy since local midnight
+        labels: { kind: battery_discharge }
+        address: 300515
+        dataType: uint16
+        metricType: gauge
+        factor: 0.1
+
+      - name: deye_state
+        help: Inverter state (0 standby, 1 self-test, 2 normal, 3 alarm, 4 fault)
+        address: 300500
+        dataType: uint16
+        metricType: gauge
+      - name: deye_alarm_code
+        help: Alarm bit field word, 0 = none
+        labels: { word: "1" }
+        address: 300553
+        dataType: uint16
+        metricType: gauge
+      - name: deye_alarm_code
+        help: Alarm bit field word, 0 = none
+        labels: { word: "2" }
+        address: 300554
+        dataType: uint16
+        metricType: gauge
+      - name: deye_fault_code
+        help: Fault bit field word, 0 = none
+        labels: { word: "1" }
+        address: 300555
+        dataType: uint16
+        metricType: gauge
+      - name: deye_fault_code
+        help: Fault bit field word, 0 = none
+        labels: { word: "2" }
+        address: 300556
+        dataType: uint16
+        metricType: gauge
+      - name: deye_fault_code
+        help: Fault bit field word, 0 = none
+        labels: { word: "3" }
+        address: 300557
+        dataType: uint16
+        metricType: gauge
+      - name: deye_fault_code
+        help: Fault bit field word, 0 = none
+        labels: { word: "4" }
+        address: 300558
+        dataType: uint16
+        metricType: gauge

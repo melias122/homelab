@@ -10,6 +10,11 @@ let
 
   textfileDir = "/var/lib/prometheus-node-exporter-textfile";
 
+  # modbus_exporter takes a single config file: append the per-device module lists.
+  modbusExporterConfig = pkgs.runCommand "modbus-exporter.yml" { nativeBuildInputs = [ pkgs.yq-go ]; } ''
+    yq eval-all '. as $f ireduce ({}; . *+ $f)' ${./mastertherm-modbus.yml} ${./deye-modbus.yml} > $out
+  '';
+
   # Staleness alert in alerts.yml: catches a timer that never fires, which
   # SystemdUnitFailed cannot see.
   resticStamp = pkgs.writeShellScript "restic-stamp" ''
@@ -104,16 +109,17 @@ in
   systemd.tmpfiles.rules = [ "d ${textfileDir} 0755 root root -" ];
 
   # Mastertherm heat pump: the pGDx touch controller serves the pCO variables over
-  # Modbus TCP, register map in ./mastertherm-modbus.yml. nixpkgs ships the package
-  # but no exporters.modbus module. Multi-target exporter: the scrape job below
-  # passes the device in ?target=.
+  # Modbus TCP, register map in ./mastertherm-modbus.yml. Deye FVE inverter via the
+  # Waveshare RS485 gateway, ./deye-modbus.yml. nixpkgs ships the package but no
+  # exporters.modbus module. Multi-target exporter: the scrape jobs below pass the
+  # device in ?target=.
   systemd.services.prometheus-modbus-exporter = {
     description = "Prometheus Modbus exporter";
     wantedBy = [ "multi-user.target" ];
     after = [ "network-online.target" "tailscaled.service" ];
     wants = [ "network-online.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.prometheus-modbus-exporter}/bin/modbus_exporter --config.file=${./mastertherm-modbus.yml} --web.listen-address=100.98.141.25:9602";
+      ExecStart = "${pkgs.prometheus-modbus-exporter}/bin/modbus_exporter --config.file=${modbusExporterConfig} --web.listen-address=100.98.141.25:9602";
       DynamicUser = true;
       Restart = "on-failure";
       RestartSec = "10s";
@@ -263,6 +269,18 @@ in
           sub_target = [ "1" ];
         };
         scrape_interval = "30s";
+        static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
+      }
+      {
+        # One request per metric over RS485 at 9600 baud: a scrape takes ~3 s.
+        job_name = "deye";
+        metrics_path = "/modbus";
+        params = {
+          target = [ "192.168.1.88:502" ];
+          module = [ "deye" ];
+          sub_target = [ "1" ];
+        };
+        scrape_interval = "15s";
         static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
       }
       {
