@@ -48,6 +48,11 @@
     ];
 
     kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16G
+
+    # Tailnet-bound listeners start before tailscale0 has 100.98.141.25; without
+    # this Prometheus and the exporters burn their restart limit on EADDRNOTAVAIL
+    # and stay failed after every boot.
+    kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
   };
 
   # Write-heavy state on the nvme mirror, off the single root SSD (74 % endurance
