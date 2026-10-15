@@ -312,8 +312,72 @@ groups:
         annotations:
           summary: "Zmäkčovač reports {{ $labels.friendly_name }}"
 
+  # Deye inverter, local Modbus (job deye) plus the cloud path (deye_cloud in HA).
   - name: fve
     rules:
+      # The exporter fails the whole scrape on one lost RTU reply, so single
+      # misses are normal. ExporterDown follows at 15 min.
+      - alert: DeyeModbusDown
+        expr: up{job="deye"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: no Modbus reply from the inverter for 5 minutes"
+          description: "If up{job=\"mastertherm\"} is still 1 the exporter is fine: check the Waveshare gateway (http://192.168.1.88), its RS485 cable to the inverter's Modbus port and the inverter's Modbus SN (must be 1). Without a battery the inverter is also off during a night-time grid outage."
+
+      # Register 500: 0 standby, 1 self-test, 2 normal, 3 alarm, 4 fault. Not
+      # != 2: unverified whether it idles in standby at night. Fault word n bit b
+      # (from 0) = F(16(n-1)+b+1) of the manual, e.g. word 1 bit 12 = F13 working
+      # mode changed, which a settings change also sets.
+      - alert: DeyeFault
+        expr: deye_state > 2 or deye_fault_code > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: inverter {{ if $labels.word }}fault word {{ $labels.word }} = {{ $value }}{{ else }}state {{ $value }} (3 alarm, 4 fault){{ end }}"
+          description: "Read the F code on the inverter display or decode the word: bit b (from 0) of word n = F(16(n-1)+b+1). A grid outage shows up here too."
+
+      # Bits per ha-solarman deye_p3.yaml: word 1 bit 1 fan, 2 grid phase, 3 meter
+      # comms; word 2 bit 14 battery loss.
+      - alert: DeyeAlarm
+        expr: deye_alarm_code > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: inverter warning word {{ $labels.word }} = {{ $value }}"
+          description: "Read the warning on the inverter display. Word 1 bits: 1 fan, 2 grid phase, 3 meter communication."
+
+      # EN 50160 caps the 10-min mean at 253 V and the inverter trips on the same
+      # mean, so production is lost without any fault showing.
+      - alert: FveGridVoltageHigh
+        expr: avg_over_time(deye_grid_voltage_volts[10m]) > 250
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: grid voltage {{ $labels.phase }} averages {{ $value | printf \"%.1f\" }} V over 10 min"
+          description: "Close to the 253 V limit. If it repeats while exporting, the DSO's grid is curtailing the plant; keep the Grafana fotovoltika dashboard as evidence."
+
+      # Only strings that produced during the last week, so unused MPPT inputs
+      # stay quiet without listing them.
+      - alert: FveStringNoProduction
+        expr: >-
+          deye_pv_power_watts < 10
+          and max_over_time(deye_pv_power_watts[7d]) > 200
+          and on() sum(deye_pv_power_watts) > 1000
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: string PV{{ $labels.string }} produces nothing while the plant makes > 1 kW"
+          description: "Check the string's fuse/MC4 connectors and the inverter's alarms."
+
+      # Cloud path (deye_cloud in HA, sensor.fve_*, Grafana "Fotovoltika logger"):
+      # drop both together with the integration.
+      #
       # The logger uploads every 3-5 min day and night (the inverter runs off the
       # grid). Also fires when deye_cloud in HA stops polling: the value freezes.
       - alert: FveCloudStale
@@ -338,31 +402,6 @@ groups:
         annotations:
           summary: "FVE: inverter data from the Deye cloud have not changed for over an hour"
           description: "The Deye app shows partial devices offline: the logger reaches the cloud but sends no inverter data. Check Sub-device information in the logger web UI (http://192.168.1.87), then reseat or power-cycle the logger."
-
-      # EN 50160 caps the 10-min mean at 253 V; above it the inverter derates or
-      # disconnects, so production is lost without any fault showing.
-      - alert: FveGridVoltageHigh
-        expr: homeassistant_sensor_voltage_v{entity=~"sensor.fve_grid_voltage_l[123]"} > 250
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: "FVE: grid voltage {{ $value }} V ({{ $labels.entity }})"
-          description: "Close to the 253 V limit. If it repeats while exporting, the DSO's grid is curtailing the plant; keep the Grafana fve dashboard as evidence."
-
-      # Only strings that produced during the last week, so unused MPPT inputs
-      # stay quiet without listing them.
-      - alert: FveStringNoProduction
-        expr: >-
-          homeassistant_sensor_power_w{entity=~"sensor.fve_dc_power_pv[1-4]"} < 10
-          and max_over_time(homeassistant_sensor_power_w{entity=~"sensor.fve_dc_power_pv[1-4]"}[7d]) > 200
-          and on() homeassistant_sensor_power_w{entity="sensor.fve_total_solar_power"} > 1000
-        for: 30m
-        labels:
-          severity: warning
-        annotations:
-          summary: "FVE: {{ $labels.entity }} produces nothing while the plant makes > 1 kW"
-          description: "Check the string's fuse/MC4 connectors and the inverter's alarms in the Deye app."
 
   - name: temperature
     rules:
