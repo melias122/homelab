@@ -50,6 +50,8 @@
       { MACAddress = "c0:39:37:a1:41:cf"; Address = "192.168.1.85"; } # klima-izba3
       { MACAddress = "00:0a:5c:85:15:35"; Address = "192.168.1.86"; } # ovladac-tepelne-cerpadlo
       { MACAddress = "88:a6:8d:4f:8a:3e"; Address = "192.168.1.87"; } # striedac-fve (Deye logger)
+      # Factory default is static .200 (inside the pool); after a reset set it back to DHCP.
+      { MACAddress = "04:ee:e8:15:e0:54"; Address = "192.168.1.88"; } # striedac-fve-modbus (Waveshare RS485 TO POE ETH (B))
 
       { MACAddress = "44:27:45:5d:09:dc"; Address = "192.168.1.90"; } # chladnicka-kuchyna
       { MACAddress = "04:7b:cb:d1:00:2f"; Address = "192.168.1.91"; } # zmakcovac-technicka
