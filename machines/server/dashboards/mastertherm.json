@@ -1816,6 +1816,118 @@
           "mode": "multi"
         }
       }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Izby",
+      "description": "Displej TČ riadi kúrenie celého domu. Klímy merajú v celých °C vo vnútornej jednotke pod stropom, berte ich ako trend.",
+      "gridPos": {
+        "x": 0,
+        "y": 50,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"room_actual\"}",
+          "legendFormat": "displej TČ"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{sensor=\"room_requested\"}",
+          "legendFormat": "požadovaná"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.rekuperacia_extract_temperature\"}",
+          "legendFormat": "priemer domu (odsávaný)"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.schody_teplota\"}",
+          "legendFormat": "WC (Hue)"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "label_replace(homeassistant_climate_current_temperature_celsius{entity=~\"climate.klima_.*\"}, \"izba\", \"$1\", \"entity\", \"climate.klima_(.*)\")",
+          "legendFormat": "{{izba}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "požadovaná"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "displej TČ"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 3
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
     }
   ]
 }

@@ -633,12 +633,14 @@ in
 
       # Only what Grafana shows: the TUV circulation pump plug next to the heat
       # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
-      # Komfovent, whose only Modbus client stays HA, and the cloud-only zmakcovac
-      # and FVE (deye_cloud).
+      # Komfovent, whose only Modbus client stays HA, the cloud-only zmakcovac
+      # and FVE (deye_cloud), and the Gree room temps (floor heating balance).
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
         "input_boolean.rekuperacia_zimny_rezim"
+        # Hue motion sensor moved to the WC: candidate spot for the heat pump room probe.
+        "sensor.schody_teplota"
       ];
       prometheus.filter.include_entity_globs = [
         "sensor.rekuperacia_*"
@@ -646,6 +648,7 @@ in
         "sensor.zmakcovac_*"
         "binary_sensor.zmakcovac_*"
         "sensor.fve_*"
+        "climate.klima_*"
       ];
 
       # `unique_id` puts it in the entity registry, so it can get an area in the UI.
