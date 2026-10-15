@@ -50,6 +50,25 @@
     kernelParams = ["zfs.zfs_arc_max=17179860388"]; # 16G
   };
 
+  # Write-heavy state on the nvme mirror, off the single root SSD (74 % endurance
+  # used 2026-10). Datasets are imperative: `zfs create -o mountpoint=legacy`,
+  # recordsize=16K for the hass/unifi DBs. Legacy mounts so journal flush and the
+  # units using these paths wait for them; nofail keeps the host reachable if nvme
+  # won't import, x-systemd.before restores the ordering nofail drops. Not all of
+  # /var/log: NixOS mounts that in initrd, pulling the nvme import into stage 1.
+  fileSystems = let
+    nvme = dataset: {
+      device = "nvme/${dataset}";
+      fsType = "zfs";
+      options = [ "nofail" "x-systemd.before=local-fs.target" ];
+    };
+  in {
+    "/var/log/journal" = nvme "journal";
+    "/var/cache" = nvme "cache";
+    "/var/lib/hass" = nvme "hass";
+    "/var/lib/unifi" = nvme "unifi";
+  };
+
   networking = {
     hostName = "server";
 

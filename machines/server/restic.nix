@@ -14,7 +14,7 @@
         "/pool"
         "/var/lib/unifi/data/backup"
 
-        # Root-SSD state git can't restore.
+        # State outside /pool git can't restore.
         "/var/lib/hass"
         "/var/lib/samba"
         "/var/lib/caddy"
@@ -27,12 +27,16 @@
         "--keep-weekly 8"
         "--keep-monthly 12"
         "--keep-yearly 3"
+        "--no-cache"
       ];
       extraBackupArgs = [
         # A check/prune from the backrest UI holds an exclusive lock; wait it out.
         "--retry-lock=1h"
 
         "-e timemachine"
+
+        # The repo is a local disk, a cache would only duplicate its metadata.
+        "--no-cache"
       ];
     };
     b2 = {

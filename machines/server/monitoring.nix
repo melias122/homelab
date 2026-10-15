@@ -90,6 +90,9 @@ in
   systemd.services.prometheus-restic-exporter = {
     # `restic check` takes an exclusive lock and would collide with the nightly backups.
     environment.NO_CHECK = "true";
+    # The module's RESTIC_CACHE_DIR=$CACHE_DIRECTORY isn't expanded by systemd: restic
+    # built a literal "$CACHE_DIRECTORY" dir in PrivateTmp, ~1 GB refetched per restart.
+    environment.RESTIC_CACHE_DIR = lib.mkForce "/var/cache/restic-exporter";
 
     serviceConfig = {
       DynamicUser = lib.mkForce false;

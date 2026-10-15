@@ -9,7 +9,7 @@ layout, workflow and the things that aren't obvious from a single file.
 ```
 machines/<host>/   per-host configuration.nix + host-specific service modules
 roles/common.nix   imported by every host: agenix, users/root SSH keys, timezone,
-                   base packages, nix GC, system.autoUpgrade (nixos-26.05-small)
+                   base packages, nix GC, system.autoUpgrade (nixos-26.05)
 services/          host-agnostic modules (openssh, tailscale, node-exporter, postfix, …)
 secrets/           agenix *.age + secrets.nix recipient manifest
 shelly/            scripts running on Shelly devices, deployed with shelly/deploy.sh
@@ -67,7 +67,7 @@ over SSH. Consequences worth remembering:
   restic, not in git); only YAML-only bits go into `services.home-assistant.config`. New
   integrations usually just need an entry in `extraComponents`.
 - Backups: `restic.local` → `/backup/restic` daily, `restic.b2` → Backblaze monthly. Both
-  cover `/pool` + root-SSD state git can't restore (`/var/lib/hass`, `samba`, `caddy`).
+  cover `/pool` + state outside it git can't restore (`/var/lib/hass`, `samba`, `caddy`).
 
 ## Naming Conventions — Home Assistant
 
