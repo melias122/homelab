@@ -124,7 +124,8 @@ let
 
   # Deye FVE striedac. Its DeyeCloud logger (192.168.1.87) has no local Modbus or
   # Solarman port, only an encrypted web UI, so without extra hardware the
-  # official developer API is the only source; values are 3-5 min old.
+  # official developer API is the only source; values are 3-5 min old. The
+  # Energy dashboard now uses local Modbus (fotovoltika_* below); kept in parallel.
   # No HACS on this host.
   deye-cloud = pkgs.buildHomeAssistantComponent rec {
     owner = "maxbanton";
@@ -143,6 +144,31 @@ let
       homepage = "https://github.com/maxbanton/hass-deye-cloud";
       license = pkgs.lib.licenses.mit;
     };
+  };
+
+  # Deye registers as in ./deye-modbus.yml. HA derives the entity_id from the name,
+  # so `id` must match its slug.
+  fvePower = id: name: address: data_type: {
+    inherit name address data_type;
+    unique_id = "fotovoltika_${id}";
+    device_address = 1;
+    unit_of_measurement = "W";
+    device_class = "power";
+    state_class = "measurement";
+    scan_interval = 30;
+  };
+  fveEnergy = id: name: address: {
+    inherit name address;
+    unique_id = "fotovoltika_${id}";
+    device_address = 1;
+    data_type = "uint32";
+    swap = "word"; # low word first
+    scale = 0.1;
+    precision = 1;
+    unit_of_measurement = "kWh";
+    device_class = "energy";
+    state_class = "total_increasing";
+    scan_interval = 60;
   };
 
   mkManualDetector = c: {
@@ -671,6 +697,39 @@ in
           max_age.days = 3;
         }
       ];
+
+      # FVE via the Waveshare RS485 gateway, which Prometheus polls too (multi-host).
+      # Sensors only: nothing here writes inverter registers. Grid + = import, as the
+      # Energy dashboard expects. Not in the prometheus globs: deye_* has it all.
+      modbus = [{
+        name = "fotovoltika";
+        type = "tcp";
+        host = "192.168.1.88";
+        port = 502;
+        sensors = [
+          (fvePower "vykon_pv1" "Fotovoltika výkon PV1" 672 "uint16")
+          (fvePower "vykon_pv2" "Fotovoltika výkon PV2" 673 "uint16")
+          (fvePower "vykon_siet" "Fotovoltika výkon sieť" 625 "int16")
+          (fvePower "vykon_spotreba" "Fotovoltika výkon spotreba" 653 "int16")
+          (fveEnergy "energia_vyroba" "Fotovoltika energia výroba" 534)
+          (fveEnergy "energia_odber" "Fotovoltika energia odber" 522)
+          (fveEnergy "energia_dodavka" "Fotovoltika energia dodávka" 524)
+          (fveEnergy "energia_spotreba" "Fotovoltika energia spotreba" 527)
+        ];
+      }];
+
+      # The Energy dashboard takes one solar power sensor.
+      template = [{
+        sensor = [{
+          name = "Fotovoltika výkon výroba";
+          unique_id = "fotovoltika_vykon_vyroba";
+          unit_of_measurement = "W";
+          device_class = "power";
+          state_class = "measurement";
+          state = "{{ states('sensor.fotovoltika_vykon_pv1') | float(0) + states('sensor.fotovoltika_vykon_pv2') | float(0) }}";
+          availability = "{{ has_value('sensor.fotovoltika_vykon_pv1') and has_value('sensor.fotovoltika_vykon_pv2') }}";
+        }];
+      }];
 
       # Split so the UI editor keeps working next to the declarative ones; HA merges labeled blocks.
       "automation ui" = "!include automations.yaml";
