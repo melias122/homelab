@@ -90,7 +90,8 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   system.autoUpgrade.enable = true;
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-26.05-small";
+  # Not -small: it bumps several times a day and each bump rebuilds the system.
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-26.05";
 
   services = {
     fstrim.enable = true;
