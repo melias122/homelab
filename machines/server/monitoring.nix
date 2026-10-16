@@ -309,7 +309,7 @@ in
       }
     ];
 
-    ruleFiles = [ ./alerts.yml ];
+    ruleFiles = [ ./alerts.yml ./fve-navratnost.yml ];
 
     alertmanagers = [{
       static_configs = [{ targets = [ "100.98.141.25:9093" ]; }];

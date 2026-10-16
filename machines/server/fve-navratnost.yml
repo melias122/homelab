@@ -1,0 +1,41 @@
+# FVE payback. Savings come from the inverter's lifetime counters, not from summing
+# Prometheus history: retention is 3 y, payback is longer.
+groups:
+  - name: fve_navratnost
+    interval: 1m
+    rules:
+      # PV + battery, user 2026-10-16.
+      - record: fve:investicia_eur
+        expr: vector(12000)
+
+      # ZSE DD5 + D3 aktiv 2026 (with energopomoc), per-kWh items + 19 % VAT:
+      # VT 0.1926, NT 0.1377, weighted by the invoice's 21 % VT (HDO hours unknown).
+      # Fixed monthly fees don't change with PV.
+      - record: fve:cena_odber_eur_kwh
+        expr: vector(0.149)
+
+      # Planned ZSE Virtuálna batéria Flexi (from 2026-07-01, net, no VAT for a
+      # non-payer): 0.069 <10h, 0.036 10-18h, 0.068 18-24h, weekend 0.034. Export
+      # lands mostly 10-18h and weekends -> simulated mean 0.036. No contract yet.
+      - record: fve:cena_dodavka_eur_kwh
+        expr: vector(0.036)
+
+      # Energy not bought thanks to PV; inverter standby and battery losses included.
+      - record: fve:vlastna_spotreba_kwh
+        expr: sum(deye_energy_kwh_total{kind="load"}) - sum(deye_energy_kwh_total{kind="grid_import"})
+
+      # On a price change freeze the past: <€ so far> + (kWh - <kWh at the change>) * <new price>.
+      # Once the buyback contract runs, subtract its fee: (time() - <start>) / 2629800 * 3.
+      - record: fve:usetrene_eur
+        expr: |
+          fve:vlastna_spotreba_kwh * fve:cena_odber_eur_kwh
+          + sum(deye_energy_kwh_total{kind="grid_export"}) * fve:cena_dodavka_eur_kwh
+
+      # Real last 365 d once they exist (~2027-10). Until then an estimate: PVGIS
+      # 2019-23 hourly, E/W 11.52 kWp = 11.7 MWh/y; flat house load from the invoice
+      # (10.9 MWh/y) + 10 kWh battery -> 6.5 MWh self-consumed x 0.149 + 4.9 MWh
+      # exported x 0.036 - 36 € buyback fee.
+      - record: fve:usetrene_rocne_eur
+        expr: |
+          (fve:usetrene_eur - last_over_time(fve:usetrene_eur[1d] offset 365d))
+          or vector(1100)

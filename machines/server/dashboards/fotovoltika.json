@@ -3013,6 +3013,305 @@
       },
       "description": "Modbus cez Waveshare (192.168.1.88:502). Spojenie 1 = posledné čítanie prešlo. Čítanie bežne trvá ~3 s, nad 10 s ho Prometheus zahodí.",
       "id": 17
+    },
+    {
+      "type": "stat",
+      "title": "Ušetrené",
+      "gridPos": {
+        "x": 0,
+        "y": 70,
+        "w": 6,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "fve:usetrene_eur",
+          "legendFormat": "ušetrené",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "fve:usetrene_eur / fve:investicia_eur",
+          "legendFormat": "splatené",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: €",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "splatené"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name",
+        "graphMode": "none"
+      },
+      "description": "(spotreba − odber) × cena odberu + dodávka × výkupná cena, z celoživotných počítadiel striedača. Investícia 12 000 € (FV + batéria), odber 0,149 €/kWh (ZSE DD5 2026 s DPH, vážený VT/NT), výkup 0,036 €/kWh (Virtuálna batéria Flexi, priemer pásiem). Konštanty v fve-navratnost.yml.",
+      "id": 21
+    },
+    {
+      "type": "stat",
+      "title": "Zostáva splatiť",
+      "gridPos": {
+        "x": 6,
+        "y": 70,
+        "w": 5,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fve:investicia_eur - fve:usetrene_eur)",
+          "legendFormat": "zostáva",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: €",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value",
+        "graphMode": "none"
+      },
+      "description": "Investícia mínus doterajšia úspora.",
+      "id": 22
+    },
+    {
+      "type": "stat",
+      "title": "Úspora za rok",
+      "gridPos": {
+        "x": 11,
+        "y": 70,
+        "w": 4,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "fve:usetrene_rocne_eur",
+          "legendFormat": "za rok",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: €",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value",
+        "graphMode": "none"
+      },
+      "description": "Do 10/2027 odhad: PVGIS 11,7 MWh/rok, odber z faktúry, batéria 10 kWh → 6,5 MWh vlastnej spotreby × 0,149 € + 4,9 MWh výkupu × 0,036 € − 36 € poplatok za výkup. Potom reálna úspora za posledných 365 dní.",
+      "id": 23
+    },
+    {
+      "type": "stat",
+      "title": "Splatenie (odhad)",
+      "gridPos": {
+        "x": 15,
+        "y": 70,
+        "w": 5,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(time() + (fve:investicia_eur - fve:usetrene_eur) / fve:usetrene_rocne_eur * 31557600) * 1000",
+          "legendFormat": "termín",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(fve:investicia_eur - fve:usetrene_eur) / fve:usetrene_rocne_eur",
+          "legendFormat": "o",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "time:MM/YYYY",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "o"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "suffix: r."
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name",
+        "graphMode": "none"
+      },
+      "description": "Zostáva splatiť ÷ úspora za rok. Pri dnešných cenách, bez zdražovania a výmen.",
+      "id": 24
+    },
+    {
+      "type": "stat",
+      "title": "Za 25 rokov (odhad)",
+      "gridPos": {
+        "x": 20,
+        "y": 70,
+        "w": 4,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "fve:usetrene_rocne_eur * 23.55 - fve:investicia_eur",
+          "legendFormat": "čistý zisk",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: €",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value",
+        "graphMode": "none"
+      },
+      "description": "Úspora za rok × 23,55 (25 rokov, degradácia panelov 0,5 %/rok) − investícia. Dnešné ceny, bez výmeny striedača a batérie.",
+      "id": 25
     }
   ]
 }
