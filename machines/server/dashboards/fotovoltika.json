@@ -2375,10 +2375,214 @@
     },
     {
       "type": "timeseries",
-      "title": "Napätie siete",
+      "title": "Prúd zo siete po fázach",
       "gridPos": {
         "x": 0,
         "y": 38,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_grid_current_amperes{phase=\"L1\"}",
+          "legendFormat": "L1"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_grid_current_amperes{phase=\"L2\"}",
+          "legendFormat": "L2"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_grid_current_amperes{phase=\"L3\"}",
+          "legendFormat": "L3"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "amp",
+          "decimals": 1,
+          "custom": {
+            "fillOpacity": 0,
+            "thresholdsStyle": {
+              "mode": "line"
+            },
+            "axisSoftMin": 0,
+            "axisSoftMax": 35
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 32
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "description": "Prúd cez prípojku, teda to, čo vidí hlavný istič 3×32 A (červená čiara). V noci je to prúd celého domu, cez deň ho striedač znižuje. Obsahuje aj jalovú zložku, preto nie je nulový ani pri nulovom odbere.",
+      "id": 18
+    },
+    {
+      "type": "timeseries",
+      "title": "Nesymetria fáz",
+      "gridPos": {
+        "x": 12,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(deye_load_power_watts{phase=~\"L.\"}) - min(deye_load_power_watts{phase=~\"L.\"})",
+          "legendFormat": "rozdiel"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "decimals": 1,
+          "custom": {
+            "fillOpacity": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "description": "Rozdiel spotreby medzi najviac a najmenej zaťaženou fázou. Kompresor TČ je na L3.",
+      "id": 19
+    },
+    {
+      "type": "timeseries",
+      "title": "Spotreba po fázach za deň",
+      "gridPos": {
+        "x": 18,
+        "y": 38,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg_over_time(deye_load_power_watts{phase=\"L1\"}[1d]) * 24 / 1000",
+          "legendFormat": "L1",
+          "interval": "1d"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg_over_time(deye_load_power_watts{phase=\"L2\"}[1d]) * 24 / 1000",
+          "legendFormat": "L2",
+          "interval": "1d"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg_over_time(deye_load_power_watts{phase=\"L3\"}[1d]) * 24 / 1000",
+          "legendFormat": "L3",
+          "interval": "1d"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 1,
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "timeFrom": "14d",
+      "description": "Priemerný výkon fázy × 24 h, naskladané = spotreba domu za deň. Fáza dlhodobo vyššia ako ostatné je kandidát na presun spotrebiča.",
+      "id": 20
+    },
+    {
+      "type": "timeseries",
+      "title": "Napätie siete",
+      "gridPos": {
+        "x": 0,
+        "y": 46,
         "w": 24,
         "h": 8
       },
@@ -2464,7 +2668,7 @@
       "title": "FV stringy – výkon",
       "gridPos": {
         "x": 0,
-        "y": 46,
+        "y": 54,
         "w": 12,
         "h": 8
       },
@@ -2519,7 +2723,7 @@
       "title": "FV stringy – napätie",
       "gridPos": {
         "x": 12,
-        "y": 46,
+        "y": 54,
         "w": 12,
         "h": 8
       },
@@ -2574,7 +2778,7 @@
       "title": "Batéria",
       "gridPos": {
         "x": 0,
-        "y": 54,
+        "y": 62,
         "w": 12,
         "h": 8
       },
@@ -2680,7 +2884,7 @@
       "title": "Teploty",
       "gridPos": {
         "x": 12,
-        "y": 54,
+        "y": 62,
         "w": 6,
         "h": 8
       },
@@ -2744,7 +2948,7 @@
       "title": "Spojenie s meničom",
       "gridPos": {
         "x": 18,
-        "y": 54,
+        "y": 62,
         "w": 6,
         "h": 8
       },
