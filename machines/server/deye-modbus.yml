@@ -361,13 +361,6 @@ modules:
         address: 300558
         dataType: uint16
         metricType: gauge
-      # Not in the V1.04 map. Was 1 while the internal fan ran 2026-10-16 and dropped to 0 ~30 s
-      # after it stopped: suspected fan status from that one event, unconfirmed.
-      - name: deye_register_715
-        help: Undocumented register 715, suspected fan status (unconfirmed)
-        address: 300715
-        dataType: uint16
-        metricType: gauge
 
   # Settings, scraped rarely by their own job: shows when the installer changes the work mode,
   # export or battery config. Holding registers 60-499, read-only here as well.
