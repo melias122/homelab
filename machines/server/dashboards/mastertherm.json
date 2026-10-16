@@ -1821,7 +1821,7 @@
       "id": 19,
       "type": "timeseries",
       "title": "Izby",
-      "description": "Displej TČ riadi kúrenie celého domu. Klímy merajú v celých °C vo vnútornej jednotke pod stropom, berte ich ako trend.",
+      "description": "Displej TČ riadi kúrenie celého domu. Klímy merajú v celých °C vo vnútornej jednotke pod stropom, berte ich ako trend. Hue senzor je posunutý o +0,5 °C na stupnicu displeja (porovnanie vedľa displeja 16.10.2026).",
       "gridPos": {
         "x": 0,
         "y": 50,
@@ -1866,8 +1866,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.schody_teplota\"}",
-          "legendFormat": "WC (Hue)"
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.schody_teplota\"} + 0.5",
+          "legendFormat": "WC (Hue +0,5)"
         },
         {
           "refId": "D",
