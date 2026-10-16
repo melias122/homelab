@@ -8,7 +8,10 @@ let
   # the automation for good.
   # Tilt works because all five Shellys have slat control calibrated.
   blinds = [
-    { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; }
+    # East window, morning sun on the desk and monitor: slats half open until
+    # horizontal ones block the direct sun (~10:30 Oct–Dec, ~09:30 Mar–Jun).
+    # The tilt is a first guess.
+    { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; shade = { tilt = 50; until = "10:30"; }; }
     # Terrace door: an automatic close can lock somebody out and there is no
     # door sensor yet, so a manual raise during the day keeps the sunset close
     # away all evening, while an untouched day still closes. Shorten once a
@@ -191,7 +194,7 @@ let
         # guard keeps HA restarts from counting.
         value_template = ''
           {% set own = states.automation
-               | selectattr('attributes.id', 'in', ['${c.key}_zapad', '${c.key}_vychod'])
+               | selectattr('attributes.id', 'in', ['${c.key}_zapad', '${c.key}_vychod', '${c.key}_tienenie_koniec'])
                | map(attribute='context.id') | list %}
           {{ trigger.to_state.context.id not in own
              and trigger.to_state.context.parent_id is none
@@ -226,7 +229,7 @@ let
 
   mkMorning = b: {
     id = "${b.key}_vychod";
-    alias = "${b.label}: ráno odklopiť lamely, nie pred 6:30 (víkend 7:00)";
+    alias = "${b.label}: ráno odklopiť lamely${lib.optionalString (b ? shade) " na ${toString b.shade.tilt} %"}, nie pred 6:30 (víkend 7:00)";
     # Both moments trigger; the conditions let only the later one through.
     # `now()` makes HA re-render the template every minute, so it fires once.
     triggers = [
@@ -248,6 +251,32 @@ let
       }
       # Shelly fw 2.0.0 answers a slat-only GoToPosition on a partly raised
       # blind by driving it down for ~15 s (hsportal 2026-08-26, 2026-09-03).
+      {
+        condition = "numeric_state";
+        entity_id = b.cover;
+        attribute = "current_position";
+        below = 5;
+      }
+    ];
+    actions = [
+      (if b ? shade then {
+        action = "cover.set_cover_tilt_position";
+        target.entity_id = b.cover;
+        data.tilt_position = b.shade.tilt;
+      } else {
+        action = "cover.open_cover_tilt";
+        target.entity_id = b.cover;
+      })
+    ];
+  };
+
+  mkShadeEnd = b: {
+    id = "${b.key}_tienenie_koniec";
+    alias = "${b.label}: o ${b.shade.until} otvoriť lamely po rannom tienení";
+    triggers = [ { trigger = "time"; at = "${b.shade.until}:00"; } ];
+    conditions = [
+      (manualIdle b)
+      # Raised blind: nothing to open, and see the fw 2.0.0 note in mkMorning.
       {
         condition = "numeric_state";
         entity_id = b.cover;
@@ -740,7 +769,7 @@ in
         (mkSunset b)
         (mkMorning b)
         (mkManualDetector b)
-      ]) blinds
+      ] ++ lib.optional (b ? shade) (mkShadeEnd b)) blinds
       ++ [
         rekuNightStart
         rekuNightStop
