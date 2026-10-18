@@ -8,10 +8,10 @@ let
   # the automation for good.
   # Tilt works because all five Shellys have slat control calibrated.
   blinds = [
-    # East window, morning sun on the desk and monitor: slats half open until
-    # horizontal ones block the direct sun (~10:30 Oct–Dec, ~09:30 Mar–Jun).
-    # The tilt is a first guess.
-    { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; shade = { tilt = 50; until = "10:30"; }; }
+    # East window, morning sun on the desk and monitor: slats to 75 % once the
+    # sun is out (50 % was too dark), raised for daylight when the direct sun no
+    # longer gets in (~10:30 Oct–Dec, ~09:30 Mar–Jun).
+    { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; shade = { tilt = 75; raiseAt = "10:30"; }; }
     # Terrace door: an automatic close can lock somebody out and there is no
     # door sensor yet, so a manual raise during the day keeps the sunset close
     # away all evening, while an untouched day still closes. Shorten once a
@@ -31,6 +31,11 @@ let
   dawnElevation = -6;
   # Jinja expression, zero-padded HH:MM: 06:30 Mon–Fri, 07:00 Sat/Sun.
   morningAt = "('07:00' if now().weekday() >= 5 else '06:30')";
+  # Sun out: PV2 bursts 1.2–2.8 kW in sunny spells, flat ~300 W under overcast
+  # (mornings 2026-10-17/18). Forecasts got neither morning right in advance.
+  # October numbers, unchecked in winter.
+  sunPower = "sensor.fotovoltika_vykon_pv2";
+  sunPowerAbove = 800;
 
   manualTimer = c: "timer.${c.key}_manual";
 
@@ -194,7 +199,7 @@ let
         # guard keeps HA restarts from counting.
         value_template = ''
           {% set own = states.automation
-               | selectattr('attributes.id', 'in', ['${c.key}_zapad', '${c.key}_vychod', '${c.key}_tienenie_koniec'])
+               | selectattr('attributes.id', 'in', ['${c.key}_zapad', '${c.key}_vychod', '${c.key}_tienenie_slnko', '${c.key}_tienenie_koniec'])
                | map(attribute='context.id') | list %}
           {{ trigger.to_state.context.id not in own
              and trigger.to_state.context.parent_id is none
@@ -229,7 +234,7 @@ let
 
   mkMorning = b: {
     id = "${b.key}_vychod";
-    alias = "${b.label}: ráno odklopiť lamely${lib.optionalString (b ? shade) " na ${toString b.shade.tilt} %"}, nie pred 6:30 (víkend 7:00)";
+    alias = "${b.label}: ráno odklopiť lamely, nie pred 6:30 (víkend 7:00)";
     # Both moments trigger; the conditions let only the later one through.
     # `now()` makes HA re-render the template every minute, so it fires once.
     triggers = [
@@ -259,24 +264,31 @@ let
       }
     ];
     actions = [
-      (if b ? shade then {
-        action = "cover.set_cover_tilt_position";
-        target.entity_id = b.cover;
-        data.tilt_position = b.shade.tilt;
-      } else {
-        action = "cover.open_cover_tilt";
-        target.entity_id = b.cover;
-      })
+      { action = "cover.open_cover_tilt"; target.entity_id = b.cover; }
     ];
   };
 
-  mkShadeEnd = b: {
-    id = "${b.key}_tienenie_koniec";
-    alias = "${b.label}: o ${b.shade.until} otvoriť lamely po rannom tienení";
-    triggers = [ { trigger = "time"; at = "${b.shade.until}:00"; } ];
+  mkShadeSun = b: {
+    id = "${b.key}_tienenie_slnko";
+    alias = "${b.label}: pri slnku privrieť lamely na ${toString b.shade.tilt} %";
+    triggers = [
+      { trigger = "numeric_state"; entity_id = sunPower; above = sunPowerAbove; "for" = "00:02:00"; }
+      # Sampling: in summer the sun is already out when the morning tilt runs.
+      { trigger = "time_pattern"; minutes = "/5"; }
+    ];
     conditions = [
       (manualIdle b)
-      # Raised blind: nothing to open, and see the fw 2.0.0 note in mkMorning.
+      { condition = "time"; before = "${b.shade.raiseAt}:00"; }
+      { condition = "numeric_state"; entity_id = sunPower; above = sunPowerAbove; }
+      # Once per morning, clouds don't reopen it: every tilt move closes the
+      # slats fully first. Margin because a set to 50 reads back as 51.
+      {
+        condition = "numeric_state";
+        entity_id = b.cover;
+        attribute = "current_tilt_position";
+        above = b.shade.tilt + 10;
+      }
+      # Lowered blind only, see mkMorning.
       {
         condition = "numeric_state";
         entity_id = b.cover;
@@ -285,7 +297,22 @@ let
       }
     ];
     actions = [
-      { action = "cover.open_cover_tilt"; target.entity_id = b.cover; }
+      {
+        action = "cover.set_cover_tilt_position";
+        target.entity_id = b.cover;
+        data.tilt_position = b.shade.tilt;
+      }
+    ];
+  };
+
+  # Every day, shaded or not: the sunset close still lowers it.
+  mkShadeEnd = b: {
+    id = "${b.key}_tienenie_koniec";
+    alias = "${b.label}: o ${b.shade.raiseAt} vytiahnuť hore";
+    triggers = [ { trigger = "time"; at = "${b.shade.raiseAt}:00"; } ];
+    conditions = [ (manualIdle b) ];
+    actions = [
+      { action = "cover.open_cover"; target.entity_id = b.cover; }
     ];
   };
 
@@ -769,7 +796,7 @@ in
         (mkSunset b)
         (mkMorning b)
         (mkManualDetector b)
-      ] ++ lib.optional (b ? shade) (mkShadeEnd b)) blinds
+      ] ++ lib.optionals (b ? shade) [ (mkShadeSun b) (mkShadeEnd b) ]) blinds
       ++ [
         rekuNightStart
         rekuNightStop
