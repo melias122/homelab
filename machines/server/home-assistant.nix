@@ -653,6 +653,9 @@ in
       "gree"
       "shelly"
       "hue"
+      # Shelly BLU H&T in the detska prizemie. No BT adapter on this host: its adverts
+      # come in through the BLE scanner on the detska 2PM (Shelly entry option).
+      "bthome"
       # WiFi presence for person.*, works even when the phone app reports no
       # location. Controller is on this host (./unifi.nix), config flow to localhost:8443.
       "unifi"
@@ -688,13 +691,15 @@ in
       # Only what Grafana shows: the TUV circulation pump plug next to the heat
       # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
       # Komfovent, whose only Modbus client stays HA, the cloud-only zmakcovac
-      # and FVE (deye_cloud), and the Gree room temps (floor heating balance).
+      # and FVE (deye_cloud), and the room temps (floor heating balance).
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
         "input_boolean.rekuperacia_zimny_rezim"
         # Hue motion sensor moved to the WC: candidate spot for the heat pump room probe.
         "sensor.schody_teplota"
+        "sensor.senzor_detska_prizemie_teplota"
+        "sensor.senzor_detska_prizemie_vlhkost"
       ];
       prometheus.filter.include_entity_globs = [
         "sensor.rekuperacia_*"

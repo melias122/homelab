@@ -1870,6 +1870,15 @@
           "legendFormat": "WC (Hue +0,5)"
         },
         {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.senzor_detska_prizemie_teplota\"}",
+          "legendFormat": "detská prízemie (teplomer)"
+        },
+        {
           "refId": "D",
           "datasource": {
             "type": "prometheus",
