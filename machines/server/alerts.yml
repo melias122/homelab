@@ -324,7 +324,7 @@ groups:
           severity: warning
         annotations:
           summary: "FVE: no Modbus reply from the inverter for 5 minutes"
-          description: "If up{job=\"mastertherm\"} is still 1 the exporter is fine: check the Waveshare gateway (http://192.168.1.88), its RS485 cable to the inverter's Modbus port and the inverter's Modbus SN (must be 1). Without a battery the inverter is also off during a night-time grid outage."
+          description: "If up{job=\"mastertherm\"} is still 1 the exporter is fine: check the Waveshare gateway (http://192.168.1.88), its RS485 cable to the inverter's Modbus port and the inverter's Modbus SN (must be 1)."
 
       # Register 500: 0 standby, 1 self-test, 2 normal, 3 alarm, 4 fault. Not
       # != 2: unverified whether it idles in standby at night. Fault word n bit b
@@ -349,6 +349,16 @@ groups:
         annotations:
           summary: "FVE: inverter warning word {{ $labels.word }} = {{ $value }}"
           description: "Read the warning on the inverter display. Word 1 bits: 1 fan, 2 grid phase, 3 meter communication."
+
+      # Registers 220/221, bits not decoded: the BMS's own codes, not the inverter's.
+      - alert: DeyeBatteryBms
+        expr: deye_bms_code > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FVE: battery BMS {{ $labels.kind }} {{ $value }}"
+          description: "Check the battery's own display/LEDs and the battery page on the inverter display."
 
       # EN 50160 caps the 10-min mean at 253 V and the inverter trips on the same
       # mean, so production is lost without any fault showing.

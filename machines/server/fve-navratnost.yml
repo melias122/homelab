@@ -4,7 +4,7 @@ groups:
   - name: fve_navratnost
     interval: 1m
     rules:
-      # PV + battery, user 2026-10-16.
+      # PV + 16 kWh battery, user 2026-10-16.
       - record: fve:investicia_eur
         expr: vector(12000)
 
@@ -34,7 +34,8 @@ groups:
       # Real last 365 d once they exist (~2027-10). Until then an estimate: PVGIS
       # 2019-23 hourly, E/W 11.52 kWp = 11.7 MWh/y; flat house load from the invoice
       # (10.9 MWh/y) + 10 kWh battery -> 6.5 MWh self-consumed x 0.149 + 4.9 MWh
-      # exported x 0.036 - 36 € buyback fee.
+      # exported x 0.036 - 36 € buyback fee. 10 kWh = the 16 kWh pack above its 35 %
+      # Low SOC; discharging to the 10 % shutdown (14.4 kWh) would add ~75 €/y.
       - record: fve:usetrene_rocne_eur
         expr: |
           (fve:usetrene_eur - last_over_time(fve:usetrene_eur[1d] offset 365d))

@@ -266,7 +266,7 @@
         "textMode": "value_and_name",
         "graphMode": "none"
       },
-      "description": "Priamo z meniča cez Modbus, každých 15 s. Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "description": "Priamo z meniča cez Modbus, každých 15 s. Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené. Batéria: kladná hodnota = vybíjanie, záporná = nabíjanie.",
       "id": 1
     },
     {
@@ -996,7 +996,7 @@
         "textMode": "value_and_name",
         "graphMode": "none"
       },
-      "description": "Batéria zatiaľ nie je zapojená, hodnoty sú nezmyselné (SOC 0 %, ~13,6 V, teplota stále 25 °C).",
+      "description": "Stav nabitia podľa BMS batérie (zapojená 19. 10. 2026).",
       "id": 4
     },
     {
@@ -1250,7 +1250,7 @@
           "mode": "multi"
         }
       },
-      "description": "Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "description": "Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené. Batéria: kladná hodnota = vybíjanie, záporná = nabíjanie.",
       "id": 5
     },
     {
@@ -1305,6 +1305,26 @@
           },
           "expr": "increase(deye_energy_kwh_total{kind=\"grid_export\"}[1d])",
           "legendFormat": "dodávka",
+          "interval": "1d"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "increase(deye_energy_kwh_total{kind=\"battery_charge\"}[1d])",
+          "legendFormat": "nabíjanie",
+          "interval": "1d"
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "increase(deye_energy_kwh_total{kind=\"battery_discharge\"}[1d])",
+          "legendFormat": "vybíjanie",
           "interval": "1d"
         }
       ],
@@ -1496,6 +1516,36 @@
                 "value": {
                   "mode": "fixed",
                   "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nabíjanie"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vybíjanie"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "light-purple"
                 }
               }
             ]
@@ -2876,7 +2926,7 @@
           "mode": "multi"
         }
       },
-      "description": "Batéria zatiaľ nie je zapojená, hodnoty sú nezmyselné (SOC 0 %, ~13,6 V, teplota stále 25 °C).",
+      "description": "SOC podľa BMS. Výkon: kladný = vybíjanie, záporný = nabíjanie.",
       "id": 15
     },
     {
@@ -2941,7 +2991,7 @@
         }
       },
       "id": 16,
-      "description": "Chladič striedača a teplotný vstup batérie (bez batérie stále 25 °C)."
+      "description": "Chladič striedača a teplota batérie z BMS."
     },
     {
       "type": "timeseries",
@@ -3185,7 +3235,7 @@
         "textMode": "value",
         "graphMode": "none"
       },
-      "description": "Do 10/2027 odhad: PVGIS 11,7 MWh/rok, odber z faktúry, batéria 10 kWh → 6,5 MWh vlastnej spotreby × 0,149 € + 4,9 MWh výkupu × 0,036 € − 36 € poplatok za výkup. Potom reálna úspora za posledných 365 dní.",
+      "description": "Do 10/2027 odhad: PVGIS 11,7 MWh/rok, odber z faktúry, batéria 16 kWh, z toho ~10 kWh nad Low SOC 35 % → 6,5 MWh vlastnej spotreby × 0,149 € + 4,9 MWh výkupu × 0,036 € − 36 € poplatok za výkup. Potom reálna úspora za posledných 365 dní.",
       "id": 23
     },
     {

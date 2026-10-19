@@ -756,8 +756,8 @@ in
       ];
 
       # FVE via the Waveshare RS485 gateway, which Prometheus polls too (multi-host).
-      # Sensors only: nothing here writes inverter registers. Grid + = import, as the
-      # Energy dashboard expects. Not in the prometheus globs: deye_* has it all.
+      # Sensors only: nothing here writes inverter registers. Grid + = import and battery
+      # + = discharge, as the Energy dashboard expects. Not in the prometheus globs: deye_* has it all.
       modbus = [{
         name = "fotovoltika";
         type = "tcp";
@@ -772,6 +772,20 @@ in
           (fveEnergy "energia_odber" "Fotovoltika energia odber" 522)
           (fveEnergy "energia_dodavka" "Fotovoltika energia dodávka" 524)
           (fveEnergy "energia_spotreba" "Fotovoltika energia spotreba" 527)
+          (fvePower "vykon_bateria" "Fotovoltika výkon batéria" 590 "int16")
+          (fveEnergy "energia_nabijanie" "Fotovoltika energia nabíjanie" 516)
+          (fveEnergy "energia_vybijanie" "Fotovoltika energia vybíjanie" 518)
+          {
+            name = "Fotovoltika batéria";
+            unique_id = "fotovoltika_bateria";
+            address = 588;
+            device_address = 1;
+            data_type = "uint16";
+            unit_of_measurement = "%";
+            device_class = "battery";
+            state_class = "measurement";
+            scan_interval = 60;
+          }
         ];
       }];
 

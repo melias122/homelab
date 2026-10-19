@@ -186,7 +186,7 @@ modules:
         dataType: int16
         metricType: gauge
 
-      # Battery: not connected yet, sign of the power unverified (Deye: + = discharge).
+      # Battery since 2026-10-19, lithium over CAN (BMS type 0 = Pylon protocol). + = discharge.
       - name: deye_battery_soc_percent
         help: Battery state of charge
         address: 300588
@@ -359,6 +359,19 @@ modules:
         help: Fault bit field word, 0 = none
         labels: { word: "4" }
         address: 300558
+        dataType: uint16
+        metricType: gauge
+      # As reported by the battery's BMS over CAN.
+      - name: deye_bms_code
+        help: Battery BMS alarm/fault bit field, 0 = none
+        labels: { kind: alarm }
+        address: 300220
+        dataType: uint16
+        metricType: gauge
+      - name: deye_bms_code
+        help: Battery BMS alarm/fault bit field, 0 = none
+        labels: { kind: fault }
+        address: 300221
         dataType: uint16
         metricType: gauge
 
