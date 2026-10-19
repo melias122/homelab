@@ -33,10 +33,9 @@ groups:
 
       # Real last 365 d once they exist (~2027-10). Until then an estimate: PVGIS
       # 2019-23 hourly, E/W 11.52 kWp = 11.7 MWh/y; flat house load from the invoice
-      # (10.9 MWh/y) + 10 kWh battery -> 6.5 MWh self-consumed x 0.149 + 4.9 MWh
-      # exported x 0.036 - 36 € buyback fee. 10 kWh = the 16 kWh pack above its 35 %
-      # Low SOC; discharging to the 10 % shutdown (14.4 kWh) would add ~75 €/y.
+      # (10.9 MWh/y) + 12.8 kWh battery (16 kWh above the 20 % Low/TOU SOC, 95 % each
+      # way) -> 7.3 MWh self-consumed x 0.149 + 4.0 MWh exported x 0.036 - 36 € fee.
       - record: fve:usetrene_rocne_eur
         expr: |
           (fve:usetrene_eur - last_over_time(fve:usetrene_eur[1d] offset 365d))
-          or vector(1100)
+          or vector(1200)

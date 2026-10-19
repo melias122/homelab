@@ -3235,7 +3235,7 @@
         "textMode": "value",
         "graphMode": "none"
       },
-      "description": "Do 10/2027 odhad: PVGIS 11,7 MWh/rok, odber z faktúry, batéria 16 kWh, z toho ~10 kWh nad Low SOC 35 % → 6,5 MWh vlastnej spotreby × 0,149 € + 4,9 MWh výkupu × 0,036 € − 36 € poplatok za výkup. Potom reálna úspora za posledných 365 dní.",
+      "description": "Do 10/2027 odhad: PVGIS 11,7 MWh/rok, odber z faktúry, batéria 16 kWh, z toho 12,8 kWh nad Low SOC 20 % → 7,3 MWh vlastnej spotreby × 0,149 € + 4,0 MWh výkupu × 0,036 € − 36 € poplatok za výkup. Potom reálna úspora za posledných 365 dní.",
       "id": 23
     },
     {
