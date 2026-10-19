@@ -9,7 +9,7 @@ let
   # Tilt works because all five Shellys have slat control calibrated.
   blinds = [
     # East window, morning sun on the desk and monitor: slats to 75 % once the
-    # sun is out (50 % was too dark), raised for daylight when the direct sun no
+    # sun is up (50 % was too dark), raised for daylight when the direct sun no
     # longer gets in (~10:30 Oct–Dec, ~09:30 Mar–Jun).
     { key = "zaluzie_pracovna"; cover = "cover.zaluzia_pracovna"; label = "Žalúzie pracovňa"; shade = { tilt = 75; raiseAt = "10:30"; }; }
     # Terrace door: an automatic close can lock somebody out and there is no
@@ -31,11 +31,9 @@ let
   dawnElevation = -6;
   # Jinja expression, zero-padded HH:MM: 06:30 Mon–Fri, 07:00 Sat/Sun.
   morningAt = "('07:00' if now().weekday() >= 5 else '06:30')";
-  # Sun out: PV2 bursts 1.2–2.8 kW in sunny spells, flat ~300 W under overcast
-  # (mornings 2026-10-17/18). Forecasts got neither morning right in advance.
-  # October numbers, unchecked in winter.
-  sunPower = "sensor.fotovoltika_vykon_pv2";
-  sunPowerAbove = 800;
+  # Shade once the sun clears the horizon, cloudy or not: PV power is no sun
+  # signal (zero export, it follows the house load) and forecasts missed.
+  shadeElevation = 3;
 
   manualTimer = c: "timer.${c.key}_manual";
 
@@ -270,18 +268,18 @@ let
 
   mkShadeSun = b: {
     id = "${b.key}_tienenie_slnko";
-    alias = "${b.label}: pri slnku privrieť lamely na ${toString b.shade.tilt} %";
+    alias = "${b.label}: po východe slnka privrieť lamely na ${toString b.shade.tilt} %";
     triggers = [
-      { trigger = "numeric_state"; entity_id = sunPower; above = sunPowerAbove; "for" = "00:02:00"; }
-      # Sampling: in summer the sun is already out when the morning tilt runs.
+      { trigger = "numeric_state"; entity_id = "sun.sun"; attribute = "elevation"; above = shadeElevation; }
+      # Sampling: in summer the sun is already up when the morning tilt runs.
       { trigger = "time_pattern"; minutes = "/5"; }
     ];
     conditions = [
       (manualIdle b)
       { condition = "time"; before = "${b.shade.raiseAt}:00"; }
-      { condition = "numeric_state"; entity_id = sunPower; above = sunPowerAbove; }
-      # Once per morning, clouds don't reopen it: every tilt move closes the
-      # slats fully first. Margin because a set to 50 reads back as 51.
+      { condition = "numeric_state"; entity_id = "sun.sun"; attribute = "elevation"; above = shadeElevation; }
+      # Only from open slats, so the sampling doesn't re-tilt every 5 min
+      # (each move closes the slats fully first). A set to 50 reads back as 51.
       {
         condition = "numeric_state";
         entity_id = b.cover;
