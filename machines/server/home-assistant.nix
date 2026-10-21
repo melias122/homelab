@@ -84,7 +84,10 @@ let
     # A failed forced re-login leaves a client without a token and unlock dies
     # silently until HA restarts (3 days of a dead gate button, 2026-08-25).
     # Drop once a release carries https://github.com/Bobsilvio/ezviz_hp7/issues/59.
-    patches = [ ./ezviz-hp7-relogin.patch ];
+    # The cloud now and then reports an old ring as the last alarm for one
+    # poll and the alarm sensors pulsed on any *different* time, so the phone
+    # got phantom "niekto zvoní" (2026-10-14 03:29, 2026-10-21 11:25).
+    patches = [ ./ezviz-hp7-relogin.patch ./ezviz-hp7-alarm-newer.patch ];
 
     dependencies = with config.services.home-assistant.package.python3Packages; [
       pycryptodome
