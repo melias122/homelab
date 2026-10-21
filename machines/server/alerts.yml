@@ -413,6 +413,28 @@ groups:
           summary: "FVE: inverter data from the Deye cloud have not changed for over an hour"
           description: "The Deye app shows partial devices offline: the logger reaches the cloud but sends no inverter data. Check Sub-device information in the logger web UI (http://192.168.1.87), then reseat or power-cycle the logger."
 
+  # Mastertherm W/W heat pump via pGDx Modbus (job mastertherm).
+  - name: mastertherm
+    rules:
+      # A clogging filter on the well circuit cuts source flow and has tripped the
+      # pump before. DHW (10+ min in, 60 rps) is the only repeatable steady load:
+      # 12 h mean 7.0-7.7 °C over 09-26..10-21. Start/stop transients already
+      # touch the -3 °C / 6 bar trips, so this fires well before the pump does.
+      # The 12 h window bridges the overnight gap between DHW runs.
+      - alert: MasterthermEvaporatingLow
+        expr: >-
+          avg_over_time((
+            mastertherm_temperature_celsius{sensor="evaporating"}
+            and on() min_over_time(mastertherm_state{state="dhw_heating"}[10m]) == 1
+            and on() min_over_time(mastertherm_state{state="compressor"}[10m]) == 1
+          )[12h:1m]) < 5.5
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "TČ: evaporating temperature in steady DHW heating averages {{ $value | printf \"%.1f\" }} °C (normally ~7.3)"
+          description: "Less well water reaches the evaporator. Clean the filter on the well (ponorka) circuit before the pump trips on low evaporating temperature or flow."
+
   - name: temperature
     rules:
       - alert: HwTemperatureHigh

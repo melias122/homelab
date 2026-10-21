@@ -334,6 +334,26 @@ modules:
         address: 301033
         dataType: int16
         metricType: gauge
+      # Service-screen alarm counters, gauge: may reset with D_19. Low evaporating
+      # and flow have tripped on a clogged well filter; 0 / 2 / 1 on 2026-10-21.
+      - name: mastertherm_alarm_count
+        help: Alarm counter (I_n)
+        labels: { alarm: low_pressure }         # I_20
+        address: 301017
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_alarm_count
+        help: Alarm counter (I_n)
+        labels: { alarm: low_evaporating }      # I_23
+        address: 301020
+        dataType: int16
+        metricType: gauge
+      - name: mastertherm_alarm_count
+        help: Alarm counter (I_n)
+        labels: { alarm: flow }                 # I_24
+        address: 301021
+        dataType: int16
+        metricType: gauge
 
       - name: mastertherm_state
         help: Digital flag (D_n)
