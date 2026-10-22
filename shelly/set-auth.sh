@@ -17,8 +17,8 @@ DEVICES=(
   192.168.1.73 # zaluzia-obyvacka-fix
   192.168.1.74 # zaluzia-detska-prizemie-fix
   192.168.1.75 # zaluzia-detska-prizemie-zahrada
-  192.168.1.76 # zasuvka-cerpadlo-tuv
   192.168.1.77 # zavlaha
+  192.168.1.78 # cerpadlo-tuv
 )
 
 PASS=$(cd "$REPO/secrets" && nix run github:ryantm/agenix/0.15.0 -- -d shelly-auth.age -i ~/.ssh/id_ed25519 2>/dev/null)

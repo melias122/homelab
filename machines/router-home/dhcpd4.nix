@@ -38,8 +38,8 @@
       { MACAddress = "8c:bf:ea:99:de:74"; Address = "192.168.1.73"; } # zaluzia-obyvacka-fix (Shelly 2PM G3)
       { MACAddress = "e4:b3:23:13:d5:c4"; Address = "192.168.1.74"; } # zaluzia-detska-prizemie-fix (Shelly 2PM G3)
       { MACAddress = "8c:bf:ea:9b:8b:40"; Address = "192.168.1.75"; } # zaluzia-detska-prizemie-zahrada (Shelly 2PM G3)
-      { MACAddress = "d4:d4:da:ec:69:ac"; Address = "192.168.1.76"; } # zasuvka-cerpadlo-tuv (Shelly Plug S, obehove cerpadlo TUV)
       { MACAddress = "08:92:72:4f:ae:04"; Address = "192.168.1.77"; } # zavlaha (Shelly XT1 irrigation)
+      { MACAddress = "e4:b0:63:76:8a:78"; Address = "192.168.1.78"; } # cerpadlo-tuv (Shelly 1PM Gen4 + Add-on, obehove cerpadlo TUV)
 
       # HA discovers the Gree units by broadcast; the leases only pin the addresses.
       { MACAddress = "c0:39:37:8c:93:39"; Address = "192.168.1.80"; } # klima-obyvacka

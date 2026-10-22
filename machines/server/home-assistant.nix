@@ -692,13 +692,14 @@ in
       # No firewall on this host: the tailnet bind is what keeps HA off the LAN.
       http.server_host = "100.98.141.25";
 
-      # Only what Grafana shows: the TUV circulation pump plug next to the heat
-      # pump (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
+      # Only what Grafana shows: the TUV circulation pump and its return-pipe probe
+      # (schedule on the Shelly, shelly/cerpadlo-tuv-schedule.sh) and the
       # Komfovent, whose only Modbus client stays HA, the cloud-only zmakcovac
       # and FVE (deye_cloud), and the room temps (floor heating balance).
       prometheus.filter.include_entities = [
         "switch.zasuvka_technicka_obehove_cerpadlo_tuv"
         "sensor.zasuvka_technicka_obehove_cerpadlo_tuv_vykon"
+        "sensor.senzor_technicka_spiatocka_tuv_teplota"
         "input_boolean.rekuperacia_zimny_rezim"
         # Hue motion sensor moved to the WC: candidate spot for the heat pump room probe.
         "sensor.schody_teplota"

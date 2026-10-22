@@ -45,7 +45,7 @@ over SSH. Consequences worth remembering:
 ### Networking
 
 - Home LAN `192.168.1.0/24`, gateway `router-home` = `192.168.1.1`, DHCP pool `.100–.250`,
-  static leases (switches, APs, cams, printer, Hue bridge `.60`, Shellys `.70–.77`,
+  static leases (switches, APs, cams, printer, Hue bridge `.60`, Shellys `.70–.78`,
   server `.45`) in `machines/router-home/dhcpd4.nix`. Second site is `192.168.2.0/24`.
 - Tailnet `robin-shark.ts.net`; server = `100.98.141.25`. `firewall.enable = false` on server
   and routers, so services are kept private by *binding to the tailnet IP* (HA, Grafana,

@@ -473,6 +473,15 @@
           },
           "expr": "mastertherm_temperature_celsius{sensor=\"hc1_water_requested\"}",
           "legendFormat": "okruh 1 požadovaná"
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "homeassistant_sensor_temperature_celsius{entity=\"sensor.senzor_technicka_spiatocka_tuv_teplota\"}",
+          "legendFormat": "spiatočka cirkulácie TÚV"
         }
       ],
       "fieldConfig": {
