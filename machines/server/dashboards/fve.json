@@ -266,7 +266,7 @@
         "textMode": "value_and_name",
         "graphMode": "none"
       },
-      "description": "Údaje z Deye cloudu, 3–5 min staré. Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "description": "Údaje z Deye cloudu, 3–5 min staré. Sieť: kladná hodnota = odber zo siete, záporná = dodávka do siete.",
       "id": 1
     },
     {
@@ -1250,7 +1250,7 @@
           "mode": "multi"
         }
       },
-      "description": "Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "description": "Sieť: kladná hodnota = odber zo siete, záporná = dodávka do siete.",
       "id": 5
     },
     {
@@ -2370,7 +2370,7 @@
           "mode": "multi"
         }
       },
-      "description": "Len to, čo tečie cez prípojku z distribúcie; cez deň kryje spotrebu FV. Sieť: kladná hodnota = odber zo siete. Znamienko pri dodávke do siete ešte nie je overené.",
+      "description": "Len to, čo tečie cez prípojku z distribúcie; cez deň kryje spotrebu FV. Sieť: kladná hodnota = odber zo siete, záporná = dodávka do siete.",
       "id": 11
     },
     {
