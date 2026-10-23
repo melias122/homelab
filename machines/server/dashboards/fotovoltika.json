@@ -792,6 +792,16 @@
           "expr": "deye_battery_soc_percent",
           "legendFormat": "SOC",
           "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"battery_charge\"} / 16",
+          "legendFormat": "cykly",
+          "instant": true
         }
       ],
       "fieldConfig": {
@@ -983,6 +993,29 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cykly"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
           }
         ]
       },
@@ -996,7 +1029,7 @@
         "textMode": "value_and_name",
         "graphMode": "none"
       },
-      "description": "Stav nabitia podľa BMS batérie (zapojená 19. 10. 2026).",
+      "description": "Stav nabitia podľa BMS batérie (zapojená 19. 10. 2026). Cykly = nabitá energia / 16 kWh (odhad); cykly z BMS a zdravie batérie sú len v Deye Cloude.",
       "id": 4
     },
     {
