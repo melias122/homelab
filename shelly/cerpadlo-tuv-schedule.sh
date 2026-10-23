@@ -40,9 +40,9 @@ every() { list 0 "$1" 59; }               # minute list with the given step
 
 run Schedule.DeleteAll '{}'
 job "0 45 5 * * $WORK"                                  "$PREHEAT" # up at 6:00
-job "0 $(every 15) $(list 6 8) * * $WORK"                 "$ON240"   # showers until 9:00
+job "0 $(every 15) $(list 6 12) * * $WORK"                "$ON240"   # showers until 9:00, sometimes up to 13:00
 job "0 45 6 * * $WEEKEND"                               "$PREHEAT" # up at 7:00
-job "0 $(every 15) $(list 7 9) * * $WEEKEND"              "$ON240"   # showers until 9-10
+job "0 $(every 15) $(list 7 12) * * $WEEKEND"             "$ON240"   # showers until 9-10, sometimes up to 13:00
 job "0 45 18 * * $DAYS"                                 "$PREHEAT" # kids' bath from 19:00
 job "0 $(every 15) $(list 19 21) * * $DAYS"               "$ON240"   # until 21:00, sometimes 22:00
 job "0 1 0 * * $DAYS"                                   '"on":false' # safety off after midnight
