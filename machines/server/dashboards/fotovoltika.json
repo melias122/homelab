@@ -1037,7 +1037,7 @@
       "title": "Výkon",
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 9,
         "w": 24,
         "h": 9
       },
@@ -1291,7 +1291,7 @@
       "title": "Energia za deň",
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 18,
         "w": 12,
         "h": 8
       },
@@ -1603,7 +1603,7 @@
       "title": "Sebestačnosť za deň",
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 18,
         "w": 12,
         "h": 8
       },
@@ -1846,7 +1846,7 @@
       "title": "FV a tepelné čerpadlo",
       "gridPos": {
         "x": 0,
-        "y": 22,
+        "y": 26,
         "w": 12,
         "h": 8
       },
@@ -2091,7 +2091,7 @@
       "title": "TČ za deň",
       "gridPos": {
         "x": 12,
-        "y": 22,
+        "y": 26,
         "w": 12,
         "h": 8
       },
@@ -2333,7 +2333,7 @@
       "title": "Spotreba po fázach",
       "gridPos": {
         "x": 0,
-        "y": 30,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -2397,7 +2397,7 @@
       "title": "Sieť po fázach",
       "gridPos": {
         "x": 12,
-        "y": 30,
+        "y": 34,
         "w": 12,
         "h": 8
       },
@@ -2461,7 +2461,7 @@
       "title": "Prúd zo siete po fázach",
       "gridPos": {
         "x": 0,
-        "y": 38,
+        "y": 42,
         "w": 12,
         "h": 8
       },
@@ -2543,7 +2543,7 @@
       "title": "Nesymetria fáz",
       "gridPos": {
         "x": 12,
-        "y": 38,
+        "y": 42,
         "w": 6,
         "h": 8
       },
@@ -2590,7 +2590,7 @@
       "title": "Spotreba po fázach za deň",
       "gridPos": {
         "x": 18,
-        "y": 38,
+        "y": 42,
         "w": 6,
         "h": 8
       },
@@ -2665,7 +2665,7 @@
       "title": "Napätie siete",
       "gridPos": {
         "x": 0,
-        "y": 46,
+        "y": 50,
         "w": 24,
         "h": 8
       },
@@ -2751,7 +2751,7 @@
       "title": "FV stringy – výkon",
       "gridPos": {
         "x": 0,
-        "y": 54,
+        "y": 58,
         "w": 12,
         "h": 8
       },
@@ -2806,7 +2806,7 @@
       "title": "FV stringy – napätie",
       "gridPos": {
         "x": 12,
-        "y": 54,
+        "y": 58,
         "w": 12,
         "h": 8
       },
@@ -2861,7 +2861,7 @@
       "title": "Batéria",
       "gridPos": {
         "x": 0,
-        "y": 62,
+        "y": 66,
         "w": 12,
         "h": 8
       },
@@ -2967,7 +2967,7 @@
       "title": "Teploty",
       "gridPos": {
         "x": 12,
-        "y": 62,
+        "y": 66,
         "w": 6,
         "h": 8
       },
@@ -3031,7 +3031,7 @@
       "title": "Spojenie s meničom",
       "gridPos": {
         "x": 18,
-        "y": 62,
+        "y": 66,
         "w": 6,
         "h": 8
       },
@@ -3102,7 +3102,7 @@
       "title": "Ušetrené",
       "gridPos": {
         "x": 0,
-        "y": 70,
+        "y": 74,
         "w": 6,
         "h": 5
       },
@@ -3178,7 +3178,7 @@
       "title": "Zostáva splatiť",
       "gridPos": {
         "x": 6,
-        "y": 70,
+        "y": 74,
         "w": 5,
         "h": 5
       },
@@ -3227,7 +3227,7 @@
       "title": "Úspora za rok",
       "gridPos": {
         "x": 11,
-        "y": 70,
+        "y": 74,
         "w": 4,
         "h": 5
       },
@@ -3276,7 +3276,7 @@
       "title": "Splatenie (odhad)",
       "gridPos": {
         "x": 15,
-        "y": 70,
+        "y": 74,
         "w": 5,
         "h": 5
       },
@@ -3352,7 +3352,7 @@
       "title": "Za 25 rokov (odhad)",
       "gridPos": {
         "x": 20,
-        "y": 70,
+        "y": 74,
         "w": 4,
         "h": 5
       },
@@ -3395,6 +3395,528 @@
       },
       "description": "Úspora za rok × 23,55 (25 rokov, degradácia panelov 0,5 %/rok) − investícia. Dnešné ceny, bez výmeny striedača a batérie.",
       "id": 25
+    },
+    {
+      "type": "stat",
+      "title": "Tento mesiac",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"pv\"} - (deye_energy_kwh_total{kind=\"pv\"} offset $__range or deye_energy_kwh_total{kind=\"pv\"} * 0)",
+          "legendFormat": "výroba",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"load\"} - (deye_energy_kwh_total{kind=\"load\"} offset $__range or deye_energy_kwh_total{kind=\"load\"} * 0)",
+          "legendFormat": "spotreba",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"grid_import\"} - (deye_energy_kwh_total{kind=\"grid_import\"} offset $__range or deye_energy_kwh_total{kind=\"grid_import\"} * 0)",
+          "legendFormat": "odber",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"grid_export\"} - (deye_energy_kwh_total{kind=\"grid_export\"} offset $__range or deye_energy_kwh_total{kind=\"grid_export\"} * 0)",
+          "legendFormat": "dodávka",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "výroba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "spotreba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sieť"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "odber"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dodávka"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "batéria"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SOC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sebestačnosť"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vlastná spotreba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ celkom"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ z FV"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name",
+        "graphMode": "none"
+      },
+      "description": "Od začiatku mesiaca, z celkových počítadiel striedača.",
+      "id": 26,
+      "timeFrom": "now/M"
+    },
+    {
+      "type": "stat",
+      "title": "Tento rok",
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"pv\"} - (deye_energy_kwh_total{kind=\"pv\"} offset $__range or deye_energy_kwh_total{kind=\"pv\"} * 0)",
+          "legendFormat": "výroba",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"load\"} - (deye_energy_kwh_total{kind=\"load\"} offset $__range or deye_energy_kwh_total{kind=\"load\"} * 0)",
+          "legendFormat": "spotreba",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"grid_import\"} - (deye_energy_kwh_total{kind=\"grid_import\"} offset $__range or deye_energy_kwh_total{kind=\"grid_import\"} * 0)",
+          "legendFormat": "odber",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "deye_energy_kwh_total{kind=\"grid_export\"} - (deye_energy_kwh_total{kind=\"grid_export\"} offset $__range or deye_energy_kwh_total{kind=\"grid_export\"} * 0)",
+          "legendFormat": "dodávka",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "výroba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "spotreba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sieť"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "odber"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dodávka"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "batéria"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SOC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sebestačnosť"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vlastná spotreba"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ celkom"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TČ z FV"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name",
+        "graphMode": "none"
+      },
+      "description": "Od začiatku roka, z celkových počítadiel striedača (bežia od uvedenia do prevádzky 13. 10. 2026).",
+      "id": 27,
+      "timeFrom": "now/y"
     }
   ]
 }
