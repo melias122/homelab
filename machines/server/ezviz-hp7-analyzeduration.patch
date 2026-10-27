@@ -1,0 +1,70 @@
+diff --git a/custom_components/ezviz_hp7/live_camera.py b/custom_components/ezviz_hp7/live_camera.py
+index 7261958..546f0c7 100644
+--- a/custom_components/ezviz_hp7/live_camera.py
++++ b/custom_components/ezviz_hp7/live_camera.py
+@@ -1746,7 +1746,11 @@ class Hp7StreamRelay:
+                     # #39 HPD7). A large analyzeduration/probesize is a ceiling,
+                     # not a fixed wait — it starts as soon as params are known.
+                     "-fflags", "+genpts", "-flags", "low_delay",
+-                    "-analyzeduration", "10000000", "-probesize", "10000000",
++                    # 2 s, not 10: the PS carries a mislabelled MP2 stream
++                    # whose params never resolve, so ffmpeg always waits the
++                    # full analyzeduration. Clients get keyframe-aligned GOPs,
++                    # so the HEVC parameter sets arrive at once anyway.
++                    "-analyzeduration", "2000000", "-probesize", "10000000",
+                     # NO wall-clock re-timestamping on this input. It is a
+                     # real MPEG-PS container that already carries correct
+                     # timestamps; stamping by arrival instead collapses the
+@@ -2103,8 +2107,13 @@ class Hp7LiveCamera(Camera):
+                 "-hide_banner",
+                 "-loglevel",
+                 "error",
+-                "-fflags",
+-                "+nobuffer",
++                # Not +nobuffer: with it the grab waited about one GOP, ~6.7 s
++                # of HA's 10 s budget. The relay starts on a keyframe; 0.3 s
++                # gets it in ~1 s.
++                "-analyzeduration",
++                "300000",
++                "-fpsprobesize",
++                "5",
+                 "-flags",
+                 "low_delay",
+                 "-i",
+@@ -2125,12 +2134,16 @@ class Hp7LiveCamera(Camera):
+         try:
+             data, _ = await asyncio.wait_for(proc.communicate(), timeout=10.0)
+         except asyncio.TimeoutError:
+-            try:
+-                proc.kill()
+-            except ProcessLookupError:
+-                pass
+             _LOGGER.debug("Hp7LiveCamera: snapshot ffmpeg timed out")
+             return None
++        finally:
++            # Also when HA cancels the request: a surviving ffmpeg holds a
++            # relay client and the entry's unload hangs on it.
++            if proc.returncode is None:
++                try:
++                    proc.kill()
++                except ProcessLookupError:
++                    pass
+         return data or None
+ 
+ 
+diff --git a/custom_components/ezviz_hp7/mjpeg.py b/custom_components/ezviz_hp7/mjpeg.py
+index c55bbb9..040b4c0 100644
+--- a/custom_components/ezviz_hp7/mjpeg.py
++++ b/custom_components/ezviz_hp7/mjpeg.py
+@@ -63,7 +63,10 @@ def _build_ffmpeg_cmd(
+     return [
+         ffmpeg_path,
+         "-loglevel", "warning",
+-        "-analyzeduration", "10000000",
++        # 0.3 s, not 10: the relay's TS always made ffmpeg wait the full
++        # analyzeduration (~11 s to first frame). It starts on a keyframe,
++        # and the output -r doesn't need the input fps estimate.
++        "-analyzeduration", "300000", "-fpsprobesize", "5",
+         "-probesize", "10000000",
+         "-f", "mpegts",
+         "-fflags", "+discardcorrupt",

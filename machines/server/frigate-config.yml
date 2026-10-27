@@ -101,9 +101,8 @@ cameras:
           input_args: preset-rtsp-restream
           roles: [detect]
 
-  # TODO(zvoncek): live stream broken on doorbell fw V5.4.x
-  # (https://github.com/Bobsilvio/ezviz_hp7/issues/51). Re-enable once the
-  # ezviz_hp7 pin in home-assistant.nix carries a fix.
+  # TODO(zvoncek): the relay is bound to 127.0.0.1 for HA's live view, so go2rtc
+  # can't reach it; see the ezviz_hp7 pin in home-assistant.nix.
   zvoncek:
     enabled: false
     ffmpeg:

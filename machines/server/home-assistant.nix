@@ -65,10 +65,12 @@ let
   # `ezviz` integration builds cameras from local RTSP so it can't add it
   # (https://github.com/home-assistant/core/issues/136070); no HACS on this host.
   #
-  # TODO(zvoncek live stream): broken on doorbell firmware V5.4.x, the relay's
-  # ffmpeg can't parse the stream (https://github.com/Bobsilvio/ezviz_hp7/issues/51).
-  # When a release fixes it, bump this pin and re-enable the camera in
-  # ./frigate-config.yml. Unlock/sensors/snapshots work.
+  # Live view needs stream_source=local (integration options): the cloud stream
+  # is unparseable on doorbell fw V5.4.x (https://github.com/Bobsilvio/ezviz_hp7/issues/51),
+  # LAN works with video encryption off. relay_bind=127.0.0.1 because HA's
+  # MJPEG/snapshot ffmpeg always dials tcp://127.0.0.1:<port>.
+  # TODO(zvoncek frigate): patch stream_url to the bind host, then bind the
+  # tailnet IP again and re-enable the camera in ./frigate-config.yml.
   ezviz-hp7 = pkgs.buildHomeAssistantComponent rec {
     owner = "Bobsilvio";
     domain = "ezviz_hp7";
@@ -88,7 +90,15 @@ let
     # poll and the alarm sensors pulsed on any *different* time, so the phone
     # got phantom "niekto zvoní" (2026-10-14 03:29, 2026-10-21 11:25).
     # Drop once a release carries https://github.com/Bobsilvio/ezviz_hp7/pull/81.
-    patches = [ ./ezviz-hp7-relogin.patch ./ezviz-hp7-alarm-newer.patch ];
+    # The relay's and HA's ffmpegs sat out their full 10 s analyzeduration, so
+    # live view took ~11 s to start and snapshots brushed HA's 10 s timeout.
+    # The same patch kills a snapshot ffmpeg whose request HA cancelled; a
+    # leaked one hung the entry's unload (twice on 2026-10-26).
+    patches = [
+      ./ezviz-hp7-relogin.patch
+      ./ezviz-hp7-alarm-newer.patch
+      ./ezviz-hp7-analyzeduration.patch
+    ];
 
     dependencies = with config.services.home-assistant.package.python3Packages; [
       pycryptodome
