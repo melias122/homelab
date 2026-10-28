@@ -572,10 +572,16 @@ let
     ];
   };
 
-  # Critical alert: rings through silent mode and Focus. Lists the alarm's
-  # zones still open; the one that tripped may have closed again already.
   alarmPhones = [ "notify.mobile_app_iphone_16_m" "notify.mobile_app_lulu" ];
 
+  # Jinja: sets `z` to the alarm's zones currently open.
+  alarmOpenZones = ''
+    {%- set z = device_entities(device_id('alarm_control_panel.alarm_dom'))
+       | select('match', 'binary_sensor') | select('is_state', 'on')
+       | map('state_attr', 'friendly_name') | list -%}'';
+
+  # Critical alert: rings through silent mode and Focus. Lists the alarm's
+  # zones still open; the one that tripped may have closed again already.
   alarmTriggeredNotify = {
     id = "alarm_notifikacia_poplach";
     alias = "Alarm: notifikácia — poplach";
@@ -587,11 +593,8 @@ let
       action = svc;
       data = {
         title = "Alarm: POPLACH";
-        message = ''
-          {%- set z = device_entities(device_id('alarm_control_panel.alarm_dom'))
-             | select('match', 'binary_sensor') | select('is_state', 'on')
-             | map('state_attr', 'friendly_name') | list -%}
-          {{ 'Otvorené: ' ~ z | join(', ') if z else 'Žiadna zóna už nie je otvorená.' }}'';
+        message = alarmOpenZones
+          + "{{ 'Otvorené: ' ~ z | join(', ') if z else 'Žiadna zóna už nie je otvorená.' }}";
         data = {
           tag = "alarm";
           push = {
@@ -638,6 +641,61 @@ let
         };
       }
     ];
+  };
+
+  # A reminder rather than auto-arming: kids or guests can be home without a
+  # tracked phone. The trigger fires per person; the condition's `for` makes it
+  # "nobody home for 30 min". An unknown phone isn't not_home, so it stays quiet.
+  alarmArmReminder = {
+    id = "alarm_pripomienka_nikto_doma";
+    alias = "Alarm: pripomienka — nikto doma, nezakódované";
+    mode = "single";
+    max_exceeded = "silent";
+    triggers = [
+      { trigger = "state"; entity_id = [ "person.641" "person.lulu" ]; to = "not_home"; "for" = "00:30:00"; }
+    ];
+    conditions = [
+      { condition = "state"; entity_id = [ "person.641" "person.lulu" ]; state = "not_home"; "for" = "00:30:00"; }
+      { condition = "state"; entity_id = "alarm_control_panel.alarm_dom"; state = "disarmed"; }
+    ];
+    actions = map (svc: {
+      action = svc;
+      data = {
+        title = "Alarm nie je zakódovaný";
+        message = "Nikto nie je doma už 30 min.";
+        data = {
+          tag = "alarm-pripomienka";
+          actions = [
+            { action = "ALARM_ZAKODOVAT"; title = "Zakódovať"; activationMode = "background"; authenticationRequired = true; }
+          ];
+        };
+      };
+    }) alarmPhones;
+  };
+
+  # The tap gives no feedback on the lock screen, so the result replaces the
+  # reminder (same tag). The exit delay runs first ("arming"); an open zone can
+  # keep the panel from arming at all.
+  alarmArmFromNotify = {
+    id = "alarm_zakodovat_z_notifikacie";
+    alias = "Alarm: zakódovať z notifikácie";
+    mode = "single";
+    max_exceeded = "silent";
+    triggers = [
+      { trigger = "event"; event_type = "mobile_app_notification_action"; event_data.action = "ALARM_ZAKODOVAT"; }
+    ];
+    actions = [
+      { action = "alarm_control_panel.alarm_arm_away"; target.entity_id = "alarm_control_panel.alarm_dom"; }
+      { wait_template = "{{ is_state('alarm_control_panel.alarm_dom', 'armed_away') }}"; timeout = "00:03:00"; }
+    ] ++ map (svc: {
+      action = svc;
+      data = {
+        title = "Alarm";
+        message = alarmOpenZones
+          + "{{ 'Zakódovaný.' if wait.completed else 'Nepodarilo sa zakódovať.' ~ (' Otvorené: ' ~ z | join(', ') if z else '') }}";
+        data.tag = "alarm-pripomienka";
+      };
+    }) alarmPhones;
   };
 
   # The schedule lives on the controller (06:00, lawn zones back to back) and
@@ -910,6 +968,8 @@ in
         alarmTriggeredNotify
         alarmFaultNotify
         alarmOfflineNotify
+        alarmArmReminder
+        alarmArmFromNotify
         zavlahaRainSkip
         zavlahaStuck
         tuvNiktoDoma
