@@ -577,11 +577,17 @@ let
   # Jinja: sets `z` to the alarm's zones currently open.
   alarmOpenZones = ''
     {%- set z = device_entities(device_id('alarm_control_panel.alarm_dom'))
-       | select('match', 'binary_sensor') | select('is_state', 'on')
+       | select('match', 'binary_sensor[.]senzor_.*_(pohyb|sabotaz)$') | select('is_state', 'on')
        | map('state_attr', 'friendly_name') | list -%}'';
 
-  # Critical alert: rings through silent mode and Focus. Lists the alarm's
-  # zones still open; the one that tripped may have closed again already.
+  # Jinja: sets `z` to the zones the panel has in alarm. Their hidden sensors are
+  # named `<zone's open sensor>_poplach`, the message uses the open sensor's name.
+  alarmZonesInAlarm = ''
+    {%- set z = device_entities(device_id('alarm_control_panel.alarm_dom'))
+       | select('match', 'binary_sensor[.].*_poplach$') | select('is_state', 'on')
+       | map('replace', '_poplach', "") | map('state_attr', 'friendly_name') | list -%}'';
+
+  # Critical alert: rings through silent mode and Focus.
   alarmTriggeredNotify = {
     id = "alarm_notifikacia_poplach";
     alias = "Alarm: notifikácia — poplach";
@@ -589,12 +595,15 @@ let
     triggers = [
       { trigger = "state"; entity_id = "alarm_control_panel.alarm_dom"; to = "triggered"; }
     ];
-    actions = map (svc: {
+    actions = [
+      # The zone's alarm bit can come with the next status poll (10 s).
+      { wait_template = alarmZonesInAlarm + "{{ z | count > 0 }}"; timeout = "00:00:15"; }
+    ] ++ map (svc: {
       action = svc;
       data = {
         title = "Alarm: POPLACH";
-        message = alarmOpenZones
-          + "{{ 'Otvorené: ' ~ z | join(', ') if z else 'Žiadna zóna už nie je otvorená.' }}";
+        message = alarmZonesInAlarm
+          + "{{ z | join(', ') if z else 'Ústredňa hlási poplach.' }}";
         data = {
           tag = "alarm";
           push = {
@@ -618,10 +627,41 @@ let
         action = "notify.mobile_app_iphone_16_m";
         data = {
           title = "Alarm: porucha";
-          message = "Ústredňa hlási poruchu, detail na klávesnici (TRBL).";
+          message = ''
+            {%- set t = states.binary_sensor | selectattr('entity_id', 'match', 'binary_sensor[.]alarm_dom_porucha_')
+               | selectattr('state', 'eq', 'on') | map(attribute='name') | list -%}
+            {{ t | join(', ') ~ '.' if t else 'Detail na klávesnici (TRBL).' }}'';
         };
       }
     ];
+  };
+
+  # Someone opened the house while armed: warns before the siren. Only with no
+  # tracked phone home, so coming home yourself stays quiet.
+  alarmEntryNotify = {
+    id = "alarm_notifikacia_vstup";
+    alias = "Alarm: notifikácia — vstup do zakódovaného domu";
+    mode = "single";
+    triggers = [
+      { trigger = "state"; entity_id = "binary_sensor.alarm_dom_vstupne_oneskorenie"; to = "on"; }
+    ];
+    conditions = [
+      {
+        condition = "not";
+        conditions = [{ condition = "state"; entity_id = [ "person.641" "person.lulu" ]; match = "any"; state = "home"; }];
+      }
+    ];
+    actions = map (svc: {
+      action = svc;
+      data = {
+        title = "Alarm: vstup";
+        message = "Niekto vošiel do zakódovaného domu, beží vstupný čas. Bez kódu príde poplach.";
+        data = {
+          tag = "alarm";
+          push.interruption-level = "time-sensitive";
+        };
+      };
+    }) alarmPhones;
   };
 
   # Unavailable = PAI died (MQTT will), PAI lost the panel or the ESP bridge
@@ -644,8 +684,9 @@ let
   };
 
   # A reminder rather than auto-arming: kids or guests can be home without a
-  # tracked phone. The trigger fires per person; the condition's `for` makes it
-  # "nobody home for 30 min". An unknown phone isn't not_home, so it stays quiet.
+  # tracked phone, the PIRs only catch them while they move. The trigger fires
+  # per person; the condition's `for` makes it "nobody home for 30 min". An
+  # unknown phone isn't not_home, so it stays quiet.
   alarmArmReminder = {
     id = "alarm_pripomienka_nikto_doma";
     alias = "Alarm: pripomienka — nikto doma, nezakódované";
@@ -656,6 +697,7 @@ let
     ];
     conditions = [
       { condition = "state"; entity_id = [ "person.641" "person.lulu" ]; state = "not_home"; "for" = "00:30:00"; }
+      { condition = "state"; entity_id = "binary_sensor.senzor_dom_pohyb"; state = "off"; }
       { condition = "state"; entity_id = "alarm_control_panel.alarm_dom"; state = "disarmed"; }
     ];
     actions = map (svc: {
@@ -968,6 +1010,7 @@ in
         alarmTriggeredNotify
         alarmFaultNotify
         alarmOfflineNotify
+        alarmEntryNotify
         alarmArmReminder
         alarmArmFromNotify
         zavlahaRainSkip

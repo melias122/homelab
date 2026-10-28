@@ -23,11 +23,21 @@ let
 
     # power (vdc/battery/dc) reads garbage on this firmware; SYNC_TIME needs 'date'.
     LIMITS = {'system': ['date'], 'partition': [1], 'pgm': []}
-    HOMEASSISTANT_PUBLISH_ZONE_PROPERTIES = ['open']
-    # target/current_state are strings, as binary sensors they stay unknown;
-    # the alarm panel entity already carries the state.
-    HOMEASSISTANT_PUBLISH_PARTITION_PROPERTIES = []
+    # Zone 'alarm' names the zone that tripped the alarm, entry_delay warns before
+    # the siren. Not target/current_state: strings that stay unknown as binary
+    # sensors, and the alarm panel entity already carries them.
+    HOMEASSISTANT_PUBLISH_ZONE_PROPERTIES = ['open', 'alarm']
+    HOMEASSISTANT_PUBLISH_PARTITION_PROPERTIES = ['entry_delay']
   '';
+
+  # The aggregate covers every trouble; the others name the likely ones in the
+  # notification, the rest are on the keypad (TRBL).
+  troubles = [
+    { key = "trouble"; id = "porucha"; name = "Porucha ústredne"; }
+    { key = "ac_failure_trouble"; id = "porucha_siet"; name = "Výpadok siete"; }
+    { key = "low_battery_trouble"; id = "porucha_bateria"; name = "Slabá batéria ústredne"; }
+    { key = "bell_output_disconnected_trouble"; id = "porucha_sirena"; name = "Odpojená siréna"; }
+  ];
 in
 {
   # Paradox SP5500+ → MQTT → HA discovery. PAI is not in nixpkgs.
@@ -67,17 +77,30 @@ in
   services.home-assistant.config.homeassistant.customize."alarm_control_panel.alarm_dom".supported_features = 2;
 
   # PAI's discovery skips troubles on Spectra panels (top-level status key, not
-  # under 'system'); the state topic exists, so the aggregate is declared here.
-  services.home-assistant.config.mqtt.binary_sensor = [
-    {
-      name = "Porucha ústredne";
-      unique_id = "paradox_trouble";
-      default_entity_id = "binary_sensor.alarm_dom_porucha";
-      state_topic = "paradox/states/system/troubles/trouble";
-      payload_on = "True";
-      payload_off = "False";
-      device_class = "problem";
-      availability_topic = "paradox/interface/availability";
-    }
-  ];
+  # under 'system'); the state topics exist, so they are declared here.
+  services.home-assistant.config.mqtt.binary_sensor = map (t: {
+    inherit (t) name;
+    unique_id = "paradox_${t.key}";
+    default_entity_id = "binary_sensor.alarm_dom_${t.id}";
+    state_topic = "paradox/states/system/troubles/${t.key}";
+    payload_on = "True";
+    payload_off = "False";
+    device_class = "problem";
+    availability_topic = "paradox/interface/availability";
+  }) troubles;
+
+  # Any PIR in the last 30 min, armed or not (they pulse ~3 s per motion).
+  services.home-assistant.config.template = [{
+    binary_sensor = [{
+      name = "Pohyb v dome";
+      unique_id = "senzor_dom_pohyb";
+      default_entity_id = "binary_sensor.senzor_dom_pohyb";
+      device_class = "occupancy";
+      state = ''
+        {{ device_entities(device_id('alarm_control_panel.alarm_dom'))
+           | select('match', 'binary_sensor[.]senzor_.*_pohyb$')
+           | select('is_state', 'on') | list | count > 0 }}'';
+      delay_off = "00:30:00";
+    }];
+  }];
 }
