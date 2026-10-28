@@ -102,5 +102,31 @@ in
            | select('is_state', 'on') | list | count > 0 }}'';
       delay_off = "00:30:00";
     }];
+
+    # Dashboard wrapper: arm in one tap, disarm only with the code. PAI's code
+    # option would require it for arming too (the reminder notification arms).
+    # HA checks the code; the panel never sees it.
+    alarm_control_panel = [{
+      name = "Alarm";
+      unique_id = "alarm_dom_kod";
+      default_entity_id = "alarm_control_panel.alarm_dom_kod";
+      state = "{{ states('alarm_control_panel.alarm_dom') }}";
+      availability = "{{ has_value('alarm_control_panel.alarm_dom') }}";
+      code_arm_required = false;
+      arm_away = [{ action = "alarm_control_panel.alarm_arm_away"; target.entity_id = "alarm_control_panel.alarm_dom"; }];
+      disarm = [
+        { variables.pin = "!secret alarm_kod"; }
+        # A wrong code is silent; the card keeps showing armed. stop/error never reaches the UI.
+        { condition = "template"; value_template = "{{ code | string == pin | string }}"; }
+        { action = "alarm_control_panel.alarm_disarm"; target.entity_id = "alarm_control_panel.alarm_dom"; }
+      ];
+    }];
   }];
+
+  # HA reads !secret values from secrets.yaml next to its config.
+  age.secrets.hass-secrets = {
+    file = ../../secrets/hass-secrets.age;
+    owner = "hass";
+  };
+  systemd.tmpfiles.rules = [ "L+ /var/lib/hass/secrets.yaml - - - - ${config.age.secrets.hass-secrets.path}" ];
 }
