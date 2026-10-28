@@ -1,0 +1,54 @@
+# Olimex ESP32-POE-ISO-IND (WROOM-32) on Paradox SP5500+ serial J4, bridged raw to TCP
+# for PAI (IP_CONNECTION_BARE). Build/flash with esphome/run.sh.
+esphome:
+  name: paradox
+
+esp32:
+  board: esp32-poe-iso
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk:
+    pin: GPIO17 # WROVER variants use GPIO0
+    mode: CLK_OUT
+  phy_addr: 0
+  power_pin: GPIO12
+
+logger: # UART0 = USB; the panel gets its own UART
+
+api:
+  encryption:
+    key: !secret api_key
+  # The 15 min default reboots whenever HA isn't connected, cutting PAI off with it.
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# J4 labels are from the connected device's side: pin1 "Rx" = panel Tx (5 V push-pull),
+# pin2 "Tx" = panel Rx, pin3 GND. Cable: pin1 yellow → ~5 kΩ → GPIO33, pin2 blue → 1 kΩ → GPIO32,
+# pin3 red → GND. The 5 kΩ keeps the panel's 5 V at ~0.25 mA into the clamp diode, also while the
+# ESP is unpowered; GPIO36/16/13/2 would defeat it with Olimex's on-board 2.2 kΩ pull-ups.
+uart:
+  id: panel
+  tx_pin: GPIO32
+  rx_pin:
+    number: GPIO33
+    mode:
+      input: true
+      pullup: false
+  baud_rate: 115200
+  rx_buffer_size: 1024
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+stream_server:
+  uart_id: panel
+  port: 10000
+  buffer_size: 1024 # default 128 overflows on 115200 bursts

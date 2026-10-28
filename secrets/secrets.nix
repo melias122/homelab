@@ -28,6 +28,9 @@ in
   # Used only from the laptop by shelly/*.sh; HA keeps its own copy in .storage.
   "shelly-auth.age".publicKeys = users;
 
+  # Used only from the laptop by esphome/run.sh (secrets.yaml for the ESPHome configs).
+  "esphome-secrets.age".publicKeys = users;
+
   # Work credentials, not used by any machine.
   "work-aws-config.age".publicKeys = users;
   "work-aws-credentials.age".publicKeys = users;
