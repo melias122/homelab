@@ -572,6 +572,74 @@ let
     ];
   };
 
+  # Critical alert: rings through silent mode and Focus. Lists the alarm's
+  # zones still open; the one that tripped may have closed again already.
+  alarmPhones = [ "notify.mobile_app_iphone_16_m" "notify.mobile_app_lulu" ];
+
+  alarmTriggeredNotify = {
+    id = "alarm_notifikacia_poplach";
+    alias = "Alarm: notifikácia — poplach";
+    mode = "single";
+    triggers = [
+      { trigger = "state"; entity_id = "alarm_control_panel.alarm_dom"; to = "triggered"; }
+    ];
+    actions = map (svc: {
+      action = svc;
+      data = {
+        title = "Alarm: POPLACH";
+        message = ''
+          {%- set z = device_entities(device_id('alarm_control_panel.alarm_dom'))
+             | select('match', 'binary_sensor') | select('is_state', 'on')
+             | map('state_attr', 'friendly_name') | list -%}
+          {{ 'Otvorené: ' ~ z | join(', ') if z else 'Žiadna zóna už nie je otvorená.' }}'';
+        data = {
+          tag = "alarm";
+          push = {
+            sound = { name = "default"; critical = 1; volume = 1.0; };
+            interruption-level = "critical";
+          };
+        };
+      };
+    }) alarmPhones;
+  };
+
+  # timer_loss after a power cycle clears within seconds (PAI SYNC_TIME).
+  alarmFaultNotify = {
+    id = "alarm_notifikacia_porucha";
+    alias = "Alarm: notifikácia — porucha ústredne";
+    triggers = [
+      { trigger = "state"; entity_id = "binary_sensor.alarm_dom_porucha"; to = "on"; "for" = "00:05:00"; }
+    ];
+    actions = [
+      {
+        action = "notify.mobile_app_iphone_16_m";
+        data = {
+          title = "Alarm: porucha";
+          message = "Ústredňa hlási poruchu, detail na klávesnici (TRBL).";
+        };
+      }
+    ];
+  };
+
+  # Unavailable = PAI died (MQTT will), PAI lost the panel or the ESP bridge
+  # (it reports offline itself), or HA lost mosquitto.
+  alarmOfflineNotify = {
+    id = "alarm_notifikacia_vypadok";
+    alias = "Alarm: notifikácia — výpadok spojenia s ústredňou";
+    triggers = [
+      { trigger = "state"; entity_id = "alarm_control_panel.alarm_dom"; to = "unavailable"; "for" = "00:05:00"; }
+    ];
+    actions = [
+      {
+        action = "notify.mobile_app_iphone_16_m";
+        data = {
+          title = "Alarm: výpadok";
+          message = "HA 5 min nevidí ústredňu (PAI, ESP most alebo MQTT). Ústredňa stráži ďalej, len bez HA.";
+        };
+      }
+    ];
+  };
+
   # The schedule lives on the controller (06:00, lawn zones back to back) and
   # HA only reacts to the valves it opens, so a dead HA changes nothing.
   # `float(0)` on an unavailable rain sensor means "no rain": water rather
@@ -839,6 +907,9 @@ in
         rekuFaultNotify
         zvoncekRingNotify
         zvoncekNotifyAction
+        alarmTriggeredNotify
+        alarmFaultNotify
+        alarmOfflineNotify
         zavlahaRainSkip
         zavlahaStuck
         tuvNiktoDoma
