@@ -22,6 +22,12 @@
           maxfail 0
           holdoff 10
 
+          # Without echo pppd held a dead ppp0 for 6.5 h after Telekom silently
+          # dropped traffic (2026-10-28 on router-home); adaptive = no echoes while data flows.
+          lcp-echo-interval 30
+          lcp-echo-failure 4
+          lcp-echo-adaptive
+
           noipdefault
           defaultroute
         '';
