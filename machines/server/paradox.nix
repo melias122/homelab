@@ -62,6 +62,10 @@ in
     wants = [ "mosquitto.service" ];
   };
 
+  # The house is only ever fully armed, and PAI can't do vacation/custom bypass;
+  # PAI's discovery offers every mode, so the UI keeps just arm away (2) + disarm.
+  services.home-assistant.config.homeassistant.customize."alarm_control_panel.alarm_dom".supported_features = 2;
+
   # PAI's discovery skips troubles on Spectra panels (top-level status key, not
   # under 'system'); the state topic exists, so the aggregate is declared here.
   services.home-assistant.config.mqtt.binary_sensor = [
