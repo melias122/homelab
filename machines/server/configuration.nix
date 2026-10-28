@@ -18,6 +18,7 @@
       ./monitoring.nix
       ./mosquitto.nix
       ./nextcloud.nix
+      ./paradox.nix
       ./restic.nix
       ./timemachine.nix
       ./unifi.nix
