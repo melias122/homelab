@@ -15,6 +15,12 @@ ethernet:
     mode: CLK_OUT
   phy_addr: 0
   power_pin: GPIO12
+  # VLAN 30 (native on USPM16P port 8) shared only with server 10.30.0.1. No gateway:
+  # lwIP drops replies to anything outside the /30, so server forwarding can't bridge the LAN in.
+  manual_ip:
+    static_ip: 10.30.0.2
+    gateway: 0.0.0.0
+    subnet: 255.255.255.252
 
 logger: # UART0 = USB; the panel gets its own UART
 

@@ -5,7 +5,7 @@ let
   paiConf = pkgs.writeText "pai.conf" ''
     # ESP32 serial↔TCP bridge on the panel's J4 (esphome/paradox.yaml), not an IP150.
     CONNECTION_TYPE = 'IP'
-    IP_CONNECTION_HOST = '192.168.1.188'
+    IP_CONNECTION_HOST = '10.30.0.2'
     IP_CONNECTION_PORT = 10000
     IP_CONNECTION_BARE = True
 
@@ -32,6 +32,12 @@ in
 {
   # Paradox SP5500+ → MQTT → HA discovery. PAI is not in nixpkgs.
   age.secrets.paradox-password.file = ../../secrets/paradox-password.age;
+
+  # The ESP bridge shares VLAN 30 with nobody but the server (native on USPM16P
+  # port 8, tagged to eno1 by the switches' default "auto" tagging): TCP 10000 has
+  # no auth and PAI keeps the panel logged in, so any LAN client could disarm.
+  networking.vlans.alarm = { id = 30; interface = "eno1"; };
+  networking.interfaces.alarm.ipv4.addresses = [ { address = "10.30.0.1"; prefixLength = 30; } ];
 
   virtualisation.oci-containers.containers.paradox = {
     image = "docker.io/paradoxalarminterface/pai:3.7.0@sha256:8e9e94f38b841dded71cadfa02de929b0f8170b1b98ad837ad111cdcf3379e48";
