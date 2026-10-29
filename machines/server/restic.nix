@@ -44,7 +44,9 @@
       passwordFile = config.age.secrets.restic-password.path;
       environmentFile = config.age.secrets.restic-b2-env.path;
       timerConfig = {
-        OnCalendar = "monthly";
+        OnCalendar = "weekly";
+        # Overriding timerConfig drops the module's default; catch up a run missed while down.
+        Persistent = true;
       };
       paths = [
         "/pool"
@@ -56,9 +58,12 @@
         "-e timemachine"
       ];
       pruneOpts = [
+        "--keep-weekly 8"
         "--keep-monthly 12"
         "--keep-yearly 3"
       ];
+      # Read back a random 5 % of packs each run, not just the index; ~15 GB/week fits B2's free 3× egress.
+      checkOpts = [ "--read-data-subset=5%" ];
     };
   };
 }
