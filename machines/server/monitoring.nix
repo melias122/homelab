@@ -275,6 +275,20 @@ in
         static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
       }
       {
+        # Same pGDx map, the W/W unit at ubytovna: WiFi on the LAN there, reached via
+        # router-ubytovna's advertised /32. A separate job rather than a site label
+        # keeps the home series (and their history) untouched.
+        job_name = "mastertherm-ubytovna";
+        metrics_path = "/modbus";
+        params = {
+          target = [ "192.168.3.13:502" ];
+          module = [ "mastertherm" ];
+          sub_target = [ "1" ];
+        };
+        scrape_interval = "30s";
+        static_configs = [{ targets = [ "100.98.141.25:9602" ]; }];
+      }
+      {
         # One request per metric over RS485 at 9600 baud: a scrape takes ~3 s.
         job_name = "deye";
         metrics_path = "/modbus";

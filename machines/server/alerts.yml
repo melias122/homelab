@@ -413,7 +413,8 @@ groups:
           summary: "FVE: inverter data from the Deye cloud have not changed for over an hour"
           description: "The Deye app shows partial devices offline: the logger reaches the cloud but sends no inverter data. Check Sub-device information in the logger web UI (http://192.168.1.87), then reseat or power-cycle the logger."
 
-  # Mastertherm W/W heat pump via pGDx Modbus (job mastertherm).
+  # Mastertherm W/W heat pumps via pGDx Modbus: job mastertherm = home,
+  # mastertherm-ubytovna = ubytovna. The well-filter rule is calibrated on home only.
   - name: mastertherm
     rules:
       # A clogging filter on the well circuit cuts source flow and has tripped the
@@ -424,9 +425,9 @@ groups:
       - alert: MasterthermEvaporatingLow
         expr: >-
           avg_over_time((
-            mastertherm_temperature_celsius{sensor="evaporating"}
-            and on() min_over_time(mastertherm_state{state="dhw_heating"}[10m]) == 1
-            and on() min_over_time(mastertherm_state{state="compressor"}[10m]) == 1
+            mastertherm_temperature_celsius{job="mastertherm",sensor="evaporating"}
+            and on() min_over_time(mastertherm_state{job="mastertherm",state="dhw_heating"}[10m]) == 1
+            and on() min_over_time(mastertherm_state{job="mastertherm",state="compressor"}[10m]) == 1
           )[12h:1m]) < 5.5
         for: 30m
         labels:

@@ -1,0 +1,1708 @@
+{
+  "uid": "mastertherm-ubytovna",
+  "title": "Tepelné čerpadlo ubytovňa",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "1m",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Beží",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 5,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"}",
+          "legendFormat": "kompresor",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"}",
+          "legendFormat": "ohrev TÚV",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"circulation_pump\"}",
+          "legendFormat": "obehové čerpadlo",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"source_pump\"}",
+          "legendFormat": "ponorka (studňa)",
+          "instant": true
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"aux_heater_1\"}",
+          "legendFormat": "bivalent 1",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "VYP",
+                  "color": "text"
+                },
+                "1": {
+                  "text": "ZAP",
+                  "color": "green"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Vonku",
+      "gridPos": {
+        "x": 5,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"outside\"}",
+          "legendFormat": "vonku",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Voda do TČ",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"water_actual\"}",
+          "legendFormat": "spiatočka do TČ",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"heating_requested\"}",
+          "legendFormat": "požadovaná",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name"
+      },
+      "description": "Spiatočka = riadiaca sonda na vstupe vody do kondenzátora (A1). Je spoločná pre kúrenie aj TÚV, preto stúpa aj počas ohrevu TÚV. Výstupnú teplotu z kondenzátora TČ nehlási."
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Teplá voda (TÚV)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"dhw_actual\"}",
+          "legendFormat": "aktuálna",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"dhw_requested\"}",
+          "legendFormat": "požadovaná",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Chyby",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"error\"}",
+          "legendFormat": "chyba",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"three_errors\"}",
+          "legendFormat": "3 chyby",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(1 - mastertherm_state{job=\"mastertherm-ubytovna\",state=\"flow_ok\"}) * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"}",
+          "legendFormat": "prietok",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "1 - mastertherm_state{job=\"mastertherm-ubytovna\",state=\"high_pressure_ok\"}",
+          "legendFormat": "vysoký tlak",
+          "instant": true
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "1 - mastertherm_state{job=\"mastertherm-ubytovna\",state=\"low_pressure_ok\"}",
+          "legendFormat": "nízky tlak",
+          "instant": true
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "1 - mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dc_drive_ok\"}",
+          "legendFormat": "menič",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "OK"
+                },
+                "1": {
+                  "text": "CHYBA"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "background",
+        "textMode": "value_and_name"
+      },
+      "description": "Prietok sa vyhodnocuje len pri bežiacom kompresore (D14 je 0 aj vtedy, keď sa prietok nevyžaduje)."
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Teploty vody",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"water_actual\"}",
+          "legendFormat": "spiatočka do TČ"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"heating_requested\"}",
+          "legendFormat": "kúrenie požadovaná"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"dhw_actual\"}",
+          "legendFormat": "TÚV aktuálna"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"dhw_requested\"}",
+          "legendFormat": "TÚV požadovaná"
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"hc1_water_requested\"}",
+          "legendFormat": "okruh 1 požadovaná"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*requested"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Chladivový okruh",
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"condensing\"}",
+          "legendFormat": "kondenzačná"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"evaporating\"}",
+          "legendFormat": "výparná"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"outside\"}",
+          "legendFormat": "vonku"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"discharge\"}",
+          "legendFormat": "výtlak"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"suction\"}",
+          "legendFormat": "sanie"
+        },
+        {
+          "refId": "G",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"discharge_requested\"}",
+          "legendFormat": "výtlak žiadaný"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "výtlak žiadaný"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Kompresor",
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_compressor_speed_rps{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "otáčky (rps)"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_compressor_current_amperes{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "prúd (A)"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_power_watts{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "príkon (W)"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_compressor_speed_requested_rps{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "žiadané otáčky (rps)"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_eev_steps{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "EEV (kroky)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "príkon (W)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "prúd (A)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "žiadané otáčky (rps)"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "EEV (kroky)"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": "state-timeline",
+      "title": "Stavy",
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"}",
+          "legendFormat": "kompresor"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"circulation_pump\"}",
+          "legendFormat": "obehové čerpadlo"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"source_pump\"}",
+          "legendFormat": "ponorka (studňa)"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"}",
+          "legendFormat": "ohrev TÚV"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"aux_heater_1\"}",
+          "legendFormat": "bivalent 1"
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"aux_heater_2\"}",
+          "legendFormat": "bivalent 2"
+        },
+        {
+          "refId": "H",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"winter\"}",
+          "legendFormat": "zimný režim"
+        },
+        {
+          "refId": "I",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"hc1_on\"}",
+          "legendFormat": "okruh 1"
+        },
+        {
+          "refId": "J",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"hc1_valve\"}",
+          "legendFormat": "ventil okruh 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "VYP",
+                  "color": "text"
+                },
+                "1": {
+                  "text": "ZAP",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 0
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showValue": "never",
+        "mergeValues": true,
+        "rowHeight": 0.8,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Miestnosť",
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"room_actual\"}",
+          "legendFormat": "aktuálna"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"room_requested\"}",
+          "legendFormat": "požadovaná"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_room_humidity_percent{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "vlhkosť"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vlhkosť"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "požadovaná"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Prevádzkové počítadlá",
+      "gridPos": {
+        "x": 12,
+        "y": 21,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_compressor_runtime_hours{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "kompresor hodiny",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_compressor_starts{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "štarty kompresora",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_pump_runtime_hours{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "čerpadlo hodiny",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "none",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "Režim",
+      "gridPos": {
+        "x": 20,
+        "y": 21,
+        "w": 4,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_hp_function{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "funkcia",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_state{job=\"mastertherm-ubytovna\",state=\"winter\"}",
+          "legendFormat": "sezóna",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "funkcia"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "kúrenie"
+                      },
+                      "1": {
+                        "text": "chladenie"
+                      },
+                      "2": {
+                        "text": "auto"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sezóna"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "leto"
+                      },
+                      "1": {
+                        "text": "zima"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "none",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Tlak chladiva",
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_pressure_bar{job=\"mastertherm-ubytovna\",side=\"suction\"}",
+          "legendFormat": "sanie"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_pressure_bar{job=\"mastertherm-ubytovna\",side=\"discharge\"}",
+          "legendFormat": "výtlak"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurebar",
+          "min": 0,
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Prehriatie",
+      "gridPos": {
+        "x": 12,
+        "y": 29,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_superheat_kelvin{job=\"mastertherm-ubytovna\",side=\"suction\"}",
+          "legendFormat": "sanie"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_superheat_kelvin{job=\"mastertherm-ubytovna\",side=\"discharge\"}",
+          "legendFormat": "výtlak"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_superheat_requested_kelvin{job=\"mastertherm-ubytovna\",side=\"suction\"}",
+          "legendFormat": "sanie žiadané"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_superheat_requested_kelvin{job=\"mastertherm-ubytovna\",side=\"discharge\"}",
+          "legendFormat": "výtlak žiadané"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*žiadané"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "description": "Prehriatie = rozdiel dvoch teplôt chladiva, preto sa udáva v K (číselne rovnaké ako °C).\nSanie: teplota sania − výparná teplota. Výtlak: teplota výtlaku − kondenzačná teplota."
+    },
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "Menič",
+      "gridPos": {
+        "x": 0,
+        "y": 37,
+        "w": 12,
+        "h": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_drive_dc_voltage_volts{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "DC napätie (V)",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_drive_temperature_celsius{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "teplota meniča (°C)",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_drive_voltage_volts{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "napätie motora (V)",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_drive_status{job=\"mastertherm-ubytovna\"}",
+          "legendFormat": "stav",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "stav"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "stop"
+                      },
+                      "1": {
+                        "text": "beží"
+                      },
+                      "2": {
+                        "text": "ALARM"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "none",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Ponorka",
+      "gridPos": {
+        "x": 12,
+        "y": 37,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Otáčky ponorky (studňové čerpadlo) sú analógový výstup regulátora v %, zobrazené len keď ponorka beží.",
+      "targets": [
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_source_pump_speed_percent{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"source_pump\"}",
+          "legendFormat": "ponorka (%)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "custom": {
+            "fillOpacity": 10
+          },
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "COP",
+      "gridPos": {
+        "x": 0,
+        "y": 42,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Len kompresor, bez ponoriek a obehového čerpadla; zobrazené pri otáčkach nad 30 rps.\nPodľa TČ: výkon / príkon, ktoré počíta pCO (A444 / A445). Výkon je modelový, vychádza okolo 80 % Carnota, preto je optimistický.\nOdhad: 0,475 × Carnot z kondenzačnej a výparnej teploty.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_heating_capacity_watts{job=\"mastertherm-ubytovna\"} / mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} and on() mastertherm_compressor_speed_rps{job=\"mastertherm-ubytovna\"} > 30",
+          "legendFormat": "podľa TČ"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "0.475 * (mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"condensing\"} + 273.15) / ignoring(sensor) (mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"condensing\"} - ignoring(sensor) mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"evaporating\"}) and on() mastertherm_compressor_speed_rps{job=\"mastertherm-ubytovna\"} > 30",
+          "legendFormat": "odhad (0,475 × Carnot)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "decimals": 1,
+          "min": 0,
+          "custom": {
+            "fillOpacity": 10,
+            "spanNulls": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "odhad (0,475 × Carnot)"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Vykurovacia krivka",
+      "gridPos": {
+        "x": 12,
+        "y": 45,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Cieľ vody (A212) = krivka z vonkajšej teploty pre krivku (A34, A3 obmedzená 0,5 K / 30 min) + kompenzácia miestnosťou (A198, pravá os). Kompenzácia ≈ −5 × (miestnosť − požadovaná), len keď je požiadavka na kúrenie.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"heating_requested\"}",
+          "legendFormat": "kúrenie požadovaná"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_water_a\"}) + (scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_water_b\"}) - scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_water_a\"})) * (scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_outside_a\"}) - mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"outside_curve\"}) / (scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_outside_a\"}) - scalar(mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"curve_outside_b\"}))",
+          "legendFormat": "krivka"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"room_compensation\"}",
+          "legendFormat": "kompenzácia miestnosťou"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"room_actual\"}",
+          "legendFormat": "miestnosť aktuálna"
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm-ubytovna\",sensor=\"room_requested\"}",
+          "legendFormat": "miestnosť požadovaná"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "fillOpacity": 10
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kompenzácia miestnosťou"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "kelvin"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.axisSoftMin",
+                "value": -5
+              },
+              {
+                "id": "custom.axisSoftMax",
+                "value": 5
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "krivka|.*požadovaná"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    }
+  ]
+}

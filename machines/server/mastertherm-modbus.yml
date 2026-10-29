@@ -1,5 +1,7 @@
-# Mastertherm heat pump, read through the pGDx touch controller (192.168.1.86:502,
-# Modbus TCP, no auth, unit id ignored). Reverse-engineered 2026-09-26.
+# Mastertherm heat pumps, read through the pGDx touch controller (Modbus TCP, no
+# auth, unit id ignored), both W/W: home at 192.168.1.86, ubytovna at
+# 192.168.3.13 (same map; I_14 reads 1 there vs 2 at home).
+# Reverse-engineered 2026-09-26.
 #
 # The pGDx exposes the pCO variables as one flat holding-register block
 # (PDU address, exporter address = 3 + 5-digit PDU):

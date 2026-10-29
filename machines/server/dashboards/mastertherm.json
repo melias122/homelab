@@ -30,7 +30,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"compressor\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"compressor\"}",
           "legendFormat": "kompresor",
           "instant": true
         },
@@ -40,7 +40,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"dhw_heating\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"dhw_heating\"}",
           "legendFormat": "ohrev TÚV",
           "instant": true
         },
@@ -50,7 +50,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"circulation_pump\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"circulation_pump\"}",
           "legendFormat": "obehové čerpadlo",
           "instant": true
         },
@@ -70,7 +70,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"source_pump\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"source_pump\"}",
           "legendFormat": "ponorka (studňa)",
           "instant": true
         },
@@ -80,7 +80,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"aux_heater_1\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"aux_heater_1\"}",
           "legendFormat": "bivalent 1",
           "instant": true
         }
@@ -152,7 +152,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"outside\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"outside\"}",
           "legendFormat": "vonku",
           "instant": true
         }
@@ -199,7 +199,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"water_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"water_actual\"}",
           "legendFormat": "spiatočka do TČ",
           "instant": true
         },
@@ -209,7 +209,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"heating_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"heating_requested\"}",
           "legendFormat": "požadovaná",
           "instant": true
         }
@@ -257,7 +257,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dhw_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dhw_actual\"}",
           "legendFormat": "aktuálna",
           "instant": true
         },
@@ -267,7 +267,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dhw_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dhw_requested\"}",
           "legendFormat": "požadovaná",
           "instant": true
         }
@@ -314,7 +314,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"error\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"error\"}",
           "legendFormat": "chyba",
           "instant": true
         },
@@ -324,7 +324,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"three_errors\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"three_errors\"}",
           "legendFormat": "3 chyby",
           "instant": true
         },
@@ -334,7 +334,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "(1 - mastertherm_state{state=\"flow_ok\"}) * on() mastertherm_state{state=\"compressor\"}",
+          "expr": "(1 - mastertherm_state{job=\"mastertherm\",state=\"flow_ok\"}) * on() mastertherm_state{job=\"mastertherm\",state=\"compressor\"}",
           "legendFormat": "prietok",
           "instant": true
         },
@@ -344,7 +344,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "1 - mastertherm_state{state=\"high_pressure_ok\"}",
+          "expr": "1 - mastertherm_state{job=\"mastertherm\",state=\"high_pressure_ok\"}",
           "legendFormat": "vysoký tlak",
           "instant": true
         },
@@ -354,7 +354,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "1 - mastertherm_state{state=\"low_pressure_ok\"}",
+          "expr": "1 - mastertherm_state{job=\"mastertherm\",state=\"low_pressure_ok\"}",
           "legendFormat": "nízky tlak",
           "instant": true
         },
@@ -364,7 +364,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "1 - mastertherm_state{state=\"dc_drive_ok\"}",
+          "expr": "1 - mastertherm_state{job=\"mastertherm\",state=\"dc_drive_ok\"}",
           "legendFormat": "menič",
           "instant": true
         }
@@ -435,7 +435,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"water_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"water_actual\"}",
           "legendFormat": "spiatočka do TČ"
         },
         {
@@ -444,7 +444,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"heating_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"heating_requested\"}",
           "legendFormat": "kúrenie požadovaná"
         },
         {
@@ -453,7 +453,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dhw_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dhw_actual\"}",
           "legendFormat": "TÚV aktuálna"
         },
         {
@@ -462,7 +462,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dhw_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dhw_requested\"}",
           "legendFormat": "TÚV požadovaná"
         },
         {
@@ -471,7 +471,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"hc1_water_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"hc1_water_requested\"}",
           "legendFormat": "okruh 1 požadovaná"
         },
         {
@@ -547,7 +547,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"condensing\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"condensing\"}",
           "legendFormat": "kondenzačná"
         },
         {
@@ -556,7 +556,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"evaporating\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"evaporating\"}",
           "legendFormat": "výparná"
         },
         {
@@ -565,7 +565,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"outside\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"outside\"}",
           "legendFormat": "vonku"
         },
         {
@@ -574,7 +574,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"discharge\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"discharge\"}",
           "legendFormat": "výtlak"
         },
         {
@@ -583,7 +583,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"suction\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"suction\"}",
           "legendFormat": "sanie"
         },
         {
@@ -592,7 +592,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"discharge_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"discharge_requested\"}",
           "legendFormat": "výtlak žiadaný"
         }
       ],
@@ -659,7 +659,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_compressor_speed_rps",
+          "expr": "mastertherm_compressor_speed_rps{job=\"mastertherm\"}",
           "legendFormat": "otáčky (rps)"
         },
         {
@@ -668,7 +668,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_compressor_current_amperes",
+          "expr": "mastertherm_compressor_current_amperes{job=\"mastertherm\"}",
           "legendFormat": "prúd (A)"
         },
         {
@@ -677,7 +677,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_power_watts",
+          "expr": "mastertherm_power_watts{job=\"mastertherm\"}",
           "legendFormat": "príkon (W)"
         },
         {
@@ -686,7 +686,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_compressor_speed_requested_rps",
+          "expr": "mastertherm_compressor_speed_requested_rps{job=\"mastertherm\"}",
           "legendFormat": "žiadané otáčky (rps)"
         },
         {
@@ -695,7 +695,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_eev_steps",
+          "expr": "mastertherm_eev_steps{job=\"mastertherm\"}",
           "legendFormat": "EEV (kroky)"
         }
       ],
@@ -806,7 +806,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"compressor\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"compressor\"}",
           "legendFormat": "kompresor"
         },
         {
@@ -815,7 +815,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"circulation_pump\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"circulation_pump\"}",
           "legendFormat": "obehové čerpadlo"
         },
         {
@@ -824,7 +824,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"source_pump\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"source_pump\"}",
           "legendFormat": "ponorka (studňa)"
         },
         {
@@ -833,7 +833,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"dhw_heating\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"dhw_heating\"}",
           "legendFormat": "ohrev TÚV"
         },
         {
@@ -851,7 +851,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"aux_heater_1\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"aux_heater_1\"}",
           "legendFormat": "bivalent 1"
         },
         {
@@ -860,7 +860,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"aux_heater_2\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"aux_heater_2\"}",
           "legendFormat": "bivalent 2"
         },
         {
@@ -869,7 +869,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"cooling\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"cooling\"}",
           "legendFormat": "chladenie"
         },
         {
@@ -878,7 +878,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"winter\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"winter\"}",
           "legendFormat": "zimný režim"
         },
         {
@@ -887,7 +887,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"hc1_on\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"hc1_on\"}",
           "legendFormat": "okruh 1"
         },
         {
@@ -896,7 +896,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"hc1_valve\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"hc1_valve\"}",
           "legendFormat": "ventil okruh 1"
         },
         {
@@ -905,7 +905,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"dewpoint_protection\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"dewpoint_protection\"}",
           "legendFormat": "ochrana rosného bodu"
         }
       ],
@@ -983,7 +983,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_actual\"}",
           "legendFormat": "aktuálna"
         },
         {
@@ -992,7 +992,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_requested\"}",
           "legendFormat": "požadovaná"
         },
         {
@@ -1001,7 +1001,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_room_humidity_percent",
+          "expr": "mastertherm_room_humidity_percent{job=\"mastertherm\"}",
           "legendFormat": "vlhkosť"
         }
       ],
@@ -1092,7 +1092,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_compressor_runtime_hours",
+          "expr": "mastertherm_compressor_runtime_hours{job=\"mastertherm\"}",
           "legendFormat": "kompresor hodiny",
           "instant": true
         },
@@ -1102,7 +1102,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_compressor_starts",
+          "expr": "mastertherm_compressor_starts{job=\"mastertherm\"}",
           "legendFormat": "štarty kompresora",
           "instant": true
         },
@@ -1112,7 +1112,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_pump_runtime_hours",
+          "expr": "mastertherm_pump_runtime_hours{job=\"mastertherm\"}",
           "legendFormat": "čerpadlo hodiny",
           "instant": true
         }
@@ -1157,7 +1157,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_hp_function",
+          "expr": "mastertherm_hp_function{job=\"mastertherm\"}",
           "legendFormat": "funkcia",
           "instant": true
         },
@@ -1167,7 +1167,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_state{state=\"winter\"}",
+          "expr": "mastertherm_state{job=\"mastertherm\",state=\"winter\"}",
           "legendFormat": "sezóna",
           "instant": true
         }
@@ -1264,7 +1264,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_pressure_bar{side=\"suction\"}",
+          "expr": "mastertherm_pressure_bar{job=\"mastertherm\",side=\"suction\"}",
           "legendFormat": "sanie"
         },
         {
@@ -1273,7 +1273,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_pressure_bar{side=\"discharge\"}",
+          "expr": "mastertherm_pressure_bar{job=\"mastertherm\",side=\"discharge\"}",
           "legendFormat": "výtlak"
         }
       ],
@@ -1318,7 +1318,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_superheat_kelvin{side=\"suction\"}",
+          "expr": "mastertherm_superheat_kelvin{job=\"mastertherm\",side=\"suction\"}",
           "legendFormat": "sanie"
         },
         {
@@ -1327,7 +1327,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_superheat_kelvin{side=\"discharge\"}",
+          "expr": "mastertherm_superheat_kelvin{job=\"mastertherm\",side=\"discharge\"}",
           "legendFormat": "výtlak"
         },
         {
@@ -1336,7 +1336,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_superheat_requested_kelvin{side=\"suction\"}",
+          "expr": "mastertherm_superheat_requested_kelvin{job=\"mastertherm\",side=\"suction\"}",
           "legendFormat": "sanie žiadané"
         },
         {
@@ -1345,7 +1345,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_superheat_requested_kelvin{side=\"discharge\"}",
+          "expr": "mastertherm_superheat_requested_kelvin{job=\"mastertherm\",side=\"discharge\"}",
           "legendFormat": "výtlak žiadané"
         }
       ],
@@ -1413,7 +1413,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_drive_dc_voltage_volts",
+          "expr": "mastertherm_drive_dc_voltage_volts{job=\"mastertherm\"}",
           "legendFormat": "DC napätie (V)",
           "instant": true
         },
@@ -1423,7 +1423,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_drive_temperature_celsius",
+          "expr": "mastertherm_drive_temperature_celsius{job=\"mastertherm\"}",
           "legendFormat": "teplota meniča (°C)",
           "instant": true
         },
@@ -1433,7 +1433,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_drive_voltage_volts",
+          "expr": "mastertherm_drive_voltage_volts{job=\"mastertherm\"}",
           "legendFormat": "napätie motora (V)",
           "instant": true
         },
@@ -1443,7 +1443,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_drive_status",
+          "expr": "mastertherm_drive_status{job=\"mastertherm\"}",
           "legendFormat": "stav",
           "instant": true
         }
@@ -1517,7 +1517,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dewpoint\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dewpoint\"}",
           "legendFormat": "rosný bod"
         },
         {
@@ -1526,7 +1526,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"dewpoint_water_limit\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"dewpoint_water_limit\"}",
           "legendFormat": "limit vody (rosný bod)"
         },
         {
@@ -1535,7 +1535,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"passive_cooling_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"passive_cooling_requested\"}",
           "legendFormat": "chladenie požadovaná"
         },
         {
@@ -1544,7 +1544,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_source_pump_speed_percent * on() mastertherm_state{state=\"source_pump\"}",
+          "expr": "mastertherm_source_pump_speed_percent{job=\"mastertherm\"} * on() mastertherm_state{job=\"mastertherm\",state=\"source_pump\"}",
           "legendFormat": "ponorka (%)"
         }
       ],
@@ -1640,7 +1640,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_heating_capacity_watts / mastertherm_power_input_watts and on() mastertherm_compressor_speed_rps > 30",
+          "expr": "mastertherm_heating_capacity_watts{job=\"mastertherm\"} / mastertherm_power_input_watts{job=\"mastertherm\"} and on() mastertherm_compressor_speed_rps{job=\"mastertherm\"} > 30",
           "legendFormat": "podľa TČ"
         },
         {
@@ -1649,7 +1649,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "0.475 * (mastertherm_temperature_celsius{sensor=\"condensing\"} + 273.15) / ignoring(sensor) (mastertherm_temperature_celsius{sensor=\"condensing\"} - ignoring(sensor) mastertherm_temperature_celsius{sensor=\"evaporating\"}) and on() mastertherm_compressor_speed_rps > 30",
+          "expr": "0.475 * (mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"condensing\"} + 273.15) / ignoring(sensor) (mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"condensing\"} - ignoring(sensor) mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"evaporating\"}) and on() mastertherm_compressor_speed_rps{job=\"mastertherm\"} > 30",
           "legendFormat": "odhad (0,475 × Carnot)"
         }
       ],
@@ -1720,7 +1720,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"heating_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"heating_requested\"}",
           "legendFormat": "kúrenie požadovaná"
         },
         {
@@ -1729,7 +1729,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "scalar(mastertherm_temperature_celsius{sensor=\"curve_water_a\"}) + (scalar(mastertherm_temperature_celsius{sensor=\"curve_water_b\"}) - scalar(mastertherm_temperature_celsius{sensor=\"curve_water_a\"})) * (scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_a\"}) - mastertherm_temperature_celsius{sensor=\"outside_curve\"}) / (scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_a\"}) - scalar(mastertherm_temperature_celsius{sensor=\"curve_outside_b\"}))",
+          "expr": "scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_water_a\"}) + (scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_water_b\"}) - scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_water_a\"})) * (scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_outside_a\"}) - mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"outside_curve\"}) / (scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_outside_a\"}) - scalar(mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"curve_outside_b\"}))",
           "legendFormat": "krivka"
         },
         {
@@ -1738,7 +1738,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_compensation\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_compensation\"}",
           "legendFormat": "kompenzácia miestnosťou"
         },
         {
@@ -1747,7 +1747,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_actual\"}",
           "legendFormat": "miestnosť aktuálna"
         },
         {
@@ -1756,7 +1756,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_requested\"}",
           "legendFormat": "miestnosť požadovaná"
         }
       ],
@@ -1848,7 +1848,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_actual\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_actual\"}",
           "legendFormat": "displej TČ"
         },
         {
@@ -1857,7 +1857,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "mastertherm_temperature_celsius{sensor=\"room_requested\"}",
+          "expr": "mastertherm_temperature_celsius{job=\"mastertherm\",sensor=\"room_requested\"}",
           "legendFormat": "požadovaná"
         },
         {
