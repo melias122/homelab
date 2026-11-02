@@ -24,11 +24,7 @@ ethernet:
 
 logger: # UART0 = USB; the panel gets its own UART
 
-api:
-  encryption:
-    key: !secret api_key
-  # The 15 min default reboots whenever HA isn't connected, cutting PAI off with it.
-  reboot_timeout: 0s
+# No api: HA doesn't use it, so it would only be another open port (6053).
 
 ota:
   - platform: esphome
