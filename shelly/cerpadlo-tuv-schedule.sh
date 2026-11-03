@@ -8,9 +8,10 @@
 # "on, off after N s" rather than toggle: a manual press, HA or a mid-day
 # reboot cannot invert the cycle.
 #
-# Only shower windows run. Thinning the cadence saves nothing (night test
+# Every 15 min all day. Thinning the cadence saves nothing (night test
 # 2026-10-22: a run after 30-90 min re-heats pipe and slab, 0.7-2.6 K of tank
-# each, about what 15-min runs cost per hour); only hours fully off do.
+# each). Shower-only windows (23 Oct-3 Nov) saved just 0.2-0.4 kWh el/day,
+# not worth waiting for hot water outside them.
 #
 # The device accepts "*/5" and "6-8", but the Shelly app only renders explicit
 # lists and shows nothing otherwise, so everything is spelled out.
@@ -28,22 +29,16 @@ shelly_auth "$SHELLY" "$PASS"
 run() { printf '%-22s ' "$1"; shelly_rpc "$SHELLY" "{\"id\":0,\"method\":\"$1\",\"params\":$2}"; echo; }
 job() { run Schedule.Create "{\"enable\":true,\"timespec\":\"$1\",\"calls\":[{\"method\":\"switch.set\",\"params\":{\"id\":0,$2}}]}"; }
 
-# Pre-heat: from a loop cold for hours 35 °C takes > 7 min. Runs in a window
-# mostly stop at 35 °C within 75-180 s.
+# Pre-heat: from a loop cold all night 35 °C takes > 7 min. 15-min runs mostly
+# stop at 35 °C within 75-180 s.
 PREHEAT='"on":true,"toggle_after":600'
 ON240='"on":true,"toggle_after":240'
 DAYS=SUN,MON,TUE,WED,THU,FRI,SAT
-WORK=MON,TUE,WED,THU,FRI
-WEEKEND=SAT,SUN
 list() { seq -s, "$@" | sed "s/,$//"; }  # BSD seq leaves a trailing comma
 every() { list 0 "$1" 59; }               # minute list with the given step
 
 run Schedule.DeleteAll '{}'
-job "0 45 5 * * $WORK"                                  "$PREHEAT" # up at 6:00
-job "0 $(every 15) $(list 6 12) * * $WORK"                "$ON240"   # showers until 9:00, sometimes up to 13:00
-job "0 45 6 * * $WEEKEND"                               "$PREHEAT" # up at 7:00
-job "0 $(every 15) $(list 7 12) * * $WEEKEND"             "$ON240"   # showers until 9-10, sometimes up to 13:00
-job "0 45 18 * * $DAYS"                                 "$PREHEAT" # kids' bath from 19:00
-job "0 $(every 15) $(list 19 21) * * $DAYS"               "$ON240"   # until 21:00, sometimes 22:00
+job "0 45 5 * * $DAYS"                                  "$PREHEAT"   # up at 6:00
+job "0 $(every 15) $(list 6 22) * * $DAYS"                "$ON240"     # 6:00-22:45
 job "0 1 0 * * $DAYS"                                   '"on":false' # safety off after midnight
 run Schedule.List '{}'
