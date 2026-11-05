@@ -444,6 +444,33 @@ let
     ];
   };
 
+  # Winter nights: windows stay shut (neighbours' smoke), the kids' room has
+  # 1 of 10 supply valves → 55 % ≈ 29 m³/h there (~5.2 m³/h per %, from
+  # heat_recovery and SPI). Writes only when the wanted mode differs from the
+  # last applied one (flag), so a manual flow change holds until the next switch;
+  # sampling catches a switch missed across an HA restart. A failed write leaves
+  # the flag as is → retried in 30 min.
+  rekuWinterNight = {
+    id = "rekuperacia_zimna_noc";
+    alias = "Rekuperácia: v zime v noci vyšší prietok";
+    mode = "single";
+    triggers = [
+      { trigger = "time"; at = [ "21:00:00" "07:00:00" ]; }
+      { trigger = "time_pattern"; minutes = "/30"; }
+    ];
+    # Only one variable: Nix sorts attrset keys, so variables defined from
+    # each other evaluate alphabetically (extract before noc → always 45).
+    variables.noc = "{{ is_state('input_boolean.rekuperacia_zimny_rezim', 'on') and (now().hour >= 21 or now().hour < 7) }}";
+    conditions = [
+      { condition = "template"; value_template = "{{ noc != is_state('input_boolean.rekuperacia_nocny_prietok', 'on') }}"; }
+    ];
+    actions = [
+      { action = "number.set_value"; target.entity_id = "number.rekuperacia_normal_supply_flow"; data.value = "{{ 55 if noc else 40 }}"; }
+      { action = "number.set_value"; target.entity_id = "number.rekuperacia_normal_extract_flow"; data.value = "{{ 60 if noc else 45 }}"; }
+      { action = "input_boolean.turn_{{ 'on' if noc else 'off' }}"; target.entity_id = "input_boolean.rekuperacia_nocny_prietok"; }
+    ];
+  };
+
   # Same idea as the blinds' manual timers; 12 h from an evening touch covers
   # the whole 21:00–06:00 window.
   rekuManualDetector = {
@@ -924,6 +951,12 @@ in
         icon = "mdi:weather-night";
       };
 
+      # See rekuWinterNight.
+      input_boolean.rekuperacia_nocny_prietok = {
+        name = "Rekuperácia: nočný prietok nastavený";
+        icon = "mdi:fan-plus";
+      };
+
       # See rekuSeason/rekuSeasonApply.
       input_boolean.rekuperacia_zimny_rezim = {
         name = "Rekuperácia: zimný režim";
@@ -1003,6 +1036,7 @@ in
         rekuManualDetector
         rekuSeason
         rekuSeasonApply
+        rekuWinterNight
         rekuFilterNotify
         rekuFaultNotify
         zvoncekRingNotify
