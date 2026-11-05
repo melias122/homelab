@@ -509,7 +509,8 @@ let
     alias = "Rekuperácia: notifikácia — zanesené filtre";
     triggers = [ { trigger = "time"; at = "09:00:00"; } ];
     conditions = [
-      { condition = "numeric_state"; entity_id = "sensor.rekuperacia_filter_clogging"; above = 85; }
+      # 50 %: the duct prefilter clogs first; checking it then leaves margin before F7/G5.
+      { condition = "numeric_state"; entity_id = "sensor.rekuperacia_filter_clogging"; above = 50; }
       { condition = "state"; entity_id = "climate.rekuperacia"; attribute = "preset_mode"; state = "normal"; }
     ];
     actions = [
@@ -517,7 +518,7 @@ let
         action = "notify.mobile_app_iphone_16_m";
         data = {
           title = "Rekuperácia";
-          message = "Filtre sú zanesené na {{ states('sensor.rekuperacia_filter_clogging') }} % — čas ich vymeniť.";
+          message = "Filtre sú zanesené na {{ states('sensor.rekuperacia_filter_clogging') }} % — skontroluj predfilter v potrubí, potom F7/G5. Po výmene spusti kalibráciu.";
         };
       }
     ];
