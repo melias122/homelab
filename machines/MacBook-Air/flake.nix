@@ -62,6 +62,8 @@
                 casks = [
                   "beekeeper-studio"
                   "bruno"
+                  "chatgpt" # Codex desktop; codex-app cask is discontinued
+                  "codex"
                   "emacs-app"
                   "google-chrome"
                   "insomnia"
