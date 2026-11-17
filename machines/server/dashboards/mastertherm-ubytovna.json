@@ -1703,6 +1703,286 @@
           "mode": "multi"
         }
       }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Elektrina kompresora za deň",
+      "gridPos": {
+        "x": 0,
+        "y": 53,
+        "w": 16,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Len kompresor, bez ponoriek a obehového čerpadla. Body = počet ohrevov TÚV (pravá os).\nDeň končí o polnoci UTC.",
+      "targets": [
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[1d:30s]) * 30 / 3.6e6",
+          "legendFormat": "elektrina TÚV",
+          "interval": "1d"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"} * on() (1 - mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"}))[1d:30s]) * 30 / 3.6e6",
+          "legendFormat": "elektrina kúrenie",
+          "interval": "1d"
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "ceil(changes(mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"}[1d]) / 2)",
+          "legendFormat": "ohrevy TÚV",
+          "interval": "1d"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 1,
+          "min": 0,
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "elektrina TÚV"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "elektrina kúrenie"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ohrevy TÚV"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "text"
+                }
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "points"
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 8
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "none",
+                  "group": "A"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "TÚV posledných 7 dní",
+      "gridPos": {
+        "x": 16,
+        "y": 53,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "Priemer na deň za posledných 7 dní. Podiel = elektrina na TÚV / elektrina kompresora spolu.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6 / 7",
+          "legendFormat": "elektrina / deň",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum_over_time((mastertherm_heating_capacity_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6 / 7",
+          "legendFormat": "teplo / deň",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(sum_over_time((mastertherm_heating_capacity_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6) / (sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6)",
+          "legendFormat": "COP",
+          "instant": true
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "changes(mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"}[7d]) / 2 / 7",
+          "legendFormat": "ohrevy / deň",
+          "instant": true
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "(sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"dhw_heating\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6) / (sum_over_time((mastertherm_power_input_watts{job=\"mastertherm-ubytovna\"} * on() mastertherm_state{job=\"mastertherm-ubytovna\",state=\"compressor\"})[7d:30s]) * 30 / 3.6e6)",
+          "legendFormat": "podiel na elektrine",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "COP"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ohrevy / deň"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "podiel na elektrine"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "textMode": "value_and_name"
+      }
     }
   ]
 }
