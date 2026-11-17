@@ -41,6 +41,10 @@ over SSH. Consequences worth remembering:
 - `make deploy-all` = server + both routers.
 - Hosts also self-upgrade via `system.autoUpgrade`, so an unrelated channel bump can be the
   reason a build suddenly fails (e.g. the Caddy plugin vendor hash in `machines/server/caddy.nix`).
+- `services/upgrade.nix` (server + routers): the nightly upgrade switches live unless
+  kernel/systemd/pppd changed; those wait for the weekly reboot (`upgrade.rebootAt`). A
+  generation that fails `upgrade.healthCheck` within 10 min of boot is rolled back, recorded
+  in `/var/lib/upgrade/bad` and `nixos-upgrade` fails until the channel moves on.
 
 ### Networking
 

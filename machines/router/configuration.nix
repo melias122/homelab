@@ -8,7 +8,7 @@
       ../../roles/common.nix
       ../../services/node-exporter.nix
       ../../services/postfix.nix
-      ../../services/router-upgrade.nix
+      ../../services/upgrade.nix
 
       ./blocky.nix
       ./dhcpd4.nix
@@ -83,6 +83,15 @@
   services.tailscale.extraSetFlags = [
     "--advertise-routes=192.168.2.10/32,192.168.2.11/32,192.168.2.12/32"
   ];
+
+  # WAN and tailnet: without them the router cannot be fixed remotely.
+  upgrade.healthCheck = ''
+    ${pkgs.iputils}/bin/ping -q -c1 -W2 1.1.1.1 >/dev/null &&
+    ${config.services.tailscale.package}/bin/tailscale status --json |
+      ${pkgs.jq}/bin/jq -e '.BackendState == "Running" and .Self.Online' >/dev/null
+  '';
+  # Two days after router-home, which gets fixed by hand if a generation is bad.
+  upgrade.rebootAt = "Fri 08:00";
 
   environment.systemPackages = with pkgs; [
     conntrack-tools

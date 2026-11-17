@@ -8,7 +8,7 @@
       ../../roles/common.nix
       ../../services/node-exporter.nix
      ../../services/postfix.nix
-      ../../services/router-upgrade.nix
+      ../../services/upgrade.nix
 
      ./blocky.nix
       ./dhcpd4.nix
@@ -74,6 +74,13 @@
   };
 
   services.tailscale.useRoutingFeatures = "server";
+
+  # WAN and tailnet: without them the router cannot be fixed remotely.
+  upgrade.healthCheck = ''
+    ${pkgs.iputils}/bin/ping -q -c1 -W2 1.1.1.1 >/dev/null &&
+    ${config.services.tailscale.package}/bin/tailscale status --json |
+      ${pkgs.jq}/bin/jq -e '.BackendState == "Running" and .Self.Online' >/dev/null
+  '';
 
   environment.systemPackages = with pkgs; [
     conntrack-tools

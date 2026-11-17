@@ -8,6 +8,7 @@
       ../../roles/common.nix
       ../../services/node-exporter.nix
       ../../services/postfix.nix
+      ../../services/upgrade.nix
 
       ./apcupsd.nix
       ./avahi.nix
@@ -55,6 +56,14 @@
     # and stay failed after every boot.
     kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
   };
+
+  # After the 04:40 upgrade, before anyone needs HA.
+  upgrade.rebootAt = "Wed 05:30";
+  # Local only: after a power cut router-home boots too, so WAN and tailnet come up late.
+  upgrade.healthCheck = ''
+    systemctl is-active -q sshd &&
+    ${config.boot.zfs.package}/bin/zpool list ${toString config.boot.zfs.extraPools} >/dev/null
+  '';
 
   # Write-heavy state on the nvme mirror, off the single root SSD (74 % endurance
   # used 2026-10). Datasets are imperative: `zfs create -o mountpoint=legacy`,
