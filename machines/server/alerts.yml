@@ -53,11 +53,14 @@ groups:
           summary: "{{ $labels.instance }} rebooted"
 
       # A marginal cable re-negotiates in ~3s and reads healthy by the time anyone
-      # looks (server eno1, 2026-08-19/20); only the counter shows it. 2 changes =
-      # one down/up pair, so a lone reseat or switch reboot stays quiet.
+      # looks (server eno1, 2026-08-19/20); only the counter shows it. A switch
+      # reboot is 4 changes (link bounces twice while it boots), so > 4.
+      # Plain delta, not increase(): that counts the post-reboot counter reset.
       # ppp/virtual devices flap by design.
       - alert: NetworkLinkFlapping
-        expr: increase(node_network_carrier_changes_total{device!~"lo|ppp.*|veth.*|podman.*|tailscale.*"}[15m]) > 2
+        expr: |
+          node_network_carrier_changes_total{device!~"lo|ppp.*|veth.*|podman.*|tailscale.*"}
+            - node_network_carrier_changes_total{device!~"lo|ppp.*|veth.*|podman.*|tailscale.*"} offset 15m > 4
         for: 5m
         labels:
           severity: warning
