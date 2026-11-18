@@ -45,8 +45,9 @@ groups:
         annotations:
           summary: "{{ $labels.instance }} CPU above 90% for 30 minutes"
 
+      # 30 min, not 10: router-home was back in 3 min on 2026-11-18 but scraped only after 17.
       - alert: HostRebooted
-        expr: node_time_seconds - node_boot_time_seconds < 600
+        expr: node_time_seconds - node_boot_time_seconds < 1800
         labels:
           severity: info
         annotations:

@@ -401,14 +401,42 @@ in
         group_interval = "15m";
         repeat_interval = "24h";
 
-        routes = [{
-          matchers = [ "alertname=\"Watchdog\"" ];
-          receiver = "deadman";
-          group_wait = "15s";
-          group_interval = "1m";
-          repeat_interval = "4m";
-        }];
+        routes = [
+          {
+            matchers = [ "alertname=\"Watchdog\"" ];
+            receiver = "deadman";
+            group_wait = "15s";
+            group_interval = "1m";
+            repeat_interval = "4m";
+          }
+          # The one mail a planned reboot should produce.
+          { matchers = [ "alertname=\"HostRebooted\"" ]; }
+          # Everything else waits; what still fires after the window is sent then.
+          { mute_time_intervals = [ "planned-reboots" ]; }
+        ];
       };
+
+      # upgrade.rebootAt of server, router-home and router. 40 min for the routers: after
+      # router-home's WAN bounce the server's tailnet view of it stayed stale for 15 min
+      # (2026-11-18) and IcmpPacketLoss averages over another 15.
+      time_intervals = [{
+        name = "planned-reboots";
+        time_intervals = [
+          {
+            weekdays = [ "wednesday" ];
+            times = [
+              { start_time = "05:30"; end_time = "06:00"; }
+              { start_time = "08:00"; end_time = "08:40"; }
+            ];
+            location = config.time.timeZone;
+          }
+          {
+            weekdays = [ "friday" ];
+            times = [{ start_time = "08:00"; end_time = "08:40"; }];
+            location = config.time.timeZone;
+          }
+        ];
+      }];
 
       receivers = [
         {
